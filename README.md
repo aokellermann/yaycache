@@ -22,10 +22,10 @@ Scripts available in this repository:
 * checkupdates - print a list of pending updates without touching the system
                  sync databases (for safety on rolling release distributions).
 
-* pacdiff - a simple pacnew/pacsave updater for /etc/.
-
 * paccache - a flexible package cache cleaning utility that allows greater
              control over which packages are removed.
+
+* pacdiff - a simple pacnew/pacsave updater for /etc/.
 
 * paclist - list all packages installed from a given repository. Useful for seeing
             which packages you may have installed from the testing repository,
