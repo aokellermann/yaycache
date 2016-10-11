@@ -25,4 +25,8 @@ Scripts available in this repository:
 * paccache - a flexible package cache cleaning utility that allows greater
              control over which packages are removed.
 
+* paclist - list all packages installed from a given repository. Useful for seeing
+            which packages you may have installed from the testing repository,
+            for instance.
+
 * updpkgsums - performs an in-place update of the checksums in a PKGBUILD.
