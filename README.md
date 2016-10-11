@@ -31,4 +31,6 @@ Scripts available in this repository:
             which packages you may have installed from the testing repository,
             for instance.
 
+* paclog-pkglist - lists currently installs packages based pacman's log.
+
 * updpkgsums - performs an in-place update of the checksums in a PKGBUILD.
