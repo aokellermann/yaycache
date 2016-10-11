@@ -10,6 +10,7 @@ bin_SCRIPTS = \
 BASHSCRIPTS = \
 	checkupdates \
 	paccache \
+	pacdiff \
 	paclist \
 	updpkgsums
 
@@ -20,6 +21,7 @@ OURSCRIPTS = \
 EXTRA_DIST = \
 	checkupdates.sh.in \
 	paccache.sh.in \
+	pacdiff.sh.in \
 	paclist.sh.in \
 	updpkgsums.sh.in
 
@@ -63,6 +65,7 @@ all-am: $(OURSCRIPTS)
 
 checkupdates: $(srcdir)/checkupdates.sh.in
 paccache: $(srcdir)/paccache.sh.in
+pacdiff: $(srcdir)/pacdiff.sh.in
 paclist: $(srcdir)/paclist.sh.in
 updpkgsums: $(srcdir)/updpkgsums.sh.in
 
