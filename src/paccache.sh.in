@@ -120,7 +120,7 @@ pkgfilter() {
 	}' "${@:3}"
 }
 
-m4_include(../scripts/library/size_to_human.sh)
+m4_include(../lib/size_to_human.sh)
 
 runcmd() {
 	if (( needsroot && EUID != 0 )); then
@@ -280,7 +280,7 @@ while :; do
 	shift
 done
 
-m4_include(../scripts/library/term_colors.sh)
+m4_include(../lib/term_colors.sh)
 
 # setting default cachedir
 if [[ -z $cachedirs ]]; then
