@@ -7,6 +7,16 @@ DIST_SUBDIRS = $(SUBDIRS)
 bin_SCRIPTS = \
   $(OURSCRIPTS)
 
+vim_dir = $(pkgdatadir)/vim
+vim_ftdetect_dir = $(vim_dir)/ftdetect
+vim_syntax_dir = $(vim_dir)/syntax
+
+vim_ftdetect__DATA = \
+	vim/ftdetect/PKGBUILD.vim
+
+vim_syntax__DATA = \
+	vim/syntax/PKGBUILD.vim
+
 BASHSCRIPTS = \
 	checkupdates \
 	paccache \
