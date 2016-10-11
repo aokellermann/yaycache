@@ -6,6 +6,16 @@ This repository contains contributed scripts to pacman.
 *Note*: This used to be part of pacman.git, but was moved out to make pacman maintenance easier.
 
 
+How to build:
+-------------
+
+    ./autogen.sh
+    ./configure --prefix=/usr \
+                --sysconfdir=/etc
+    make
+    make install DESTDIR="$pkgdir"
+
+
 Scripts available in this repository:
 -------------------------------------
 
