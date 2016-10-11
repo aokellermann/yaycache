@@ -13,6 +13,26 @@ AC_ARG_ENABLE(git-version,
 		[enable use of git version in version string if available]),
 	[wantgitver=$enableval], [wantgitver=no])
 
+# Checks for programs.
+AC_PATH_PROGS([BASH_SHELL], [bash bash4], [false])
+
+AS_IF([test "x$BASH_SHELL" = "xfalse"],
+	AC_MSG_WARN([*** bash >= 4.1.0 is required for pacman scripts]),
+	[bash_version_major=`$BASH_SHELL -c 'echo "${BASH_VERSINFO[[0]]}"'`
+	bash_version_minor=`$BASH_SHELL -c 'echo "${BASH_VERSINFO[[1]]}"'`
+	ok=yes
+	if test "$bash_version_major" -lt 4; then
+		ok=no
+	fi
+	if test "$bash_version_major" -eq 4 && test "$bash_version_minor" -lt 1; then
+		ok=no
+	fi
+	if test "$ok" = "no"; then
+		AC_MSG_ERROR([*** bash >= 4.1.0 is required for pacman scripts])
+	fi
+	unset bash_version_major bash_version_minor ok])
+
+
 AM_CONDITIONAL(WANT_DOC, test "x$wantdoc" = "xyes")
 
 # Enable or disable use of git version in version string
