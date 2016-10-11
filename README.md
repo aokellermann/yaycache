@@ -33,4 +33,7 @@ Scripts available in this repository:
 
 * paclog-pkglist - lists currently installs packages based pacman's log.
 
+* pacscripts - tries to print out the {pre,post}\_{install,remove,upgrade}
+               scripts of a given package.
+
 * updpkgsums - performs an in-place update of the checksums in a PKGBUILD.

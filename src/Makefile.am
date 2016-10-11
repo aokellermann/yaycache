@@ -13,6 +13,7 @@ BASHSCRIPTS = \
 	pacdiff \
 	paclist \
 	paclog-pkglist \
+	pacscripts \
 	updpkgsums
 
 OURSCRIPTS = \
@@ -25,6 +26,7 @@ EXTRA_DIST = \
 	pacdiff.sh.in \
 	paclist.sh.in \
 	paclog-pkglist.sh.in \
+	pacscripts.sh.in \
 	updpkgsums.sh.in
 
 # Files that should be removed, but which Automake does not know.
@@ -70,6 +72,7 @@ paccache: $(srcdir)/paccache.sh.in
 pacdiff: $(srcdir)/pacdiff.sh.in
 paclist: $(srcdir)/paclist.sh.in
 paclog-pkglist: $(srcdir)/paclog-pkglist.sh.in
+pacscripts: $(srcdir)/pacscripts.sh.in
 updpkgsums: $(srcdir)/updpkgsums.sh.in
 
 # vim:set noet:
