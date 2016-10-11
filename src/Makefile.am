@@ -7,7 +7,6 @@ DIST_SUBDIRS = $(SUBDIRS)
 bin_SCRIPTS = \
   $(OURSCRIPTS)
 
-vim_dir = $(pkgdatadir)/vim
 vim_ftdetect_dir = $(vim_dir)/ftdetect
 vim_syntax_dir = $(vim_dir)/syntax
 

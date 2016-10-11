@@ -2,6 +2,15 @@ AC_INIT([pacman-contrib], [0.0.0], [arch-projects@archlinux.org])
 
 AM_INIT_AUTOMAKE([-Wall foreign])
 
+if test "$pkgdatadir" = ""; then
+    pkgdatadir="$datadir/$PACKAGE_NAME"
+fi
+
+# Help line for vim runtime directory
+AC_ARG_WITH(vim-dir,
+	[AS_HELP_STRING([--with-vim-dir=PATH], [set the location of the vim runtime file directory])],
+	[vim_dir=$withval], [vim_dir=$pkgdatadir/vim])
+
 # Help line for using git version in pacman version string
 AC_ARG_ENABLE(git-version,
 	AS_HELP_STRING([--enable-git-version],
@@ -42,6 +51,8 @@ else
 	usegitver=no
 fi
 AM_CONDITIONAL(USE_GIT_VERSION, test "x$usegitver" = "xyes")
+
+AC_SUBST(vim_dir, [$vim_dir])
 
 AC_CONFIG_FILES([
 	Makefile
