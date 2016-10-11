@@ -1,6 +1,5 @@
-SUBDIRS = src
-if WANT_DOC
-SUBDIRS += doc
-endif
+SUBDIRS = src lib
 
-dist_doc_DATA = README.md
+DIST_SUBDIRS = $(SUBDIRS)
+
+DISTCHECK_CONFIGURE_FLAGS = --disable-git-version
