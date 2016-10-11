@@ -9,6 +9,7 @@ bin_SCRIPTS = \
 
 BASHSCRIPTS = \
 	checkupdates \
+	paccache \
 	updpkgsums
 
 OURSCRIPTS = \
@@ -17,6 +18,7 @@ OURSCRIPTS = \
 
 EXTRA_DIST = \
 	checkupdates.sh.in \
+	paccache.sh.in \
 	updpkgsums.sh.in
 
 # Files that should be removed, but which Automake does not know.
@@ -58,6 +60,7 @@ $(OURFILES): Makefile
 all-am: $(OURSCRIPTS)
 
 checkupdates: $(srcdir)/checkupdates.sh.in
+paccache: $(srcdir)/paccache.sh.in
 updpkgsums: $(srcdir)/updpkgsums.sh.in
 
 # vim:set noet:
