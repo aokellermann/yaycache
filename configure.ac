@@ -54,6 +54,9 @@ AM_CONDITIONAL(USE_GIT_VERSION, test "x$usegitver" = "xyes")
 
 AC_SUBST(vim_dir, [$vim_dir])
 
+SIZECMD="stat -c %s"
+AC_SUBST(SIZECMD)
+
 AC_CONFIG_FILES([
 	Makefile
 	src/Makefile
