@@ -36,6 +36,10 @@ Scripts available in this repository:
 * pacscripts - tries to print out the {pre,post}\_{install,remove,upgrade}
                scripts of a given package.
 
+* pacsearch - a colorized search combining both -Ss and -Qs output. Installed
+              packages are easily identified with a `[installed]`, and
+              local-only packages are also listed.
+
 * rankmirrors - ranks pacman mirrors by their connection and opening speed.
 
 * updpkgsums - performs an in-place update of the checksums in a PKGBUILD.
