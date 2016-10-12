@@ -353,6 +353,9 @@ unset candtemp
 # do this before we destroy anything
 totalsaved=$(@SIZECMD@ "${candidates[@]}" | awk '{ sum += $1 } END { print sum }')
 
+# Exit immediately if a pipeline returns non-zero.
+set -o errexit
+
 # crush. kill. destroy.
 (( verbose )) && cmdopts+=(-v)
 if (( delete )); then
