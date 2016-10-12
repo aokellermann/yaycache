@@ -26,9 +26,12 @@ BASHSCRIPTS = \
 	rankmirrors \
 	updpkgsums
 
+PERLSCRIPTS = \
+	pacsearch
+
 OURSCRIPTS = \
 	$(BASHSCRIPTS) \
-	$(OTHERSCRIPTS)
+	$(PERLSCRIPTS)
 
 EXTRA_DIST = \
 	checkupdates.sh.in \
@@ -38,7 +41,9 @@ EXTRA_DIST = \
 	paclog-pkglist.sh.in \
 	pacscripts.sh.in \
 	rankmirrors.sh.in \
-	updpkgsums.sh.in
+	updpkgsums.sh.in \
+	\
+	pacsearch.pl.in
 
 # Files that should be removed, but which Automake does not know.
 MOSTLYCLEANFILES = $(OURSCRIPTS) *.tmp
@@ -58,17 +63,17 @@ edit = sed \
 	-e 's|@SCRIPTNAME[@]|$@|g' \
 	-e '1s|!/bin/bash|!$(BASH_SHELL)|g'
 
-$(OTHERSCRIPTS): Makefile
-	$(AM_V_at)$(RM) $@ $@.tmp
-	$(AM_V_GEN)$(edit) $(srcdir)/$@.in >$@.tmp
-	$(AM_V_at)chmod +x,a-w $@.tmp
-	$(AM_V_at)mv $@.tmp $@
-
 $(BASHSCRIPTS): Makefile
 	$(AM_V_at)$(RM) $@
 	$(AM_V_GEN)test -f $(srcdir)/$@.sh.in && m4 -P -I $(srcdir) $(srcdir)/$@.sh.in | $(edit) >$@
 	$(AM_V_at)chmod +x,a-w $@
 	@$(BASH_SHELL) -O extglob -n $@
+
+$(PERLSCRIPTS): Makefile
+	$(AM_V_at)$(RM) $@ $@.tmp
+	$(AM_V_GEN)$(edit) $(srcdir)/$@.pl.in >$@.tmp
+	$(AM_V_at)chmod +x,a-w $@.tmp
+	$(AM_V_at)mv $@.tmp $@
 
 $(OURFILES): Makefile
 	$(AM_V_at)$(RM) $@ $@.tmp
@@ -86,5 +91,7 @@ paclog-pkglist: $(srcdir)/paclog-pkglist.sh.in
 pacscripts: $(srcdir)/pacscripts.sh.in
 rankmirrors: $(srcdir)/rankmirrors.sh.in
 updpkgsums: $(srcdir)/updpkgsums.sh.in
+
+pacsearch: $(srcdir)/pacsearch.pl.in
 
 # vim:set noet:
