@@ -83,9 +83,9 @@ $(OURFILES): Makefile
 
 all-am: $(OURSCRIPTS)
 
-checkupdates: $(srcdir)/checkupdates.sh.in
-paccache: $(srcdir)/paccache.sh.in
-pacdiff: $(srcdir)/pacdiff.sh.in
+checkupdates: $(srcdir)/checkupdates.sh.in $(top_srcdir)/lib/output_format.sh $(top_srcdir)/lib/term_colors.sh
+paccache: $(srcdir)/paccache.sh.in $(top_srcdir)/lib/output_format.sh $(top_srcdir)/lib/parseopts.sh $(top_srcdir)/lib/size_to_human.sh $(top_srcdir)/lib/term_colors.sh
+pacdiff: $(srcdir)/pacdiff.sh.in $(top_srcdir)/lib/output_format.sh $(top_srcdir)/lib/term_colors.sh
 paclist: $(srcdir)/paclist.sh.in
 paclog-pkglist: $(srcdir)/paclog-pkglist.sh.in
 pacscripts: $(srcdir)/pacscripts.sh.in
