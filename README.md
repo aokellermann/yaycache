@@ -11,7 +11,8 @@ How to build:
 
     ./autogen.sh
     ./configure --prefix=/usr \
-                --sysconfdir=/etc
+                --sysconfdir=/etc \
+                --localestatedir=/var
     make
     make install DESTDIR="$pkgdir"
 
