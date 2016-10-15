@@ -106,24 +106,24 @@ enum {
 };
 
 /* globals */
-alpm_handle_t *handle = NULL;
-alpm_list_t *walked = NULL;
-alpm_list_t *provisions = NULL;
+static alpm_handle_t *handle = NULL;
+static alpm_list_t *walked = NULL;
+static alpm_list_t *provisions = NULL;
 
 /* options */
-struct color_choices *color = &no_color;
-struct graph_style *style = &graph_utf8;
-int graphviz = 0;
-int max_depth = -1;
-int reverse = 0;
-int unique = 0;
-int searchsyncs = 0;
-const char *dbpath = DBPATH;
-const char *configfile = CONFFILE;
+static struct color_choices *color = &no_color;
+static struct graph_style *style = &graph_utf8;
+static int graphviz = 0;
+static int max_depth = -1;
+static int reverse = 0;
+static int unique = 0;
+static int searchsyncs = 0;
+static const char *dbpath = DBPATH;
+static const char *configfile = CONFFILE;
 
 /* Trim whitespace and newlines from a string
  */
-size_t strtrim(char *str)
+static size_t strtrim(char *str)
 {
 	char *end, *pch = str;
 
