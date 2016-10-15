@@ -140,3 +140,32 @@ AC_CONFIG_FILES([
 	lib/Makefile
 ])
 AC_OUTPUT
+
+echo "
+${PACKAGE_NAME}:
+
+  Build information:
+    prefix                 : ${prefix}
+    sysconfdir             : $(eval echo ${sysconfdir})
+       conf file           : $(eval echo ${sysconfdir})/pacman.conf
+    localstatedir          : $(eval echo ${localstatedir})
+       database dir        : $(eval echo ${localstatedir})/lib/pacman/
+       cache dir           : $(eval echo ${localstatedir})/cache/pacman/pkg/
+
+    compiler               : ${CC}
+    compiler flags         : ${WARNING_CFLAGS} ${CFLAGS}
+    linker flags           : ${LDFLAGS} ${LIBALPM_LIBS} ${LIBARCHIVE_LIBS}
+
+    Filesize command       : ${SIZECMD}
+
+    using git version      : ${usegitver}
+
+  Directory and file information:
+    root working directory : ${ROOTDIR}
+
+  Compilation options:
+    Run make in doc/ dir   : ${wantdoc} ${asciidoc}
+    debug support          : ${debug}
+    extra warning flags    : ${warningflags}
+    use git version        : ${wantgitver}
+"
