@@ -6,6 +6,11 @@ if test "$pkgdatadir" = ""; then
     pkgdatadir="$datadir/$PACKAGE_NAME"
 fi
 
+# Help line for root directory
+AC_ARG_WITH(root-dir,
+	AS_HELP_STRING([--with-root-dir=PATH], [set the location of the root operating directory]),
+	[ROOTDIR=$withval], [ROOTDIR=/])
+
 # Help line for vim runtime directory
 AC_ARG_WITH(vim-dir,
 	[AS_HELP_STRING([--with-vim-dir=PATH], [set the location of the vim runtime file directory])],
@@ -18,6 +23,8 @@ AC_ARG_ENABLE(git-version,
 	[wantgitver=$enableval], [wantgitver=no])
 
 # Checks for programs.
+AC_PROG_CC
+AC_PROG_CC_C99
 AC_PATH_PROGS([BASH_SHELL], [bash bash4], [false])
 
 AS_IF([test "x$BASH_SHELL" = "xfalse"],
@@ -36,6 +43,13 @@ AS_IF([test "x$BASH_SHELL" = "xfalse"],
 	fi
 	unset bash_version_major bash_version_minor ok])
 
+# Check for libarchive
+PKG_CHECK_MODULES(LIBARCHIVE, [libarchive >= 2.8.0], ,
+	AC_MSG_ERROR([*** libarchive >= 2.8.0 is needed to build pacman-contrib!]))
+
+# Check for libalpm
+PKG_CHECK_MODULES(LIBALPM, [libalpm], ,
+	AC_MSG_ERROR([*** libalpm is needed to build pacman-contrib!]))
 
 # Enable or disable use of git version in version string
 AC_MSG_CHECKING(whether to use git version if available)
@@ -52,6 +66,9 @@ else
 fi
 AM_CONDITIONAL(USE_GIT_VERSION, test "x$usegitver" = "xyes")
 
+# Set root directory
+AC_SUBST(ROOTDIR)
+AC_DEFINE_UNQUOTED([ROOTDIR], "$ROOTDIR", [The location of the root operating directory])
 AC_SUBST(vim_dir, [$vim_dir])
 
 SIZECMD="stat -c %s"

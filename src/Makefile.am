@@ -4,8 +4,14 @@ SUBDIRS=
 
 DIST_SUBDIRS = $(SUBDIRS)
 
+# paths set at make time
+conffile  = ${sysconfdir}/pacman.conf
+dbpath    = ${localstatedir}/lib/pacman/
+
 bin_SCRIPTS = \
   $(OURSCRIPTS)
+
+bin_PROGRAMS = pactree
 
 vim_ftdetect_dir = $(vim_dir)/ftdetect
 vim_syntax_dir = $(vim_dir)/syntax
@@ -55,6 +61,17 @@ else
 REAL_PACKAGE_VERSION = $(PACKAGE_VERSION)
 endif
 
+AM_CPPFLAGS = \
+	-DLOCALEDIR=\"@localedir@\" \
+	-DCONFFILE=\"$(conffile)\" \
+	-DDBPATH=\"$(dbpath)\"
+
+AM_CFLAGS = \
+	-pedantic \
+	-D_GNU_SOURCE \
+	$(LIBARCHIVE_CFLAGS) \
+	$(LIBALPM_CFLAGS)
+
 edit = sed \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
 	-e 's|@localstatedir[@]|$(localstatedir)|g' \
@@ -94,5 +111,8 @@ rankmirrors: $(srcdir)/rankmirrors.sh.in
 updpkgsums: $(srcdir)/updpkgsums.sh.in
 
 pacsearch: $(srcdir)/pacsearch.pl.in
+
+pactree_SOURCES = pactree.c
+pactree_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)
 
 # vim:set noet:
