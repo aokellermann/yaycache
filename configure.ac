@@ -1,4 +1,5 @@
 AC_INIT([pacman-contrib], [0.0.0], [pacman-contrib@lists.archlinux.org])
+AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([-Wall foreign])
 
@@ -15,6 +16,16 @@ AC_ARG_WITH(root-dir,
 AC_ARG_WITH(vim-dir,
 	[AS_HELP_STRING([--with-vim-dir=PATH], [set the location of the vim runtime file directory])],
 	[vim_dir=$withval], [vim_dir=$pkgdatadir/vim])
+
+# Help line for debug
+AC_ARG_ENABLE(debug,
+	AS_HELP_STRING([--enable-debug], [enable debugging support]),
+	[debug=$enableval], [debug=no])
+
+# Help line for compiler warning flags
+AC_ARG_ENABLE(warningflags,
+	AS_HELP_STRING([--enable-warningflags], [enable extra compiler warning flags]),
+	[warningflags=$enableval], [warningflags=no])
 
 # Help line for using git version in pacman version string
 AC_ARG_ENABLE(git-version,
@@ -75,6 +86,53 @@ AC_DEFINE_UNQUOTED([vim_dir], "$vim_dir", [The location of the vim runtime file 
 
 SIZECMD="stat -c %s"
 AC_SUBST(SIZECMD)
+
+# Enable or disable debug code
+if test "x$debug" = "xyes" ; then
+	AC_MSG_RESULT(yes)
+	GCC_STACK_PROTECT_LIB
+	GCC_STACK_PROTECT_CC
+	GCC_FORTIFY_SOURCE_CC
+	WARNING_CFLAGS="-g -Wall -Werror"
+else
+	AC_MSG_RESULT(no)
+	WARNING_CFLAGS="-Wall"
+fi
+
+# Enable or disable compiler warning flags
+AC_MSG_CHECKING(for excessive compiler warning flags)
+if test "x$warningflags" = "xyes" ; then
+	AC_MSG_RESULT(yes)
+	CFLAGS_ADD([-Wcast-align], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wclobbered], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wempty-body], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wfloat-equal], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wformat-nonliteral], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wformat-security], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wignored-qualifiers], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Winit-self], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wlogical-op], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wmissing-declarations], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wmissing-field-initializers], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wmissing-parameter-type], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wmissing-prototypes], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wold-style-declaration], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Woverride-init], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wpointer-arith], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wredundant-decls], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wshadow], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wsign-compare], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wstrict-aliasing], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wstrict-overflow=5], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wstrict-prototypes], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wtype-limits], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wuninitialized], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wunused-but-set-parameter], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wunused-parameter], [WARNING_CFLAGS])
+	CFLAGS_ADD([-Wwrite-strings], [WARNING_CFLAGS])
+else
+	AC_MSG_RESULT(no)
+fi
 
 AC_CONFIG_FILES([
 	Makefile
