@@ -69,7 +69,9 @@ AM_CONDITIONAL(USE_GIT_VERSION, test "x$usegitver" = "xyes")
 # Set root directory
 AC_SUBST(ROOTDIR)
 AC_DEFINE_UNQUOTED([ROOTDIR], "$ROOTDIR", [The location of the root operating directory])
-AC_SUBST(vim_dir, [$vim_dir])
+# Set vim directory
+AC_SUBST(vim_dir)
+AC_DEFINE_UNQUOTED([vim_dir], "$vim_dir", [The location of the vim runtime file directory])
 
 SIZECMD="stat -c %s"
 AC_SUBST(SIZECMD)
