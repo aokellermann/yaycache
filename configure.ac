@@ -17,6 +17,11 @@ AC_ARG_WITH(vim-dir,
 	[AS_HELP_STRING([--with-vim-dir=PATH], [set the location of the vim runtime file directory])],
 	[vim_dir=$withval], [vim_dir=$pkgdatadir/vim])
 
+# Help line for documentation
+AC_ARG_ENABLE(doc,
+	AS_HELP_STRING([--disable-doc], [prevent make from looking at doc/ dir]),
+	[wantdoc=$enableval], [wantdoc=yes])
+
 # Help line for debug
 AC_ARG_ENABLE(debug,
 	AS_HELP_STRING([--enable-debug], [enable debugging support]),
@@ -87,6 +92,23 @@ AC_DEFINE_UNQUOTED([vim_dir], "$vim_dir", [The location of the vim runtime file 
 SIZECMD="stat -c %s"
 AC_SUBST(SIZECMD)
 
+# Check for documentation support and status
+AC_CHECK_PROGS([ASCIIDOC], [asciidoc])
+AC_MSG_CHECKING([for building documentation])
+if test "x$wantdoc" = "xyes" ; then
+	if test $ASCIIDOC ; then
+		AC_MSG_RESULT([yes, enabled by configure])
+	else
+		asciidoc="(warning : asciidoc not installed)"
+		AC_MSG_RESULT([yes $asciidoc])
+	fi
+	wantdoc=yes
+else
+	AC_MSG_RESULT([no, disabled by configure])
+	wantdoc=no
+fi
+AM_CONDITIONAL(WANT_DOC, test "x$wantdoc" = "xyes")
+
 # Enable or disable debug code
 if test "x$debug" = "xyes" ; then
 	AC_MSG_RESULT(yes)
@@ -135,9 +157,10 @@ else
 fi
 
 AC_CONFIG_FILES([
-	Makefile
-	src/Makefile
 	lib/Makefile
+	src/Makefile
+	doc/Makefile
+	Makefile
 ])
 AC_OUTPUT
 
