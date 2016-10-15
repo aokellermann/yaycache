@@ -1,4 +1,4 @@
-AC_INIT([pacman-contrib], [0.0.0], [arch-projects@archlinux.org])
+AC_INIT([pacman-contrib], [0.0.0], [pacman-contrib@lists.archlinux.org])
 
 AM_INIT_AUTOMAKE([-Wall foreign])
 
