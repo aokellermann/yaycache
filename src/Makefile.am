@@ -49,7 +49,9 @@ EXTRA_DIST = \
 	rankmirrors.sh.in \
 	updpkgsums.sh.in \
 	\
-	pacsearch.pl.in
+	pacsearch.pl.in \
+	vim/syntax/PKGBUILD.vim \
+	vim/ftdetect/PKGBUILD.vim
 
 # Files that should be removed, but which Automake does not know.
 MOSTLYCLEANFILES = $(OURSCRIPTS) *.tmp

@@ -13,12 +13,14 @@ HTML_DOCS = \
 	$(HTML_MANPAGES)
 
 EXTRA_DIST = \
+	asciidoc.conf \
+	asciidoc-override.css \
 	pactree.8.txt \
 	footer.txt \
 	$(ASCIIDOC_MANS)
 
 # Files that should be removed, but which Automake does not know.
-MOSTLYCLEANFILES = *.xml $(ASCIIDOC_MANS) $(HTML_DOCS) repo-remove.8 website.tar.gz
+MOSTLYCLEANFILES = *.xml $(ASCIIDOC_MANS) $(HTML_DOCS) website.tar.gz
 
 # Ensure manpages are fresh when building a dist tarball
 dist-hook:
