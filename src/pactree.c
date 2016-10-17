@@ -200,6 +200,39 @@ static int register_syncs(void)
 	return 0;
 }
 
+static void cleanup(int ret)
+{
+	alpm_list_free(walked);
+	alpm_list_free(provisions);
+	alpm_release(handle);
+
+	exit(ret);
+}
+
+static void usage(void)
+{
+	fprintf(stdout, "pactree (pacman) v" PACKAGE_VERSION "\n\n"
+			"A simple dependency tree viewer.\n\n"
+			"Usage: pactree [options] PACKAGE\n\n"
+			"  -a, --ascii          use ASCII characters for tree formatting\n"
+			"  -b, --dbpath <path>  set an alternate database location\n"
+			"  -c, --color          colorize output\n"
+			"  -d, --depth <#>      limit the depth of recursion\n"
+			"  -g, --graph          generate output for graphviz's dot\n"
+			"  -h, --help           display this help message\n"
+			"  -l, --linear         enable linear output\n"
+			"  -r, --reverse        list packages that depend on the named package\n"
+			"  -s, --sync           search sync databases instead of local\n"
+			"  -u, --unique         show dependencies with no duplicates (implies -l)\n"
+			"  -v, --version        display the version\n"
+			"      --config <path>  set an alternate configuration file\n");
+}
+
+static void version(void)
+{
+	fprintf(stdout, "pactree (pacman) v" PACKAGE_VERSION "\n");
+}
+
 static int parse_options(int argc, char *argv[])
 {
 	int opt, option_index = 0;
@@ -216,6 +249,7 @@ static int parse_options(int argc, char *argv[])
 		{"reverse", no_argument,          0, 'r'},
 		{"sync",    no_argument,          0, 's'},
 		{"unique",  no_argument,          0, 'u'},
+		{"version", no_argument,          0, 'v'},
 
 		{"config",  required_argument,    0, OP_CONFIG},
 		{0, 0, 0, 0}
@@ -230,7 +264,7 @@ static int parse_options(int argc, char *argv[])
 	style = &graph_default;
 #endif
 
-	while((opt = getopt_long(argc, argv, "ab:cd:ghlrsu", opts, &option_index))) {
+	while((opt = getopt_long(argc, argv, "ab:cd:ghlrsuv", opts, &option_index))) {
 		if(opt < 0) {
 			break;
 		}
@@ -272,9 +306,15 @@ static int parse_options(int argc, char *argv[])
 				unique = 1;
 				style = &graph_linear;
 				break;
+			case 'v':
+				version();
+				cleanup(0);
 			case 'h':
 			case '?':
+				usage();
+				cleanup(0);
 			default:
+				usage();
 				return 1;
 		}
 	}
@@ -284,31 +324,6 @@ static int parse_options(int argc, char *argv[])
 	}
 
 	return 0;
-}
-
-static void usage(void)
-{
-	fprintf(stderr, "pactree (pacman) v" PACKAGE_VERSION "\n\n"
-			"A simple dependency tree viewer.\n\n"
-			"Usage: pactree [options] PACKAGE\n\n"
-			"  -a, --ascii          use ASCII characters for tree formatting\n"
-			"  -b, --dbpath <path>  set an alternate database location\n"
-			"  -c, --color          colorize output\n"
-			"  -d, --depth <#>      limit the depth of recursion\n"
-			"  -g, --graph          generate output for graphviz's dot\n"
-			"  -h, --help           display this help message\n"
-			"  -l, --linear         enable linear output\n"
-			"  -r, --reverse        list packages that depend on the named package\n"
-			"  -s, --sync           search sync databases instead of local\n"
-			"  -u, --unique         show dependencies with no duplicates (implies -l)\n"
-			"      --config <path>  set an alternate configuration file\n");
-}
-
-static void cleanup(void)
-{
-	alpm_list_free(walked);
-	alpm_list_free(provisions);
-	alpm_release(handle);
 }
 
 /* pkg provides provision */
@@ -478,30 +493,26 @@ static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int r
 
 int main(int argc, char *argv[])
 {
-	int freelist = 0, ret = 0;
+	int freelist = 0, ret;
 	alpm_errno_t err;
 	const char *target_name;
 	alpm_pkg_t *pkg;
 	alpm_list_t *dblist = NULL;
 
-	if(parse_options(argc, argv) != 0) {
-		usage();
-		ret = 1;
-		goto finish;
+	if((ret = parse_options(argc, argv)) != 0) {
+		cleanup(ret);
 	}
 
 	handle = alpm_initialize(ROOTDIR, dbpath, &err);
 	if(!handle) {
 		fprintf(stderr, "error: cannot initialize alpm: %s\n",
 				alpm_strerror(err));
-		ret = 1;
-		goto finish;
+		cleanup(1);
 	}
 
 	if(searchsyncs) {
 		if(register_syncs() != 0) {
-			ret = 1;
-			goto finish;
+			cleanup(1);
 		}
 		dblist = alpm_get_syncdbs(handle);
 	} else {
@@ -515,8 +526,7 @@ int main(int argc, char *argv[])
 	pkg = alpm_find_dbs_satisfier(handle, dblist, target_name);
 	if(!pkg) {
 		fprintf(stderr, "error: package '%s' not found\n", target_name);
-		ret = 1;
-		goto finish;
+		cleanup(1);
 	}
 
 	print_start(alpm_pkg_get_name(pkg), target_name);
@@ -534,9 +544,7 @@ int main(int argc, char *argv[])
 		alpm_list_free(dblist);
 	}
 
-finish:
-	cleanup();
-	return ret;
+	cleanup(0);
 }
 
 /* vim: set noet: */
