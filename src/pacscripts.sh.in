@@ -135,6 +135,6 @@ fi
 
 case "$1" in
 	--help|-h) usage; exit 0 ;;
-	--version|-V) version; exit 0 ;;
+	--version|-v) version; exit 0 ;;
 	*) print_scriptlet $1 ;;
 esac
