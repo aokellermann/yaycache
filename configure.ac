@@ -1,4 +1,4 @@
-AC_INIT([pacman-contrib], [0.0.0], [pacman-contrib@lists.archlinux.org])
+AC_INIT([pacman-contrib], [0.0.1], [pacman-contrib@lists.archlinux.org])
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([-Wall foreign])
