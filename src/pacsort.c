@@ -419,7 +419,7 @@ static char escape_char(const char *string)
 
 static void usage(void)
 {
-	printf("pacsort (pacman) v" PACKAGE_VERSION "\n\n"
+	printf("pacsort v" PACKAGE_VERSION "\n\n"
 			"A sort utility implementing alpm_pkg_vercmp.\n\n"
 			"Usage: pacsort [options] [files...]\n\n"
 			"  -f, --files             assume inputs are file paths of packages\n"

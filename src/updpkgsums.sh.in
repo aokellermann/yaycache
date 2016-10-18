@@ -23,7 +23,7 @@ declare -r myname='updpkgsums'
 declare -r myver='@PACKAGE_VERSION@'
 
 usage() {
-	printf "%s (pacman) v%s\n" "${myname}" "${myver}"
+	printf "%s v%s\n" "${myname}" "${myver}"
 	echo
 	printf "%s will perform an in place update of the checksums in the\n" "${myname}"
 	echo "path specified by [build file], defaulting to PKGBUILD in the current"

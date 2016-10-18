@@ -25,7 +25,7 @@ m4_include(../lib/output_format.sh)
 m4_include(../lib/term_colors.sh)
 
 if (( $# > 0 )); then
-	echo "${myname} (pacman) v${myver}"
+	echo "${myname} v${myver}"
 	echo
 	echo "Safely print a list of pending updates"
 	echo

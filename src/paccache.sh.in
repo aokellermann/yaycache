@@ -176,7 +176,7 @@ summarize() {
 
 usage() {
 	cat <<EOF
-${myname} (pacman) v${myver}
+${myname} v${myver}
 
 A flexible pacman cache cleaning utility.
 

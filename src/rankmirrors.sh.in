@@ -25,7 +25,7 @@ declare -r myname='rankmirrors'
 declare -r myver='@PACKAGE_VERSION@'
 
 usage() {
-	echo "${myname} (pacman) v${myver}"
+	echo "${myname} v${myver}"
 	echo
 	echo "Ranks pacman mirrors by their connection and opening speed. Pacman mirror"
 	echo "files are located in @sysconfdir@/pacman.d/. It can also rank one mirror if the URL is"

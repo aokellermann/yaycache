@@ -45,7 +45,7 @@ error() {
 }
 
 usage() {
-	echo "${myname} (pacman) v${myver}"
+	echo "${myname} v${myver}"
 	echo
 	echo "Prints the {pre,post}_{install,remove,upgrade} scripts of a given package."
 	echo

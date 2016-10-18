@@ -211,7 +211,7 @@ static void cleanup(int ret)
 
 static void usage(void)
 {
-	fprintf(stdout, "pactree (pacman) v" PACKAGE_VERSION "\n\n"
+	fprintf(stdout, "pactree v" PACKAGE_VERSION "\n\n"
 			"A simple dependency tree viewer.\n\n"
 			"Usage: pactree [options] PACKAGE\n\n"
 			"  -a, --ascii          use ASCII characters for tree formatting\n"
@@ -230,7 +230,7 @@ static void usage(void)
 
 static void version(void)
 {
-	fprintf(stdout, "pactree (pacman) v" PACKAGE_VERSION "\n");
+	fprintf(stdout, "pactree v" PACKAGE_VERSION "\n");
 }
 
 static int parse_options(int argc, char *argv[])

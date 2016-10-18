@@ -33,7 +33,7 @@ m4_include(../lib/output_format.sh)
 
 usage() {
 	cat <<EOF
-${myname} (pacman) v${myver}
+${myname} v${myver}
 
 A simple program to merge or remove pacnew/pacsave files.
 

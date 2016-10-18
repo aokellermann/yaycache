@@ -25,7 +25,7 @@ export TEXTDOMAINDIR='/usr/share/locale'
 declare logfile=${1:-@localstatedir@/log/pacman.log}
 
 usage() {
-	printf "%s (pacman) v%s\n" "${myname}" "${myver}"
+	printf "%s v%s\n" "${myname}" "${myver}"
 	echo
 	echo "Parse a log file into a list of currently installed packages"
 	echo

@@ -27,7 +27,7 @@ my $myname = 'pacsearch';
 my $myver = '@PACKAGE_VERSION@';
 
 sub usage {
-	print "$myname (pacman) v$myver\n\n";
+	print "$myname v$myver\n\n";
 	print "Perform a pacman search using both the local and the sync databases.\n\n";
 	print "Usage: $myname [-n] <pattern>\n\n";
 	print "Options:\n";
