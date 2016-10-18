@@ -1,0 +1,14 @@
+.deps/
+checkupdates
+paccache
+pacdiff
+paclist
+paclog-pkglist
+pacscripts
+pacsearch
+pacsort
+pacsort.o
+pactree
+pactree.o
+rankmirrors
+updpkgsums
