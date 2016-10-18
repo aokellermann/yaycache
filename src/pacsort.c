@@ -67,6 +67,7 @@ static struct options_t {
 	int null;
 	int filemode;
 	int help;
+	int version;
 	char delim;
 } opts;
 
@@ -418,7 +419,7 @@ static char escape_char(const char *string)
 
 static void usage(void)
 {
-	fprintf(stderr, "pacsort (pacman) v" PACKAGE_VERSION "\n\n"
+	printf("pacsort (pacman) v" PACKAGE_VERSION "\n\n"
 			"A sort utility implementing alpm_pkg_vercmp.\n\n"
 			"Usage: pacsort [options] [files...]\n\n"
 			"  -f, --files             assume inputs are file paths of packages\n"
@@ -432,6 +433,11 @@ static void usage(void)
 			"Standard input is read when no files are given.\n\n");
 }
 
+static void version(void)
+{
+	printf("pacsort v" PACKAGE_VERSION "\n");
+}
+
 static int parse_options(int argc, char **argv)
 {
 	int opt;
@@ -442,6 +448,7 @@ static int parse_options(int argc, char **argv)
 		{"key",       required_argument,    0, 'k'},
 		{"reverse",   no_argument,          0, 'r'},
 		{"separator", required_argument,    0, 't'},
+		{"version",   no_argument,          0, 'v'},
 		{"null",      no_argument,          0, 'z'},
 		{0, 0, 0, 0}
 	};
@@ -471,6 +478,9 @@ static int parse_options(int argc, char **argv)
 					return 1;
 				}
 				break;
+			case 'v':
+				opts.version = 1;
+				return 0;
 			case 'z':
 				opts.null = 1;
 				break;
@@ -502,6 +512,11 @@ int main(int argc, char *argv[])
 
 	if(opts.help) {
 		usage();
+		return 0;
+	}
+
+	if(opts.version) {
+		version();
 		return 0;
 	}
 
