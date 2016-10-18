@@ -11,7 +11,7 @@ dbpath    = ${localstatedir}/lib/pacman/
 bin_SCRIPTS = \
   $(OURSCRIPTS)
 
-bin_PROGRAMS = pactree
+bin_PROGRAMS = pacsort pactree
 
 vim_ftdetect_dir = $(vim_dir)/ftdetect
 vim_syntax_dir = $(vim_dir)/syntax
@@ -114,6 +114,9 @@ rankmirrors: $(srcdir)/rankmirrors.sh.in
 updpkgsums: $(srcdir)/updpkgsums.sh.in
 
 pacsearch: $(srcdir)/pacsearch.pl.in
+
+pacsort_SOURCES = pacsort.c
+pacsort_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)
 
 pactree_SOURCES = pactree.c
 pactree_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)
