@@ -160,6 +160,7 @@ AC_CONFIG_FILES([
 	lib/Makefile
 	src/Makefile
 	doc/Makefile
+	test/Makefile
 	Makefile
 ])
 AC_OUTPUT
