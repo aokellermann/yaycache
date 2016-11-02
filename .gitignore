@@ -8,3 +8,4 @@ configure
 depcomp
 install-sh
 missing
+test-driver
