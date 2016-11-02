@@ -46,10 +46,11 @@ EXTRA_DIST = \
 	paclist.sh.in \
 	paclog-pkglist.sh.in \
 	pacscripts.sh.in \
+	pacsearch.pl.in \
+	pacsort.c \
+	pactree.c \
 	rankmirrors.sh.in \
 	updpkgsums.sh.in \
-	\
-	pacsearch.pl.in \
 	vim/syntax/PKGBUILD.vim \
 	vim/ftdetect/PKGBUILD.vim
 
