@@ -49,9 +49,6 @@ Options
 *-l, \--linear*::
 	Prints package names at the start of each line, one per line.
 
-*-o, \--optdeps*::
-	Show packages that are optionally depended upon by the named package.
-
 *-r, \--reverse*::
 	Show packages that depend on the named package.
 
