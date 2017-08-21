@@ -53,7 +53,10 @@ fi
 
 mkdir -p "$CHECKUPDATES_DB"
 ln -s "${DBPath}/local" "$CHECKUPDATES_DB" &> /dev/null
-fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" --logfile /dev/null &> /dev/null
+if ! fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" --logfile /dev/null &> /dev/null; then
+       error 'Cannot fetch updates'
+       exit 1
+fi
 pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -v '\[.*\]'
 
 exit 0
