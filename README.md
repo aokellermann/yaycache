@@ -14,6 +14,7 @@ How to build:
                 --sysconfdir=/etc \
                 --localestatedir=/var
     make
+    make check
     make install DESTDIR="$pkgdir"
 
 
