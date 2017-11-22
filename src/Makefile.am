@@ -22,6 +22,11 @@ vim_ftdetect__DATA = \
 vim_syntax__DATA = \
 	vim/syntax/PKGBUILD.vim
 
+systemd_dir = ${libdir}/systemd/system
+
+systemd__DATA = \
+	paccache.service paccache.timer
+
 BASHSCRIPTS = \
 	checkupdates \
 	paccache \
@@ -41,7 +46,9 @@ OURSCRIPTS = \
 
 EXTRA_DIST = \
 	checkupdates.sh.in \
+	paccache.service \
 	paccache.sh.in \
+	paccache.timer \
 	pacdiff.sh.in \
 	paclist.sh.in \
 	paclog-pkglist.sh.in \
