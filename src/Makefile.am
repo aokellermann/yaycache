@@ -44,9 +44,12 @@ OURSCRIPTS = \
 	$(BASHSCRIPTS) \
 	$(PERLSCRIPTS)
 
+OURFILES = \
+	paccache.service
+
 EXTRA_DIST = \
 	checkupdates.sh.in \
-	paccache.service \
+	paccache.service.in \
 	paccache.sh.in \
 	paccache.timer \
 	pacdiff.sh.in \
@@ -84,6 +87,7 @@ AM_CFLAGS = \
 	$(LIBALPM_CFLAGS)
 
 edit = sed \
+	-e 's|@bindir[@]|${bindir}|g' \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
 	-e 's|@localstatedir[@]|$(localstatedir)|g' \
 	-e 's|@PACKAGE_VERSION[@]|$(REAL_PACKAGE_VERSION)|g' \
@@ -110,7 +114,7 @@ $(OURFILES): Makefile
 	$(AM_V_at)chmod a-w $@.tmp
 	$(AM_V_at)mv $@.tmp $@
 
-all-am: $(OURSCRIPTS)
+all-am: $(OURSCRIPTS) $(OURFILES)
 
 checkupdates: $(srcdir)/checkupdates.sh.in $(top_srcdir)/lib/output_format.sh $(top_srcdir)/lib/term_colors.sh
 paccache: $(srcdir)/paccache.sh.in $(top_srcdir)/lib/output_format.sh $(top_srcdir)/lib/parseopts.sh $(top_srcdir)/lib/size_to_human.sh $(top_srcdir)/lib/term_colors.sh
