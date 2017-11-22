@@ -12,7 +12,7 @@ How to build:
     ./autogen.sh
     ./configure --prefix=/usr \
                 --sysconfdir=/etc \
-                --localestatedir=/var
+                --localstatedir=/var
     make
     make check
     make install DESTDIR="$pkgdir"
