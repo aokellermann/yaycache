@@ -39,7 +39,7 @@ usage() {
 	echo "  -n NUM         number of servers to output, 0 for all"
 	echo "  -t, --times    only output mirrors and their response times"
 	echo "  -u, --url      test a specific URL"
-	echo "  -v, --verbose  be verbose in ouptut"
+	echo "  -v, --verbose  be verbose in output"
 	echo "  -r, --repo     specify a repository name instead of guessing"
 	exit 0
 }
