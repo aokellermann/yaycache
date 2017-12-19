@@ -93,7 +93,7 @@ edit = sed \
 	-e 's|@PACKAGE_VERSION[@]|$(REAL_PACKAGE_VERSION)|g' \
 	-e 's|@SIZECMD[@]|$(SIZECMD)|g' \
 	-e 's|@SCRIPTNAME[@]|$@|g' \
-	-e '1s|!/bin/bash|!$(BASH_SHELL)|g'
+	-e '1s|!/bin/bash|!$(BASH_SHELL)|g' \
 	-e 's|@configure_input[@]|Generated from $@.sh.in; do not edit by hand.|g'
 
 $(BASHSCRIPTS): Makefile
