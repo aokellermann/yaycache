@@ -27,18 +27,6 @@ set -o errexit
 declare -r myname='pacscripts'
 declare -r myver='@PACKAGE_VERSION@'
 
-conf="@sysconfdir@/pacman.conf"
-
-if [ ! -r "$conf" ]; then
-	echo "ERROR: unable to read $conf"
-	exit 1
-fi
-
-eval $(awk '/DBPath/ {print $1$2$3}' "$conf")
-eval $(awk '/CacheDir/ {print $1$2$3}' "$conf")
-pac_db="${DBPath:-@localstatedir@/lib/pacman}/local"
-pac_cache="${CacheDir:-@localstatedir@/cache/pacman/pkg}"
-
 error() {
 	local mesg=$1; shift
 	printf "==> $(gettext "ERROR:") ${mesg}\n" "$@" >&2
@@ -58,6 +46,15 @@ usage() {
 	echo "Example: ${myname} gconf-editor"
 	echo "Example: ${myname} gconf-editor-3.0.1-3-x86_64.pkg.tar.xz"
 }
+
+
+if ! DBPath="$(pacman-conf DBPath)"; then
+	error "unable to read @sysconfdir@/pacman.conf"
+	exit 1
+fi
+CacheDir="$(pacman-conf CacheDir)"
+pac_db="${DBPath:-@localstatedir@/lib/pacman}/local"
+pac_cache="${CacheDir:-@localstatedir@/cache/pacman/pkg}"
 
 version() {
 	printf "%s %s\n" "$myname" "$myver"
