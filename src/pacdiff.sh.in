@@ -130,12 +130,10 @@ case $(( USE_FIND + USE_LOCATE + USE_PACDB )) in
 esac
 
 if (( USE_PACDB )); then
-	if [[ ! -r @sysconfdir@/pacman.conf ]]; then
+	if ! DBPath="$(pacman-conf DBPath)"; then
 		error "unable to read @sysconfdir@/pacman.conf"
 		usage; exit 1
 	fi
-
-	eval $(awk '/DBPath/ {print $1$2$3}' @sysconfdir@/pacman.conf)
 	pac_db="${DBPath:-@localstatedir@/lib/pacman/}local"
 	if [[ ! -d "${pac_db}" ]]; then
 		error "unable to read pacman database %s". "${pac_db}"

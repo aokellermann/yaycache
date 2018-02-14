@@ -40,20 +40,6 @@ die() {
 	exit 1
 }
 
-get_cachedirs_from_config() {
-	local key value ret
-
-	ret=1
-	while IFS=$'= \t' read -r key value _; do
-		if [[ $key = CacheDir ]]; then
-			echo "$value"
-			ret=0
-		fi
-	done <"$1"
-
-	return $ret
-}
-
 # reads a list of files on stdin and prints out deletion candidates
 pkgfilter() {
 	# there's whitelist and blacklist parameters passed to this
@@ -287,8 +273,7 @@ m4_include(../lib/term_colors.sh)
 
 # setting default cachedirs
 if [[ -z $cachedirs ]]; then
-	cachedir="$(get_cachedirs_from_config "@sysconfdir@/pacman.conf")"
-	cachedirs=("${cachedirs[@]:-@localstatedir@/cache/pacman/pkg}")
+	cachedirs=($(pacman-conf CacheDir))
 fi
 
 # remaining args are a whitelist

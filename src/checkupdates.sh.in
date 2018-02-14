@@ -46,7 +46,7 @@ fi
 
 trap 'rm -f $CHECKUPDATES_DB/db.lck' INT TERM EXIT
 
-DBPath="$(awk -F' *= *' '/^DBPath/ { print $2 }' @sysconfdir@/pacman.conf)"
+DBPath="$(pacman-conf DBPath)"
 if [[ -z "$DBPath" ]] || [[ ! -d "$DBPath" ]]; then
 	DBPath="@localstatedir@/lib/pacman/"
 fi
