@@ -308,7 +308,7 @@ for cachedir in "${cachedirs[@]}"; do
 	# note that these results are returned in an arbitrary order from awk, but
 	# they'll be resorted (in summarize) iff we have a verbosity level set.
 	IFS=$'\n' read -r -d '' -a cand < \
-		<(printf '%s\n' "$PWD"/*.pkg.tar?(.+([^.])) | pacsort --files |
+		<(printf '%s\n' "$PWD"/*.pkg.tar!(*.sig) | pacsort --files |
 			pkgfilter "$keep" "$scanarch" \
 				"${#whitelist[*]}" "${whitelist[@]}" \
 				"${#blacklist[*]}" "${blacklist[@]}")
