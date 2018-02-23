@@ -9,8 +9,12 @@ ASCIIDOC_MANS = \
 HTML_MANPAGES = \
 	pactree.8.html
 
+HTML_OTHER = \
+	submitting-patches.html
+
 HTML_DOCS = \
-	$(HTML_MANPAGES)
+	$(HTML_MANPAGES) \
+	$(HTML_OTHER)
 
 EXTRA_DIST = \
 	asciidoc.conf \
