@@ -4,4 +4,5 @@ check_SCRIPTS = \
 noinst_SCRIPTS = $(check_SCRIPTS)
 
 EXTRA_DIST = \
-	$(check_SCRIPTS)
+	$(check_SCRIPTS) \
+	tap.sh
