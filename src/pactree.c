@@ -24,10 +24,7 @@
 #include <locale.h>
 #include <alpm.h>
 #include <alpm_list.h>
-
-#ifdef HAVE_LANGINFO_H
 #include <langinfo.h>
-#endif
 
 #define LINE_MAX     512
 
@@ -255,14 +252,10 @@ static int parse_options(int argc, char *argv[])
 		{0, 0, 0, 0}
 	};
 
-#ifdef HAVE_LANGINFO_H
 	setlocale(LC_ALL, "");
 	if(strcmp(nl_langinfo(CODESET), "UTF-8") == 0) {
 		style = &graph_utf8;
 	}
-#else
-	style = &graph_default;
-#endif
 
 	while((opt = getopt_long(argc, argv, "ab:cd:ghlrsuv", opts, &option_index))) {
 		if(opt < 0) {
