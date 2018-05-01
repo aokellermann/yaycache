@@ -65,7 +65,7 @@ EXTRA_DIST = \
 	vim/ftdetect/PKGBUILD.vim
 
 # Files that should be removed, but which Automake does not know.
-MOSTLYCLEANFILES = $(OURSCRIPTS) *.tmp
+MOSTLYCLEANFILES = $(OURSCRIPTS) $(OURFILES) *.tmp
 
 if USE_GIT_VERSION
 GIT_VERSION := $(shell sh -c 'git describe --long --abbrev=4 --dirty | sed s/^v//')
