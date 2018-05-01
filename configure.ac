@@ -5,10 +5,6 @@ AC_REQUIRE_AUX_FILE([tap-driver.sh])
 
 AM_INIT_AUTOMAKE([-Wall foreign])
 
-if test "$pkgdatadir" = ""; then
-    pkgdatadir="$datadir/$PACKAGE_NAME"
-fi
-
 # Help line for root directory
 AC_ARG_WITH(root-dir,
 	AS_HELP_STRING([--with-root-dir=PATH], [set the location of the root operating directory]),
@@ -17,7 +13,7 @@ AC_ARG_WITH(root-dir,
 # Help line for vim runtime directory
 AC_ARG_WITH(vim-dir,
 	[AS_HELP_STRING([--with-vim-dir=PATH], [set the location of the vim runtime file directory])],
-	[vim_dir=$withval], [vim_dir=$pkgdatadir/vim])
+	[vim_dir=$withval], [vim_dir=$datadir/vim/vimfiles])
 
 # Help line for documentation
 AC_ARG_ENABLE(doc,
