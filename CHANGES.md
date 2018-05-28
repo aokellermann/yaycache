@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - checkupdates now reports failures to update the databases.
+- Add `-v` to pacsort help output.
 
 ## 0.0.1 - 2016-10-17
 ### Added
