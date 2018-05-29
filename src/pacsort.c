@@ -454,7 +454,7 @@ static int parse_options(int argc, char **argv)
 		{0, 0, 0, 0}
 	};
 
-	while((opt = getopt_long(argc, argv, "fhk:rt:z", opttable, NULL)) != -1) {
+	while((opt = getopt_long(argc, argv, "fhk:rt:vz", opttable, NULL)) != -1) {
 		switch(opt) {
 			case 'f':
 				opts.filemode = 1;
