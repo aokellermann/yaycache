@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# pacache - flexible pacman cache cleaning
+# paccache - flexible pacman cache cleaning
 #
 # Copyright (C) 2011 Dave Reisner <dreisner@archlinux.org>
 #
