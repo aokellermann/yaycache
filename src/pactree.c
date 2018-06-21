@@ -411,14 +411,15 @@ static void print_end(void)
 	}
 }
 
-static alpm_list_t *get_pkg_dep_names(alpm_pkg_t *pkg)
+static alpm_list_t *get_pkg_deps(alpm_pkg_t *pkg)
 {
-	alpm_list_t *i, *names = NULL;
+	alpm_list_t *i, *dep_strings = NULL;
 	for(i = alpm_pkg_get_depends(pkg); i; i = alpm_list_next(i)) {
-		alpm_depend_t *d = i->data;
-		names = alpm_list_add(names, d->name);
+		alpm_depend_t *dep = i->data;
+		char *ds = alpm_dep_compute_string(dep);
+		dep_strings = alpm_list_add(dep_strings, ds);
 	}
-	return names;
+	return dep_strings;
 }
 
 /**
@@ -437,7 +438,7 @@ static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int r
 	if(rev) {
 		deps = alpm_pkg_compute_requiredby(pkg);
 	} else {
-		deps = get_pkg_dep_names(pkg);
+		deps = get_pkg_deps(pkg);
 	}
 
 	for(i = deps; i; i = alpm_list_next(i)) {
@@ -477,11 +478,7 @@ static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int r
 		}
 	}
 
-	if(rev) {
-		FREELIST(deps);
-	} else {
-		alpm_list_free(deps);
-	}
+	FREELIST(deps);
 }
 
 int main(int argc, char *argv[])
