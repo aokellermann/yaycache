@@ -52,9 +52,7 @@ if ! DBPath="$(pacman-conf DBPath)"; then
 	error "unable to read @sysconfdir@/pacman.conf"
 	exit 1
 fi
-CacheDir="$(pacman-conf CacheDir)"
 pac_db="${DBPath:-@localstatedir@/lib/pacman}/local"
-pac_cache="${CacheDir:-@localstatedir@/cache/pacman/pkg}"
 
 version() {
 	printf "%s %s\n" "$myname" "$myver"
@@ -113,15 +111,15 @@ print_scriptlet() {
 		return 1
 	fi
 	url=$(pacman -Sddp $1)
-	filename=$(basename $url)
-	if [ ! -f "$pac_cache/$filename" ]; then
+	if [[ $url != file://* ]]; then
 		if ! spacman -Sddw --noconfirm $1 >&2; then
 			error "Failed to download $1"
 			return 1
 		fi
 		echo >&2
+		url=$(pacman -Sddp $1)
 	fi
-	print_pkg "$pac_cache/$filename"
+	print_pkg "${url#file://}"
 	return
 }
 
