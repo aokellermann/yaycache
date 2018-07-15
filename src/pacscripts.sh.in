@@ -112,7 +112,7 @@ print_scriptlet() {
 	fi
 	url=$(pacman -Sddp $1)
 	if [[ $url != file://* ]]; then
-		if ! spacman -Sddw --noconfirm $1 >&2; then
+		if ! spacman -Sddw --logfile /dev/null --noconfirm $1 >&2; then
 			error "Failed to download $1"
 			return 1
 		fi
