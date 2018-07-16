@@ -14,10 +14,14 @@ bin_SCRIPTS = \
 bin_PROGRAMS = pacsort pactree
 
 vim_ftdetect_dir = $(vim_dir)/ftdetect
+vim_ftplugin_dir = $(vim_dir)/ftplugin
 vim_syntax_dir = $(vim_dir)/syntax
 
 vim_ftdetect__DATA = \
 	vim/ftdetect/PKGBUILD.vim
+
+vim_ftplugin__DATA = \
+	vim/ftplugin/PKGBUILD.vim
 
 vim_syntax__DATA = \
 	vim/syntax/PKGBUILD.vim
@@ -62,7 +66,8 @@ EXTRA_DIST = \
 	rankmirrors.sh.in \
 	updpkgsums.sh.in \
 	vim/syntax/PKGBUILD.vim \
-	vim/ftdetect/PKGBUILD.vim
+	vim/ftdetect/PKGBUILD.vim \
+	vim/ftplugin/PKGBUILD.vim
 
 # Files that should be removed, but which Automake does not know.
 MOSTLYCLEANFILES = $(OURSCRIPTS) $(OURFILES) *.tmp
