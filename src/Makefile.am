@@ -9,7 +9,7 @@ conffile  = ${sysconfdir}/pacman.conf
 dbpath    = ${localstatedir}/lib/pacman/
 
 bin_SCRIPTS = \
-  $(OURSCRIPTS)
+	$(OURSCRIPTS)
 
 bin_PROGRAMS = pacsort pactree
 
