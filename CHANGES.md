@@ -4,7 +4,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.0.0]
+## [Unreleased]
+### Added
+- paccache: Add manpage.
+- rankmirrors: Add --max-time flag to specify the timeout used.
+
+### Changed
+- pacscripts: Don't log to pacman.log when files are downloaded to the cache.
+- pacscripts: Find package file path using pacman instead of doing it manually ourselves.
+- pactree: Use full dependency string when finding dependencies, since if we don't use the version requirement part of the string, we will sometimes return the wrong results.
+- vim/ftplugin/PKGBUILD:  Set vim 'commentstring' option
+- vim/syntax/PKGBUILD: Add sha224sums support.
+
+### Fixed
+- pacsort: Fix short version option.
+
+
+## [1.0.0] - 2018-05-28
 ### Added
 - `--version` option to pactree.
 - Import pacsort utility.
@@ -16,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - checkupdates now reports failures to update the databases.
 - Add `-v` to pacsort help output.
+
 
 ## 0.0.1 - 2016-10-17
 ### Added
@@ -32,5 +49,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - updpkgsums
 - Added vim highlighting for PKGBUILDs.
 
-[1.0.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v0.0.1..v1.0.0
+
 [Unreleased]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.0.0..master
+[1.0.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v0.0.1..v1.0.0
