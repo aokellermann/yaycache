@@ -5,10 +5,12 @@
 
 ASCIIDOC_MANS = \
 	paccache.8 \
+	pacdiff.8 \
 	pactree.8
 
 HTML_MANPAGES = \
 	paccache.8.html \
+	pacdiff.8.html \
 	pactree.8.html
 
 HTML_OTHER = \
@@ -22,6 +24,7 @@ EXTRA_DIST = \
 	asciidoc.conf \
 	asciidoc-override.css \
 	paccache.8.txt \
+	pacdiff.8.txt \
 	pactree.8.txt \
 	footer.txt \
 	$(ASCIIDOC_MANS)
@@ -98,6 +101,7 @@ $(HTML_OTHER): asciidoc.conf Makefile.am
 
 # Dependency rules
 paccache.8 paccache.8.html: paccache.8.txt
+pacdiff.8 pacdiff.8.html: pacdiff.8.txt
 pactree.8 pactree.8.html: pactree.8.txt
 
 # vim:set noet:
