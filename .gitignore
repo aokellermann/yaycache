@@ -9,4 +9,3 @@ depcomp
 install-sh
 missing
 test-driver
-src/paccache.service

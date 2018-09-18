@@ -1,6 +1,7 @@
 .deps/
 checkupdates
 paccache
+paccache.service
 pacdiff
 paclist
 paclog-pkglist
