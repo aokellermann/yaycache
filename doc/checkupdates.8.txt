@@ -1,0 +1,37 @@
+/////
+vim:set ts=4 sw=4 syntax=asciidoc noet spell spelllang=en_us:
+/////
+checkupdates(8)
+=============
+
+Name
+----
+checkupdates - safely print a list of pending updates
+
+
+Synopsis
+--------
+'checkupdates'
+
+
+Description
+-----------
+Checks for pending updates using a separate Pacman database located in
+*`TMPDIR`* if *`CHECKUPDATES_DB`* is not set and outputs a list of updates with the
+old and new version.
+
+
+Environment
+-----------
+*CHECKUPDATES_DB*::
+	Override the default update db location.
+
+*TMPDIR*::
+	Overrides the default '/tmp' temporary directory.
+
+
+See Also
+--------
+linkman:pacman[8], linkman:pacman.conf[5]
+
+include::footer.txt[]

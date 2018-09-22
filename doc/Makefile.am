@@ -4,11 +4,13 @@
 # man_MANS if --enable-asciidoc and/or --enable-doxygen are used.
 
 ASCIIDOC_MANS = \
+	checkupdates.8 \
 	paccache.8 \
 	pacdiff.8 \
 	pactree.8
 
 HTML_MANPAGES = \
+	checkupdates.8.html \
 	paccache.8.html \
 	pacdiff.8.html \
 	pactree.8.html
@@ -23,6 +25,7 @@ HTML_DOCS = \
 EXTRA_DIST = \
 	asciidoc.conf \
 	asciidoc-override.css \
+	checkupdates.8.txt \
 	paccache.8.txt \
 	pacdiff.8.txt \
 	pactree.8.txt \
@@ -100,6 +103,7 @@ $(HTML_OTHER): asciidoc.conf Makefile.am
 %.3.html: ASCIIDOC_OPTS += -d manpage
 
 # Dependency rules
+checkupdates.8 checkupdates.8.html: checkupdates.8.txt
 paccache.8 paccache.8.html: paccache.8.txt
 pacdiff.8 pacdiff.8.html: pacdiff.8.txt
 pactree.8 pactree.8.html: pactree.8.txt
