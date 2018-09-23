@@ -38,6 +38,11 @@ Options
 	Scan for packages for a specific architecture. Default is to scan for
 	all architectures.
 
+*\--min-atime <age>*::
+*\--min-mtime <age>*::
+	Only consider packages for removal with atime respectively mtime older than
+	specified. The age can be given as '10d', '1m', '1y', '1y1m' etc.
+
 *-c, \--cachedir <dir>*::
 	Specify a different cache directory. This option can be used more than once.
 	Default is to use the cache directory configured in 'pacman.conf'.
