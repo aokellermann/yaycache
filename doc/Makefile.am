@@ -7,13 +7,15 @@ ASCIIDOC_MANS = \
 	checkupdates.8 \
 	paccache.8 \
 	pacdiff.8 \
-	pactree.8
+	pactree.8 \
+	updpkgsums.8
 
 HTML_MANPAGES = \
 	checkupdates.8.html \
 	paccache.8.html \
 	pacdiff.8.html \
-	pactree.8.html
+	pactree.8.html \
+	updpkgsums.8.html
 
 HTML_OTHER = \
 	submitting-patches.html
@@ -29,6 +31,7 @@ EXTRA_DIST = \
 	paccache.8.txt \
 	pacdiff.8.txt \
 	pactree.8.txt \
+	updpkgsums.8.txt \
 	footer.txt \
 	$(ASCIIDOC_MANS)
 
@@ -107,5 +110,6 @@ checkupdates.8 checkupdates.8.html: checkupdates.8.txt
 paccache.8 paccache.8.html: paccache.8.txt
 pacdiff.8 pacdiff.8.html: pacdiff.8.txt
 pactree.8 pactree.8.html: pactree.8.txt
+updpkgsums.8 updpkgsums.8.html: updpkgsums.8.txt
 
 # vim:set noet:
