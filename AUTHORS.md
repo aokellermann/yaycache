@@ -2,7 +2,7 @@ Maintainers
 -----------
 
 * Johannes Löthberg <johannes@kyriasis.com>
-* Daniel M. Capella <polyzen@archlinux.info>
+* Daniel M. Capella <polycitizen@gmail.com>
 
 
 Contributors
