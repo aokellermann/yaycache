@@ -198,10 +198,10 @@ Usage: ${myname} <operation> [options] [targets...]
   Options:
     --min-atime <time>
     --min-mtime <time>    keep packages with an atime/mtime that is not older
-						  than the time given, even if this means keeping more
-						  than specified through the '--keep' option. Accepts
-						  arguments according to 'info "Date input formats"',
-						  e.g. '30 days ago'.
+                          than the time given, even if this means keeping more
+                          than specified through the '--keep' option. Accepts
+                          arguments according to 'info "Date input formats"',
+                          e.g. '30 days ago'.
     -a, --arch <arch>     scan for "arch" (default: all architectures).
     -c, --cachedir <dir>  scan "dir" for packages. can be used more than once.
                           (default: read from @sysconfdir@/pacman.conf).
