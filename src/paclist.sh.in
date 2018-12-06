@@ -20,16 +20,6 @@
 declare -r myname='paclist'
 declare -r myver='@PACKAGE_VERSION@'
 
-export TEXTDOMAIN='pacman'
-export TEXTDOMAINDIR='/usr/share/locale'
-
-# determine whether we have gettext; make it a no-op if we do not
-if ! type gettext &>/dev/null; then
-	gettext() {
-		echo "$@"
-	}
-fi
-
 usage() {
 	printf "%s v%s\n" "${myname}" "${myver}"
 	echo
@@ -59,8 +49,8 @@ elif [[ $1 = -@(V|-version) ]]; then
 	exit 0
 fi
 
-printf -v installed '[%s]' "$(gettext installed)"
-pacman -Sl $1 | awk -v i="$installed" '$NF == i { print $2,$3 }'
+pacman -Sl $1 | awk '/\[.*[[:alpha:]]+]$/ {print $2,$3};
+                     /\[.*[[:digit:]]+]$/ {print $2,substr($NF, 1, length($NF) - 1)}'
 
 # exit with pacman's return value, not awk's
 exit ${PIPESTATUS[0]}
