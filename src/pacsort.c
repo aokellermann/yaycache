@@ -213,7 +213,7 @@ static struct input_t *input_new(const char *path, int pathlen)
 		return NULL;
 	}
 
-	in->is_file = fnmatch("*-*.pkg.tar.?z", in->data, 0) == 0;
+	in->is_file = fnmatch("*-*.pkg.tar*", in->data, 0) == 0;
 	if(!in->is_file) {
 		return in;
 	}
