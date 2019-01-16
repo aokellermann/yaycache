@@ -1,12 +1,10 @@
 " Vim syntax file
-" Language:     PKGBUILD
-" Maintainer:   Alessio 'mOLOk' Bolognino <themolok at gmail.com>
-" Last Change:  2007/05/08
-" Version Info: PKGBUILD-0.2 (colorphobic)
+" Language:         Arch Linux package build description file
+" Original Author:  Alessio 'mOLOk' Bolognino <themolok at gmail.com>
 
 " quit when a syntax file was already loaded
 if exists('b:current_syntax')
-	finish
+  finish
 endif
 
 let b:main_syntax = 'sh'
@@ -237,10 +235,10 @@ syn match      pbMaintainerGroup /Maintainer.*/ contains=pbMaintainer contained
 
 syn match pbDate /[0-9]\{4}\/[0-9]\{2}\/[0-9]\{2}/ contained
 
-syn cluster    pbCommentGroup	contains=pbTodo,pb_k_maintainer,pbMaintainerGroup,pbDate
-syn keyword    pbTodo	contained	COMBAK FIXME TODO XXX
-syn match      pbComment	"^#.*$"	contains=@pbCommentGroup
-syn match      pbComment	"[^0-9]#.*$"	contains=@pbCommentGroup
+syn cluster    pbCommentGroup   contains=pbTodo,pb_k_maintainer,pbMaintainerGroup,pbDate
+syn keyword    pbTodo   contained       COMBAK FIXME TODO XXX
+syn match      pbComment        "^#.*$" contains=@pbCommentGroup
+syn match      pbComment        "[^0-9]#.*$"    contains=@pbCommentGroup
 
 " quotes are handled by sh.vim
 
@@ -325,8 +323,4 @@ hi def link pbKeywords Keyword
 
 hi def link pbDate Special
 
-"syntax include @SHELL syntax/sh.vim
-"syntax region BUILD start=/^build()/ end=/^}/ contains=@SHELL
 "let b:current_syntax = 'PKGBUILD'
-
-" vim: ft=vim
