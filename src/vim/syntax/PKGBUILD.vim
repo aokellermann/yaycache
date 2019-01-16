@@ -6,13 +6,13 @@
 
 " For version 5.x: Clear all syntax items
 " For version 6.x: Quit when a syntax file was already loaded
-if version < 600
+if v:version < 600
 	syntax clear
-elseif exists("b:current_syntax")
+elseif exists('b:current_syntax')
 	finish
 endif
 
-let b:main_syntax = "sh"
+let b:main_syntax = 'sh'
 let b:is_bash = 1
 runtime! syntax/sh.vim
 
@@ -330,6 +330,6 @@ hi def link pbDate Special
 
 "syntax include @SHELL syntax/sh.vim
 "syntax region BUILD start=/^build()/ end=/^}/ contains=@SHELL
-"let b:current_syntax = "PKGBUILD"
+"let b:current_syntax = 'PKGBUILD'
 
 " vim: ft=vim
