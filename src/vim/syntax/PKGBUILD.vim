@@ -216,6 +216,17 @@ hi def link pbSha512Quotes Keyword
 hi def link pbSha512Hash Error
 hi def link pbValidSha512sums  Number
 
+" b2sums
+syn keyword pb_k_b2sums b2sums contained
+syn match pbIllegalB2sums /[^='"()\/ ]/ contained contains=pbValidB2sums
+syn match pbValidB2sums /\x\{128\}/ contained
+syn region pbB2sumsGroup start=/^b2sums/ end=/)/ contains=pb_k_b2sums,pbB2Quotes,pbB2Hash,pbIllegalB2sums keepend
+syn match pbB2Quotes /'.*'\|".*"/ contained contains=pbB2Hash,pbIllegalB2sums
+syn match pbB2Hash /\x\+/ contained contains=pbValidB2sums
+hi def link pbB2Quotes Keyword
+hi def link pbB2Hash Error
+hi def link pbValidB2sums  Number
+
 " options
 syn keyword pb_k_options options contained
 syn match pbOptions /\(no\)\?\(strip\|docs\|libtool\|emptydirs\|zipman\|purge\|distcc\|color\|ccache\|check\|sign\|makeflags\|buildflags\)/ contained
