@@ -21,19 +21,51 @@
 declare -r myname='checkupdates'
 declare -r myver='@PACKAGE_VERSION@'
 
+DOWNLOAD_CACHE=0
+
 m4_include(../lib/output_format.sh)
 m4_include(../lib/term_colors.sh)
+m4_include(../lib/parseopts.sh)
 
-if (( $# > 0 )); then
-	echo "${myname} v${myver}"
-	echo
-	echo "Safely print a list of pending updates"
-	echo
-	echo "Usage: ${myname}"
-	echo
-	echo 'Note: Export the "CHECKUPDATES_DB" variable to change the path of the temporary database.'
-	exit 0
+usage() {
+	cat << __EOF__
+${myname} v${myver}
+
+Safely print a list of pending updates
+
+Usage: ${myname} [options]
+
+  Options:
+    -d, --download        download pending updates to the pacman cache.
+    -h, --help            display this help message and exit.
+
+Note: Export the "CHECKUPDATES_DB" variable to change the path of the temporary database.
+
+__EOF__
+}
+
+OPT_SHORT='dh'
+OPT_LONG=('download' 'help')
+
+if ! parseopts "$OPT_SHORT" "${OPT_LONG[@]}" -- "$@"; then
+	exit 1
 fi
+set -- "${OPTRET[@]}"
+unset OPT_SHORT OPT_LONG OPTRET
+
+while :; do
+	case $1 in
+		-d|--download)
+			DOWNLOAD_CACHE=1 ;;
+		-h|--help)
+			usage
+			exit 0 ;;
+		--)
+			shift
+			break ;;
+	esac
+	shift
+done
 
 if ! type -P fakeroot >/dev/null; then
 	error 'Cannot find the fakeroot binary.'
@@ -57,8 +89,15 @@ if ! fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" --logfile /dev/null &> /
        error 'Cannot fetch updates'
        exit 1
 fi
-pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -v '\[.*\]'
+mapfile -t updates < <(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -v '\[.*\]')
 
-exit 0
+if (( ${#updates[@]} )); then
+	printf '%s\n' "${updates[@]}"
+	if (( DOWNLOAD_CACHE )); then
+		sudo pacman -Sw --noconfirm "${updates[@]%% *}" --dbpath "$CHECKUPDATES_DB" --logfile /dev/null
+	fi
+else
+	exit 1
+fi
 
 # vim: set noet:
