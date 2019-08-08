@@ -25,7 +25,7 @@ usage() {
 	echo
 	printf "List all packages installed from a given repository\n" "${myname}"
 	echo
-	printf "Usage: %s <repository>\n" "${myname}"
+	printf "Usage: %s <repository> ...\n" "${myname}"
 	echo
 	printf "Example: %s testing\n" "${myname}"
 }
@@ -49,7 +49,7 @@ elif [[ $1 = -@(V|-version) ]]; then
 	exit 0
 fi
 
-pacman -Sl $1 | awk '/\[.*[[:alpha:]]+]$/ {print $2,$3};
+pacman -Sl "$@" | awk '/\[.*[[:alpha:]]+]$/ {print $2,$3};
                      /\[.*[[:digit:]]+]$/ {print $2,substr($NF, 1, length($NF) - 1)}'
 
 # exit with pacman's return value, not awk's
