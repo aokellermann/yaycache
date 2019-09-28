@@ -227,7 +227,7 @@ version() {
 }
 
 OPT_SHORT=':a:c:dfhi:k:m:qrsuVvz'
-OPT_LONG=('arch:' 'cachedir:' 'dryrun' 'force' 'help' 'ignore:' 'keep:' 'move'
+OPT_LONG=('arch:' 'cachedir:' 'dryrun' 'force' 'help' 'ignore:' 'keep:' 'move:'
           'nocolor' 'quiet' 'remove' 'uninstalled' 'version' 'verbose' 'null'
           'min-atime:' 'min-mtime:')
 
