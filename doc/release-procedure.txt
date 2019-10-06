@@ -1,0 +1,39 @@
+Release Procedure
+=================
+
+Preparations
+------------
+
+--
+Before tagging the release, ensure that:
+
+* `CHANGES.md` has been updated with all changes that will go into the new release.
+
+--
+
+Procedure
+---------
+
+--
+Assuming `$VERSION` is the version number in `X.Y.Z` format, and `$REMOTE` is the Git remote for the `pacman-contrib` repository on `git.archlinux.org`:
+
+* Update the version in `configure.ac`.
+* Rename the `Unreleased` section in `CHANGES.md` to `[$VERSION] - YYYY-MM-DD`, and add the git log URL for the new tag to the bottom of the file.
+* `git commit -m "Release v$VERSION"`
+* `git tag -s v$VERSION -m v$VERSION`
+* {blank}
++
+----
+git notes --ref=refs/notes/signatures/tar add -C "$(
+  git archive --format tar --prefix "pacman-contrib-$VERSION/" v$VERSION |
+  gpg --output - --armor --detach-sign |
+  git hash-object -w --stdin
+)" v$VERSION
+----
+* `git push $REMOTE master $VERSION refs/notes/signatures/tar`
+
+--
+
+/////
+vim:set ts=4 sw=4 syntax=asciidoc noet spell spelllang=en_us:
+/////

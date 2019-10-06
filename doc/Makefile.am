@@ -21,6 +21,7 @@ HTML_MANPAGES = \
 
 HTML_OTHER = \
 	submitting-patches.html
+	release-procedure.html
 
 HTML_DOCS = \
 	$(HTML_MANPAGES) \
