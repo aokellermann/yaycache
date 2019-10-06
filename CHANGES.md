@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - paccache: Add --age-atime and --age-mtime arguments. (45c1916)
 - vim: Add indent file. (020b533)
 - vim: Add b2sums to PKGBUILD syntax file. (fc21909)
+- Vim: Add Boost and MPL2 as valid licenses.
 
 ### Changed
 - paclist: Allow listing packages from multiple repos at once. (58bfa06)

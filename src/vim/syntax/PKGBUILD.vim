@@ -64,7 +64,7 @@ syn match pbUrlGroup /^url=.*/ contains=pbValidUrl,pb_k_url,pbIllegalUrl,shDoubl
 " license
 syn keyword pb_k_license license contained
 " echo $(pacman -Ql licenses | grep '/usr/share/licenses/common/' | cut -d'/' -f6 | sort -u)
-syn keyword pbLicense  AGPL AGPL3 Apache APACHE Artistic2.0 CCPL CDDL CPL EPL FDL FDL1.2 FDL1.3 GPL GPL2 GPL3 LGPL LGPL2.1 LGPL3 LPPL MPL PerlArtistic PHP PSF RUBY W3C ZPL contained
+syn keyword pbLicense  AGPL AGPL3 Apache APACHE Artistic2.0 Boost CCPL CDDL CPL EPL FDL FDL1.2 FDL1.3 GPL GPL2 GPL3 LGPL LGPL2.1 LGPL3 LPPL MPL MPL2 PerlArtistic PHP PSF RUBY W3C ZPL contained
 " special cases from https://wiki.archlinux.org/index.php/PKGBUILD#license
 syn keyword pbLicenseSpecial  BSD MIT ZLIB Python contained
 syn match pbLicenseCustom /custom\(:[[:alnum:]]*\)*/ contained
