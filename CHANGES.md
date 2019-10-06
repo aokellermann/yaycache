@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0] - 2019-10-06
 ### Added
 - checkupdates: Add option for downloading updates. (ab69666)
 - docs: Add manpages for checkupdates, pacdiff, pacsort, updpkgsums. (d25a8b2, 35eef6b, ef63784, b258c31)
@@ -75,3 +75,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.0.0..master
 [1.0.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v0.0.1..v1.0.0
 [1.1.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.0.0..v1.1.0
+[1.2.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.1.0..v1.2.0
