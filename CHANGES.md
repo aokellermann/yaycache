@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ###
 - Add document describing the release procedures.
+- Vim: Add Unlicense as valid license.
 
 ## [1.2.0] - 2019-10-06
 ### Added
