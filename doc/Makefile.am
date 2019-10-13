@@ -20,8 +20,8 @@ HTML_MANPAGES = \
 	updpkgsums.8.html
 
 HTML_OTHER = \
+	release-procedure.html \
 	submitting-patches.html
-	release-procedure.html
 
 HTML_DOCS = \
 	$(HTML_MANPAGES) \
