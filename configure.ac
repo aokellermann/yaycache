@@ -65,6 +65,10 @@ PKG_CHECK_MODULES(LIBARCHIVE, [libarchive >= 2.8.0], ,
 PKG_CHECK_MODULES(LIBALPM, [libalpm], ,
 	AC_MSG_ERROR([*** libalpm is needed to build pacman-contrib!]))
 
+PKG_CHECK_VAR(LIBMAKEPKGDIR, [libmakepkg], [libmakepkgdir], ,
+	AC_MSG_ERROR([*** libmakepkg is needed to build pacman-contrib!]))
+AC_SUBST(LIBMAKEPKGDIR)
+
 # Enable or disable use of git version in version string
 AC_MSG_CHECKING(whether to use git version if available)
 if test "x$wantgitver" = "xyes" ; then
@@ -173,6 +177,7 @@ ${PACKAGE_NAME}:
     localstatedir          : $(eval echo ${localstatedir})
        database dir        : $(eval echo ${localstatedir})/lib/pacman/
        cache dir           : $(eval echo ${localstatedir})/cache/pacman/pkg/
+    libmakepkg dir         : $(eval echo ${LIBMAKEPKGDIR})
 
     compiler               : ${CC}
     compiler flags         : ${WARNING_CFLAGS} ${CFLAGS}

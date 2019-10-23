@@ -92,10 +92,11 @@ AM_CFLAGS = \
 	$(LIBALPM_CFLAGS)
 
 edit = sed \
-	-e 's|@bindir[@]|${bindir}|g' \
+	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
 	-e 's|@localstatedir[@]|$(localstatedir)|g' \
 	-e 's|@PACKAGE_VERSION[@]|$(REAL_PACKAGE_VERSION)|g' \
+	-e 's|@libmakepkgdir[@]|$(LIBMAKEPKGDIR)|g' \
 	-e 's|@SIZECMD[@]|$(SIZECMD)|g' \
 	-e 's|@SCRIPTNAME[@]|$@|g' \
 	-e '1s|!/bin/bash|!$(BASH_SHELL)|g' \
@@ -121,9 +122,9 @@ $(OURFILES): Makefile
 
 all-am: $(OURSCRIPTS) $(OURFILES)
 
-checkupdates: $(srcdir)/checkupdates.sh.in $(top_srcdir)/lib/output_format.sh $(top_srcdir)/lib/term_colors.sh
-paccache: $(srcdir)/paccache.sh.in $(top_srcdir)/lib/output_format.sh $(top_srcdir)/lib/parseopts.sh $(top_srcdir)/lib/size_to_human.sh $(top_srcdir)/lib/term_colors.sh
-pacdiff: $(srcdir)/pacdiff.sh.in $(top_srcdir)/lib/output_format.sh $(top_srcdir)/lib/term_colors.sh
+checkupdates: $(srcdir)/checkupdates.sh.in
+paccache: $(srcdir)/paccache.sh.in
+pacdiff: $(srcdir)/pacdiff.sh.in
 paclist: $(srcdir)/paclist.sh.in
 paclog-pkglist: $(srcdir)/paclog-pkglist.sh.in
 pacscripts: $(srcdir)/pacscripts.sh.in

@@ -25,6 +25,8 @@ shopt -s extglob
 declare -r myname='paccache'
 declare -r myver='@PACKAGE_VERSION@'
 
+LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
+
 declare -a cachedirs=() candidates=() cmdopts=() whitelist=() blacklist=()
 declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0
 declare -i min_atime=0 min_mtime=0
@@ -33,8 +35,9 @@ declare    delim=$'\n' keep=3 movedir= scanarch=
 QUIET=0
 USE_COLOR='y'
 
-m4_include(../lib/output_format.sh)
-m4_include(../lib/parseopts.sh)
+# Import libmakepkg
+source "$LIBRARY"/util/message.sh
+source "$LIBRARY"/util/parseopts.sh
 
 die() {
 	error "$@"
@@ -310,7 +313,12 @@ while :; do
 	shift
 done
 
-m4_include(../lib/term_colors.sh)
+# check if messages are to be printed using color
+if [[ -t 2 && $USE_COLOR != "n" ]]; then
+	colorize
+else
+	unset ALL_OFF BOLD BLUE GREEN RED YELLOW
+fi
 
 # setting default cachedirs
 if [[ -z $cachedirs ]]; then

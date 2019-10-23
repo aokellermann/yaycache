@@ -23,13 +23,16 @@ shopt -s extglob
 declare -r myname='pacdiff'
 declare -r myver='@PACKAGE_VERSION@'
 
+LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
+
 diffprog=${DIFFPROG:-'vim -d'}
 diffsearchpath=${DIFFSEARCHPATH:-/etc}
 USE_COLOR='y'
 declare -a oldsaves
 declare -i USE_FIND=0 USE_LOCATE=0 USE_PACDB=0 OUTPUTONLY=0
 
-m4_include(../lib/output_format.sh)
+# Import libmakepkg
+source "$LIBRARY"/util/message.sh
 
 usage() {
 	cat <<EOF
@@ -116,7 +119,12 @@ while [[ -n "$1" ]]; do
 	shift
 done
 
-m4_include(../lib/term_colors.sh)
+# check if messages are to be printed using color
+if [[ -t 2 && $USE_COLOR != "n" ]]; then
+	colorize
+else
+	unset ALL_OFF BOLD BLUE GREEN RED YELLOW
+fi
 
 if ! type -p ${diffprog%% *} >/dev/null && (( ! OUTPUTONLY )); then
 	error "Cannot find the $diffprog binary required for viewing differences."

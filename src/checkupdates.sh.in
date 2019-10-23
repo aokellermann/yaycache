@@ -21,11 +21,14 @@
 declare -r myname='checkupdates'
 declare -r myver='@PACKAGE_VERSION@'
 
-DOWNLOAD_CACHE=0
+LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
-m4_include(../lib/output_format.sh)
-m4_include(../lib/term_colors.sh)
-m4_include(../lib/parseopts.sh)
+DOWNLOAD_CACHE=0
+USE_COLOR=0
+
+# Import libmakepkg
+source "$LIBRARY"/util/message.sh
+source "$LIBRARY"/util/parseopts.sh
 
 usage() {
 	cat << __EOF__
@@ -45,7 +48,7 @@ __EOF__
 }
 
 OPT_SHORT='dh'
-OPT_LONG=('download' 'help')
+OPT_LONG=('download' 'help' 'nocolor')
 
 if ! parseopts "$OPT_SHORT" "${OPT_LONG[@]}" -- "$@"; then
 	exit 1
@@ -60,12 +63,21 @@ while :; do
 		-h|--help)
 			usage
 			exit 0 ;;
+		--nocolor)
+			USE_COLOR='n';;
 		--)
 			shift
 			break ;;
 	esac
 	shift
 done
+
+# check if messages are to be printed using color
+if [[ -t 2 && $USE_COLOR != "n" ]]; then
+	colorize
+else
+	unset ALL_OFF BOLD BLUE GREEN RED YELLOW
+fi
 
 if ! type -P fakeroot >/dev/null; then
 	error 'Cannot find the fakeroot binary.'
