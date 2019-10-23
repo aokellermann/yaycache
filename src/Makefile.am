@@ -125,6 +125,9 @@ all-am: $(OURSCRIPTS) $(OURFILES)
 $(BASHSCRIPTS): %: $(srcdir)/%.sh.in
 $(PERLSCRIPTS): %: $(srcdir)/%.pl.in
 
+# dependency links
+paccache: $(top_srcdir)/lib/size_to_human.sh
+
 pacsort_SOURCES = pacsort.c
 pacsort_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)
 
