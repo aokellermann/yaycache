@@ -39,6 +39,20 @@ Environment
 	Overrides the default '/tmp' temporary directory.
 
 
+Errors
+------
+On exit, checkpkg will return one of the following error codes.
+
+0::
+	Normal exit condition.
+
+1::
+	Unknown cause of failure.
+
+2::
+	No updates are available.
+
+
 See Also
 --------
 linkman:pacman[8], linkman:pacman.conf[5]

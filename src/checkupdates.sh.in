@@ -109,7 +109,7 @@ if (( ${#updates[@]} )); then
 		sudo pacman -Sw --noconfirm "${updates[@]%% *}" --dbpath "$CHECKUPDATES_DB" --logfile /dev/null
 	fi
 else
-	exit 1
+	exit 2
 fi
 
 # vim: set noet:
