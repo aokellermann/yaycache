@@ -122,16 +122,8 @@ $(OURFILES): Makefile
 
 all-am: $(OURSCRIPTS) $(OURFILES)
 
-checkupdates: $(srcdir)/checkupdates.sh.in
-paccache: $(srcdir)/paccache.sh.in
-pacdiff: $(srcdir)/pacdiff.sh.in
-paclist: $(srcdir)/paclist.sh.in
-paclog-pkglist: $(srcdir)/paclog-pkglist.sh.in
-pacscripts: $(srcdir)/pacscripts.sh.in
-rankmirrors: $(srcdir)/rankmirrors.sh.in
-updpkgsums: $(srcdir)/updpkgsums.sh.in
-
-pacsearch: $(srcdir)/pacsearch.pl.in
+$(BASHSCRIPTS): %: $(srcdir)/%.sh.in
+$(PERLSCRIPTS): %: $(srcdir)/%.pl.in
 
 pacsort_SOURCES = pacsort.c
 pacsort_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)
