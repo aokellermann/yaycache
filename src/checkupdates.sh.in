@@ -85,7 +85,7 @@ if ! type -P fakeroot >/dev/null; then
 fi
 
 if [[ -z $CHECKUPDATES_DB ]]; then
-	CHECKUPDATES_DB="${TMPDIR:-/tmp}/checkup-db-${USER}/"
+	CHECKUPDATES_DB="${TMPDIR:-/tmp}/checkup-db-${UID}/"
 fi
 
 trap 'rm -f $CHECKUPDATES_DB/db.lck' INT TERM EXIT
