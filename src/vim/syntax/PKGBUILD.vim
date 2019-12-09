@@ -227,6 +227,11 @@ hi def link pbB2Quotes Keyword
 hi def link pbB2Hash Error
 hi def link pbValidB2sums  Number
 
+" validpgpkeys
+syn keyword pb_k_validpgpkeys validpgpkeys contained
+syn match pbValidPGPKeys /\([[:alnum:]]\)*/ contained
+syn region pbValidPGPKeysGroup start=/^validpgpkeys=(/ end=/)/ contains=pb_k_validpgpkeys,pbValidPGPKeys,shDoubleQuote,shSingleQuote
+
 " options
 syn keyword pb_k_options options contained
 syn match pbOptions /\(no\)\?\(strip\|docs\|libtool\|emptydirs\|zipman\|purge\|distcc\|color\|ccache\|check\|sign\|makeflags\|buildflags\)/ contained
@@ -302,6 +307,8 @@ hi def link pb_k_changelog pbKeywords
 
 hi def link pb_k_source pbKeywords
 hi def link pbIllegalSource Error
+
+hi def link pb_k_validpgpkeys pbKeywords
 
 hi def link pb_k_md5sums pbKeywords
 hi def link pbIllegalMd5sums Error
