@@ -6,8 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Add document describing the release procedures.
-- Vim: Add Unlicense as valid license.
+- Add document describing the release procedures. (21449e3)
+- vim: Add Unlicense as valid license. (f835547)
+
+### Changed
+- checkupdates: Use $UID instead of $USER in the tempdir path. (a8b342e)
+- checkupdates, paccache, and pacdiff were ported to libmakepkg. (431e564)
+
+### Fixed
+- checkupdates: Exit with 2 if there are no updates available. (3da550e)
+- updpkgsums: Use makepkg's checksum algorithm type specification, fixing support for b2sums. (c8ef727)
+- vim: Recognize validpgpkeys variable. (e6950d3)
+
 
 ## [1.2.0] - 2019-10-06
 ### Added
