@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - checkupdates: Exit with 2 if there are no updates available. (3da550e)
+- rankmirrors: Fix parsing of -m argument. (d026415)
 - updpkgsums: Use makepkg's checksum algorithm type specification, fixing support for b2sums. (c8ef727)
 - vim: Recognize validpgpkeys variable. (e6950d3)
 
