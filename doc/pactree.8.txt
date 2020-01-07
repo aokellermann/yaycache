@@ -61,6 +61,9 @@ Options
 *\--config <file>*::
 	Specify an alternate pacman configuration file.
 
+*\--debug*::
+	Print log messages produced by libalpm.
+
 
 See Also
 --------

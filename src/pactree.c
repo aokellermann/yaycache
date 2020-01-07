@@ -78,6 +78,8 @@ struct color_choices {
 	const char *branch2;
 	const char *leaf1;
 	const char *leaf2;
+	const char *error;
+	const char *warning;
 	const char *off;
 };
 
@@ -86,10 +88,14 @@ static struct color_choices use_color = {
 	"\033[0;37m", /* white */
 	"\033[1;32m", /* bold green */
 	"\033[0;32m", /* green */
+	"\033[1;31m", /* bold red */
+	"\033[1;33m", /* bold yellow */
 	"\033[0m"
 };
 
 static struct color_choices no_color = {
+	"",
+	"",
 	"",
 	"",
 	"",
@@ -99,7 +105,8 @@ static struct color_choices no_color = {
 
 /* long operations */
 enum {
-	OP_CONFIG = 1000
+	OP_CONFIG = 1000,
+	OP_DEBUG
 };
 
 /* globals */
@@ -115,8 +122,31 @@ static int max_depth = -1;
 static int reverse = 0;
 static int unique = 0;
 static int searchsyncs = 0;
+static int debug = 0;
 static const char *dbpath = DBPATH;
 static const char *configfile = CONFFILE;
+
+void cb_log(alpm_loglevel_t level, const char *fmt, va_list args)
+{
+	switch(level) {
+		case ALPM_LOG_ERROR:
+			fprintf(stderr, "%s%s%s", color->error, "error: ",
+					color->off);
+			break;
+		case ALPM_LOG_WARNING:
+			fprintf(stderr, "%s%s%s", color->warning, "warning: ",
+					color->off);
+			break;
+		case ALPM_LOG_DEBUG:
+			fprintf(stderr, "debug: ");
+			break;
+		case ALPM_LOG_FUNCTION:
+			fprintf(stderr, "function: ");
+			break;
+		}
+
+	vfprintf(stderr, fmt, args);
+}
 
 /* Trim whitespace and newlines from a string
  */
@@ -222,7 +252,8 @@ static void usage(void)
 			"  -s, --sync           search sync databases instead of local\n"
 			"  -u, --unique         show dependencies with no duplicates (implies -l)\n"
 			"  -v, --version        display the version\n"
-			"      --config <path>  set an alternate configuration file\n");
+			"      --config <path>  set an alternate configuration file\n"
+			"      --debug          display debug messages\n");
 }
 
 static void version(void)
@@ -249,6 +280,7 @@ static int parse_options(int argc, char *argv[])
 		{"version", no_argument,          0, 'v'},
 
 		{"config",  required_argument,    0, OP_CONFIG},
+		{"debug",   no_argument,          0, OP_DEBUG},
 		{0, 0, 0, 0}
 	};
 
@@ -263,11 +295,14 @@ static int parse_options(int argc, char *argv[])
 		}
 
 		switch(opt) {
-			case 'a':
-				style = &graph_default;
-				break;
 			case OP_CONFIG:
 				configfile = optarg;
+				break;
+			case OP_DEBUG:
+				debug = 1;
+				break;
+			case 'a':
+				style = &graph_default;
 				break;
 			case 'b':
 				dbpath = optarg;
@@ -498,6 +533,10 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "error: cannot initialize alpm: %s\n",
 				alpm_strerror(err));
 		cleanup(1);
+	}
+
+	if(debug) {
+		alpm_option_set_logcb(handle, cb_log);
 	}
 
 	if(searchsyncs) {
