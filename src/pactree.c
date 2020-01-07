@@ -106,7 +106,8 @@ static struct color_choices no_color = {
 /* long operations */
 enum {
 	OP_CONFIG = 1000,
-	OP_DEBUG
+	OP_DEBUG,
+	OP_GPGDIR
 };
 
 /* globals */
@@ -125,6 +126,7 @@ static int searchsyncs = 0;
 static int debug = 0;
 static const char *dbpath = DBPATH;
 static const char *configfile = CONFFILE;
+static const char *gpgdir = GPGDIR;
 
 void cb_log(alpm_loglevel_t level, const char *fmt, va_list args)
 {
@@ -253,7 +255,8 @@ static void usage(void)
 			"  -u, --unique         show dependencies with no duplicates (implies -l)\n"
 			"  -v, --version        display the version\n"
 			"      --config <path>  set an alternate configuration file\n"
-			"      --debug          display debug messages\n");
+			"      --debug          display debug messages\n"
+			"      --gpgdir <path>  set an alternate home directory for GnuPG\n");
 }
 
 static void version(void)
@@ -281,6 +284,8 @@ static int parse_options(int argc, char *argv[])
 
 		{"config",  required_argument,    0, OP_CONFIG},
 		{"debug",   no_argument,          0, OP_DEBUG},
+		{"gpgdir",  required_argument,    0, OP_GPGDIR},
+
 		{0, 0, 0, 0}
 	};
 
@@ -300,6 +305,9 @@ static int parse_options(int argc, char *argv[])
 				break;
 			case OP_DEBUG:
 				debug = 1;
+				break;
+			case OP_GPGDIR:
+				gpgdir = optarg;
 				break;
 			case 'a':
 				style = &graph_default;
@@ -538,6 +546,9 @@ int main(int argc, char *argv[])
 	if(debug) {
 		alpm_option_set_logcb(handle, cb_log);
 	}
+
+	/* no need to fail on error here */
+	alpm_option_set_gpgdir(handle, gpgdir);
 
 	if(searchsyncs) {
 		if(register_syncs() != 0) {

@@ -7,6 +7,7 @@ DIST_SUBDIRS = $(SUBDIRS)
 # paths set at make time
 conffile  = ${sysconfdir}/pacman.conf
 dbpath    = ${localstatedir}/lib/pacman/
+gpgdir    = ${sysconfdir}/pacman.d/gnupg/
 
 bin_SCRIPTS = \
 	$(OURSCRIPTS)
@@ -82,7 +83,8 @@ endif
 AM_CPPFLAGS = \
 	-DLOCALEDIR=\"@localedir@\" \
 	-DCONFFILE=\"$(conffile)\" \
-	-DDBPATH=\"$(dbpath)\"
+	-DDBPATH=\"$(dbpath)\" \
+	-DGPGDIR=\"$(gpgdir)\"
 
 AM_CFLAGS = \
 	-pedantic \

@@ -64,6 +64,10 @@ Options
 *\--debug*::
 	Print log messages produced by libalpm.
 
+*\--gpgdir <dir>*::
+	Specify an alternate GnuPG directory for verifying database signatures
+	(default is /etc/pacman.d/gnupg).
+
 
 See Also
 --------
