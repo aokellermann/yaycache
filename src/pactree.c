@@ -346,7 +346,6 @@ static int parse_options(int argc, char *argv[])
 				version();
 				cleanup(0);
 			case 'h':
-			case '?':
 				usage();
 				cleanup(0);
 			default:
@@ -355,7 +354,8 @@ static int parse_options(int argc, char *argv[])
 		}
 	}
 
-	if(!argv[optind]) {
+	if(!argv[optind] || argv[optind + 1]) {
+		usage();
 		return 1;
 	}
 
