@@ -232,7 +232,7 @@ static int register_syncs(void)
 static void cleanup(int ret)
 {
 	alpm_list_free(walked);
-	alpm_list_free(provisions);
+	FREELIST(provisions);
 	alpm_release(handle);
 
 	exit(ret);
@@ -412,7 +412,7 @@ static void print_graph(const char *parentname, const char *pkgname, const char 
 		printf("\"%s\" -> \"%s\" [color=chocolate4];\n", parentname, depname);
 		if(pkgname && strcmp(depname, pkgname) != 0 && !alpm_list_find_str(provisions, depname)) {
 			printf("\"%s\" -> \"%s\" [arrowhead=none, color=grey];\n", depname, pkgname);
-			provisions = alpm_list_add(provisions, (char *)depname);
+			provisions = alpm_list_add(provisions, strdup(depname));
 		}
 	} else if(pkgname) {
 		printf("\"%s\" -> \"%s\" [color=chocolate4];\n", parentname, pkgname);
