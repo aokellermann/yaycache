@@ -15,7 +15,7 @@ Authors
 Current maintainers:
 
 * Johannes Löthberg <johannes@kyriasis.com>
-* Daniel M. Capella <polycitizen@gmail.com>
+* Daniel M. Capella <polyzen@archlinux.org>
 
 For additional contributors, use `git shortlog -s` on the pacman-contrib.git
 repository.
