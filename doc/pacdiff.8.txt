@@ -33,13 +33,13 @@ Environment
 Options
 -------
 *-l, \--locate*::
-	Select one (default: \--pacmandb).
-
-*-f, \--find*::
 	Scan using locate.
 
+*-f, \--find*::
+	Scan using find.
+
 *-p, \--pacmandb*::
-	Scan active config files from Pacman database.
+	Scan active config files from Pacman database. (default)
 
 *-o, \--output*::
 	Print files instead of merging them.
