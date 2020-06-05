@@ -28,6 +28,8 @@
 
 #define LINE_MAX     512
 
+#include <limits.h>
+
 typedef struct tdepth {
 	struct tdepth *prev;
 	struct tdepth *next;
@@ -37,6 +39,7 @@ typedef struct tdepth {
 /* output */
 struct graph_style {
 	const char *provides;
+	const char *optional;
 	const char *tip;
 	const char *last;
 	const char *limb;
@@ -50,6 +53,7 @@ struct graph_style {
 
 static struct graph_style graph_utf8 = {
 	" provides",
+	" (optional)",
 	UTF_VR UTF_H,
 	UTF_UR UTF_H,
 	UTF_V " ",
@@ -58,6 +62,7 @@ static struct graph_style graph_utf8 = {
 
 static struct graph_style graph_default = {
 	" provides",
+	" (optional)",
 	"|-",
 	"`-",
 	"|",
@@ -65,6 +70,7 @@ static struct graph_style graph_default = {
 };
 
 static struct graph_style graph_linear = {
+	"",
 	"",
 	"",
 	"",
@@ -124,6 +130,7 @@ static int reverse = 0;
 static int unique = 0;
 static int searchsyncs = 0;
 static int debug = 0;
+static int opt_level = 0;
 static const char *dbpath = DBPATH;
 static const char *configfile = CONFFILE;
 static const char *gpgdir = GPGDIR;
@@ -243,20 +250,22 @@ static void usage(void)
 	fprintf(stdout, "pactree v" PACKAGE_VERSION "\n\n"
 			"A simple dependency tree viewer.\n\n"
 			"Usage: pactree [options] PACKAGE\n\n"
-			"  -a, --ascii          use ASCII characters for tree formatting\n"
-			"  -b, --dbpath <path>  set an alternate database location\n"
-			"  -c, --color          colorize output\n"
-			"  -d, --depth <#>      limit the depth of recursion\n"
-			"  -g, --graph          generate output for graphviz's dot\n"
-			"  -h, --help           display this help message\n"
-			"  -l, --linear         enable linear output\n"
-			"  -r, --reverse        list packages that depend on the named package\n"
-			"  -s, --sync           search sync databases instead of local\n"
-			"  -u, --unique         show dependencies with no duplicates (implies -l)\n"
-			"  -v, --version        display the version\n"
-			"      --config <path>  set an alternate configuration file\n"
-			"      --debug          display debug messages\n"
-			"      --gpgdir <path>  set an alternate home directory for GnuPG\n");
+			"  -a, --ascii            use ASCII characters for tree formatting\n"
+			"  -b, --dbpath <path>    set an alternate database location\n"
+			"  -c, --color            colorize output\n"
+			"  -d, --depth <#>        limit the depth of recursion\n"
+			"  -g, --graph            generate output for graphviz's dot\n"
+			"  -h, --help             display this help message\n"
+			"  -l, --linear           enable linear output\n"
+			"  -r, --reverse          list packages that depend on the named package\n"
+			"  -s, --sync             search sync databases instead of local\n"
+			"  -u, --unique           show dependencies with no duplicates (implies -l)\n"
+			"  -o, --optional[=DEPTH] controls at which depth to stop printing optional deps\n"
+			"                         (-1 for no limit)\n"
+			"  -v, --version          display the version\n"
+			"      --config <path>    set an alternate configuration file\n"
+			"      --debug            display debug messages\n"
+			"      --gpgdir <path>    set an alternate home directory for GnuPG\n");
 }
 
 static void version(void)
@@ -280,6 +289,7 @@ static int parse_options(int argc, char *argv[])
 		{"reverse", no_argument,          0, 'r'},
 		{"sync",    no_argument,          0, 's'},
 		{"unique",  no_argument,          0, 'u'},
+		{"optional",optional_argument,    0, 'o'},
 		{"version", no_argument,          0, 'v'},
 
 		{"config",  required_argument,    0, OP_CONFIG},
@@ -294,7 +304,7 @@ static int parse_options(int argc, char *argv[])
 		style = &graph_utf8;
 	}
 
-	while((opt = getopt_long(argc, argv, "ab:cd:ghlrsuv", opts, &option_index))) {
+	while((opt = getopt_long(argc, argv, "ab:cd:ghlrsuo::v", opts, &option_index))) {
 		if(opt < 0) {
 			break;
 		}
@@ -345,6 +355,17 @@ static int parse_options(int argc, char *argv[])
 			case 'v':
 				version();
 				cleanup(0);
+			case 'o':
+				if(optarg) {
+					opt_level = (int)strtol(optarg, &endptr, 10);
+					if(*endptr != '\0') {
+						fprintf(stderr, "error: invalid optional depth -- %s\n", optarg);
+						return 1;
+					}
+				} else {
+					opt_level = 1;
+				}
+				break;
 			case 'h':
 				usage();
 				cleanup(0);
@@ -364,9 +385,10 @@ static int parse_options(int argc, char *argv[])
 
 /* pkg provides provision */
 static void print_text(const char *pkg, const char *provision,
-		tdepth *depth, int last)
+		tdepth *depth, int last, int opt_dep)
 {
 	const char *tip = "";
+	const char *opt_str = opt_dep ? style->optional : "";
 	int level = 1;
 	if(!pkg && !provision) {
 		/* not much we can do */
@@ -395,38 +417,39 @@ static void print_text(const char *pkg, const char *provision,
 	 * want to print the provided package. This makes output easier to parse and
 	 * to reuse. */
 	if(!pkg && provision) {
-		printf("%s%s%s%s [unresolvable]%s\n", tip, color->leaf1,
-				provision, color->branch1, color->off);
+		printf("%s%s%s%s [unresolvable]%s%s\n", tip, color->leaf1,
+				provision, color->branch1, opt_str, color->off);
 	} else if(provision && strcmp(pkg, provision) != 0 && *(style->provides) != '\0') {
-		printf("%s%s%s%s%s %s%s%s\n", tip, color->leaf1, pkg,
-				color->leaf2, style->provides, color->leaf1, provision,
+		printf("%s%s%s%s%s %s%s%s%s\n", tip, color->leaf1, pkg,
+				color->leaf2, style->provides, color->leaf1, provision, opt_str,
 				color->off);
 	} else {
-		printf("%s%s%s%s\n", tip, color->leaf1, pkg, color->off);
+		printf("%s%s%s%s%s\n", tip, color->leaf1, pkg, opt_str, color->off);
 	}
 }
 
-static void print_graph(const char *parentname, const char *pkgname, const char *depname)
+static void print_graph(const char *parentname, const char *pkgname, const char *depname, int opt_dep)
 {
+	const char *style = opt_dep ? ", style=dotted" : "";
 	if(depname) {
-		printf("\"%s\" -> \"%s\" [color=chocolate4];\n", parentname, depname);
+		printf("\"%s\" -> \"%s\" [color=chocolate4%s];\n", parentname, depname, style);
 		if(pkgname && strcmp(depname, pkgname) != 0 && !alpm_list_find_str(provisions, depname)) {
-			printf("\"%s\" -> \"%s\" [arrowhead=none, color=grey];\n", depname, pkgname);
+			printf("\"%s\" -> \"%s\" [arrowhead=none, color=grey%s];\n", depname, pkgname, style);
 			provisions = alpm_list_add(provisions, strdup(depname));
 		}
 	} else if(pkgname) {
-		printf("\"%s\" -> \"%s\" [color=chocolate4];\n", parentname, pkgname);
+		printf("\"%s\" -> \"%s\" [color=chocolate4%s];\n", parentname, pkgname, style);
 	}
 }
 
 /* parent depends on dep which is satisfied by pkg */
 static void print(const char *parentname, const char *pkgname,
-		const char *depname, tdepth *depth, int last)
+		const char *depname, tdepth *depth, int last, int opt_dep)
 {
 	if(graphviz) {
-		print_graph(parentname, pkgname, depname);
+		print_graph(parentname, pkgname, depname, opt_dep);
 	} else {
-		print_text(pkgname, depname, depth, last);
+		print_text(pkgname, depname, depth, last, opt_dep);
 	}
 }
 
@@ -442,7 +465,7 @@ static void print_start(const char *pkgname, const char *provname)
 			NULL,
 			0
 		};
-		print_text(pkgname, provname, &d, 0);
+		print_text(pkgname, provname, &d, 0, 0);
 	}
 }
 
@@ -465,12 +488,80 @@ static alpm_list_t *get_pkg_deps(alpm_pkg_t *pkg)
 	return dep_strings;
 }
 
+static alpm_list_t *get_pkg_optdeps(alpm_pkg_t *pkg)
+{
+	alpm_list_t *i, *dep_strings = NULL;
+	for(i = alpm_pkg_get_optdepends(pkg); i; i = alpm_list_next(i)) {
+		alpm_depend_t *dep = i->data;
+		char *ds = alpm_dep_compute_string(dep);
+		dep_strings = alpm_list_add(dep_strings, ds);
+	}
+	return dep_strings;
+}
+
+/* forward declaration */
+static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int rev, int optional);
+
+/**
+ * print the dependency list given, passing the optional parameter when required
+ */
+static void print_dep_list(alpm_list_t *deps, alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int rev, int optional, int opt_dep)
+{
+	alpm_list_t *i;
+	int new_optional;
+
+	if(optional > 0) {
+		/* decrease the depth by 1 */
+		new_optional = optional - 1;
+	} else {
+		/* preserve 0 (ran out of depth) and negative numbers (infinite depth) */
+		new_optional = optional;
+	}
+
+	for(i = deps; i; i = alpm_list_next(i)) {
+		const char *pkgname = i->data;
+		int last = alpm_list_next(i) ? 0 : 1;
+
+		alpm_pkg_t *dep_pkg = alpm_find_dbs_satisfier(handle, dblist, pkgname);
+
+		if(alpm_list_find_str(walked, dep_pkg ? alpm_pkg_get_name(dep_pkg) : pkgname)) {
+			/* if we've already seen this package, don't print in "unique" output
+			 * and don't recurse */
+			if(!unique) {
+				print(alpm_pkg_get_name(pkg), alpm_pkg_get_name(dep_pkg), pkgname, depth, last, opt_dep);
+			}
+		} else {
+			print(alpm_pkg_get_name(pkg), alpm_pkg_get_name(dep_pkg), pkgname, depth, last, opt_dep);
+			if(dep_pkg) {
+				tdepth d = {
+					depth,
+					NULL,
+					depth->level + 1
+				};
+				depth->next = &d;
+				/* last dep, cut off the limb here */
+				if((last && optional && opt_dep) || (last && !optional)) {
+					if(depth->prev) {
+						depth->prev->next = &d;
+						d.prev = depth->prev;
+						depth = &d;
+					} else {
+						d.prev = NULL;
+					}
+				}
+				walk_deps(dblist, dep_pkg, &d, rev, new_optional);
+				depth->next = NULL;
+			}
+		}
+	}
+}
+
 /**
  * walk dependencies, showing dependencies of the target
  */
-static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int rev)
+static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int rev, int optional)
 {
-	alpm_list_t *deps, *i;
+	alpm_list_t *deps;
 
 	if(!pkg || ((max_depth >= 0) && (depth->level > max_depth))) {
 		return;
@@ -484,44 +575,21 @@ static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int r
 		deps = get_pkg_deps(pkg);
 	}
 
-	for(i = deps; i; i = alpm_list_next(i)) {
-		const char *pkgname = i->data;
-		int last = alpm_list_next(i) ? 0 : 1;
-
-		alpm_pkg_t *dep_pkg = alpm_find_dbs_satisfier(handle, dblist, pkgname);
-
-		if(alpm_list_find_str(walked, dep_pkg ? alpm_pkg_get_name(dep_pkg) : pkgname)) {
-			/* if we've already seen this package, don't print in "unique" output
-			 * and don't recurse */
-			if(!unique) {
-				print(alpm_pkg_get_name(pkg), alpm_pkg_get_name(dep_pkg), pkgname, depth, last);
-			}
-		} else {
-			print(alpm_pkg_get_name(pkg), alpm_pkg_get_name(dep_pkg), pkgname, depth, last);
-			if(dep_pkg) {
-				tdepth d = {
-					depth,
-					NULL,
-					depth->level + 1
-				};
-				depth->next = &d;
-				/* last dep, cut off the limb here */
-				if(last) {
-					if(depth->prev) {
-						depth->prev->next = &d;
-						d.prev = depth->prev;
-						depth = &d;
-					} else {
-						d.prev = NULL;
-					}
-				}
-				walk_deps(dblist, dep_pkg, &d, rev);
-				depth->next = NULL;
-			}
-		}
-	}
+	print_dep_list(deps, dblist, pkg, depth, rev, optional, 0);
 
 	FREELIST(deps);
+
+	if(optional){
+		if(rev) {
+			deps = alpm_pkg_compute_optionalfor(pkg);
+		} else {
+			deps = get_pkg_optdeps(pkg);
+		}
+
+		print_dep_list(deps, dblist, pkg, depth, rev, optional, 1);
+
+		FREELIST(deps);
+	}
 }
 
 int main(int argc, char *argv[])
@@ -576,7 +644,7 @@ int main(int argc, char *argv[])
 		NULL,
 		1
 	};
-	walk_deps(dblist, pkg, &d, reverse);
+	walk_deps(dblist, pkg, &d, reverse, opt_level);
 
 	print_end();
 

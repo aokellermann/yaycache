@@ -58,6 +58,12 @@ Options
 *-u, \--unique*::
 	List dependent packages once. Implies '\--linear'.
 
+*-o, \--optional[=DEPTH]*::
+	Additionally prints optional dependencies up to a certain depth, default 1
+	for immediate optional dependencies. When used in conjunction with '-r' it
+	shows which packages it is optional for. In Graphviz mode, produce dotted
+	lines. Negative values mean infinite depth.
+
 *\--config <file>*::
 	Specify an alternate pacman configuration file.
 
