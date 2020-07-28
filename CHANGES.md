@@ -6,13 +6,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- pactree: Add --debug (2d13a236)
+- pactree: Add --gpgdir, set the gpg directory (a4e69cac)
+- pactree: introduce the --optional flag (FS#61336) (b6d08b40)
 
 ### Changed
+- doc: make timestamps in man pages reproducible (e2a5e43b)
+- paccache.service.in: Reword description to more clearly specify what it does (269a2cdc)
 
 ### Fixed
+- pactree: Improve command line validation (FS#64589) (e77e13b0)
+- pactree: Fix redundant arrows in Graphviz output (c7be8631)
+- doc: Fix pacdiff option descriptions (cf683ca0)
+- vim: Add missing highlight links for b2sums (a1e7a764)
+- paccache: Support cleaning many thousands of candidates (547a66d5)
 
 
-## [1.3.0]
+## [1.3.0] - 2019-12-25
 ### Added
 - Add document describing the release procedures. (21449e3)
 - vim: Add Unlicense as valid license. (f835547)
@@ -96,7 +106,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs.
 
 
-[Unreleased]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.0.0..master
+[Unreleased]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.3.0..master
 [1.0.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v0.0.1..v1.0.0
 [1.1.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.0.0..v1.1.0
 [1.2.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.1.0..v1.2.0
