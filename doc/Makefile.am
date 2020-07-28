@@ -78,7 +78,6 @@ pkgdatadir = ${datadir}/${PACKAGE}
 ASCIIDOC_OPTS = \
 	-f $(srcdir)/asciidoc.conf \
 	-a pacman_contrib_version="$(REAL_PACKAGE_VERSION)" \
-	-a pacman_contrib_date="`date +%Y-%m-%d`" \
 	-a pkgdatadir=$(pkgdatadir) \
 	-a localstatedir=$(localstatedir) \
 	-a sysconfdir=$(sysconfdir)
