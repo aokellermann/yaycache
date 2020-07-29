@@ -15,11 +15,15 @@ Procedure
 ---------
 
 --
-Assuming `$VERSION` is the version number in `X.Y.Z` format, and `$REMOTE` is the Git remote for the `pacman-contrib` repository on `git.archlinux.org`:
+Assuming `$VERSION` is the version number in `X.Y.Z` format and `$REMOTE` is the Git remote for the `pacman-contrib` repository on `git.archlinux.org`:
 
 * Update the version in `configure.ac`.
-* Rename the `Unreleased` section in `CHANGES.md` to `[$VERSION] - YYYY-MM-DD`, and add the git log URL for the new tag to the bottom of the file.
-* `git commit -m "Release v$VERSION"`
+* In `CHANGES.md`:
+  - Rename the `Unreleased` section to `[$VERSION] - YYYY-MM-DD`.
+  - Populate new `Unreleased` section.
+  - Add the Git log URL for the new tag to the bottom of the file.
+  - Bump the version in the `Unreleased` Git log URL.
+* `git commit -sm "Release v$VERSION"`
 * `git tag -s v$VERSION -m v$VERSION`
 * {blank}
 +
