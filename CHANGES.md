@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Fixed
+
+
+## [1.4.0] - 2020-07-28
+### Added
 - pactree: Add --debug (2d13a236)
 - pactree: Add --gpgdir, set the gpg directory (a4e69cac)
 - pactree: introduce the --optional flag (FS#61336) (b6d08b40)
@@ -106,8 +114,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs.
 
 
-[Unreleased]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.3.0..master
+[Unreleased]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.4.0..master
 [1.0.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v0.0.1..v1.0.0
 [1.1.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.0.0..v1.1.0
 [1.2.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.1.0..v1.2.0
 [1.3.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.2.0..v1.3.0
+[1.4.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.3.0..v1.4.0
