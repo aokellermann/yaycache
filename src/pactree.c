@@ -505,7 +505,7 @@ static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int r
 /**
  * print the dependency list given, passing the optional parameter when required
  */
-static void print_dep_list(alpm_list_t *deps, alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int rev, int optional, int opt_dep)
+static void print_dep_list(alpm_list_t *deps, alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int rev, int optional, int opt_dep, int final)
 {
 	alpm_list_t *i;
 	int new_optional;
@@ -520,7 +520,7 @@ static void print_dep_list(alpm_list_t *deps, alpm_list_t *dblist, alpm_pkg_t *p
 
 	for(i = deps; i; i = alpm_list_next(i)) {
 		const char *pkgname = i->data;
-		int last = alpm_list_next(i) ? 0 : 1;
+		int last = final && (alpm_list_next(i) ? 0 : 1);
 
 		alpm_pkg_t *dep_pkg = alpm_find_dbs_satisfier(handle, dblist, pkgname);
 
@@ -561,7 +561,7 @@ static void print_dep_list(alpm_list_t *deps, alpm_list_t *dblist, alpm_pkg_t *p
  */
 static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int rev, int optional)
 {
-	alpm_list_t *deps;
+	alpm_list_t *deps, *optdeps;
 
 	if(!pkg || ((max_depth >= 0) && (depth->level > max_depth))) {
 		return;
@@ -575,21 +575,20 @@ static void walk_deps(alpm_list_t *dblist, alpm_pkg_t *pkg, tdepth *depth, int r
 		deps = get_pkg_deps(pkg);
 	}
 
-	print_dep_list(deps, dblist, pkg, depth, rev, optional, 0);
-
-	FREELIST(deps);
-
+	optdeps = NULL;
 	if(optional){
 		if(rev) {
-			deps = alpm_pkg_compute_optionalfor(pkg);
+			optdeps = alpm_pkg_compute_optionalfor(pkg);
 		} else {
-			deps = get_pkg_optdeps(pkg);
+			optdeps = get_pkg_optdeps(pkg);
 		}
-
-		print_dep_list(deps, dblist, pkg, depth, rev, optional, 1);
-
-		FREELIST(deps);
 	}
+
+	print_dep_list(deps, dblist, pkg, depth, rev, optional, 0, !optdeps);
+	FREELIST(deps);
+
+	print_dep_list(optdeps, dblist, pkg, depth, rev, optional, 1, 1);
+	FREELIST(optdeps);
 }
 
 int main(int argc, char *argv[])
