@@ -41,7 +41,7 @@ Environment
 
 Errors
 ------
-On exit, checkpkg will return one of the following error codes.
+On exit, checkupdates will return one of the following error codes.
 
 0::
 	Normal exit condition.

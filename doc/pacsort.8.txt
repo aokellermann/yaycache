@@ -27,7 +27,7 @@ By default the lines are treated as lists of plain version strings.
 Options
 -------
 *-f, \--files*::
-	If the input lists are in the format '\*-*.pkg.tar*', sort lines by pkgname and pkgver.
+	If the input lists are in the format '\*-\*.pkg.tar*', sort lines by pkgname and pkgver.
 
 *-h, \--help*::
 	Display syntax and command line options.
