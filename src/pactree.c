@@ -540,7 +540,7 @@ static void print_dep_list(alpm_list_t *deps, alpm_list_t *dblist, alpm_pkg_t *p
 				};
 				depth->next = &d;
 				/* last dep, cut off the limb here */
-				if((last && optional && opt_dep) || (last && !optional)) {
+				if(last) {
 					if(depth->prev) {
 						depth->prev->next = &d;
 						d.prev = depth->prev;
