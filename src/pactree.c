@@ -383,6 +383,16 @@ static int parse_options(int argc, char *argv[])
 	return 0;
 }
 
+static int should_show_satisfier(const char *pkg, const char *depstring)
+{
+	int result;
+	alpm_depend_t *dep = alpm_dep_from_string(depstring);
+	if(!dep) return 1;
+	result = strcmp(pkg, dep->name) != 0;
+	free(dep);
+	return result;
+}
+
 /* pkg provides provision */
 static void print_text(const char *pkg, const char *provision,
 		tdepth *depth, int last, int opt_dep)
@@ -419,12 +429,12 @@ static void print_text(const char *pkg, const char *provision,
 	if(!pkg && provision) {
 		printf("%s%s%s%s [unresolvable]%s%s\n", tip, color->leaf1,
 				provision, color->branch1, opt_str, color->off);
-	} else if(provision && strcmp(pkg, provision) != 0 && *(style->provides) != '\0') {
+	} else if(provision && *(style->provides) != '\0' && should_show_satisfier(pkg, provision)) {
 		printf("%s%s%s%s%s %s%s%s%s\n", tip, color->leaf1, pkg,
 				color->leaf2, style->provides, color->leaf1, provision, opt_str,
 				color->off);
 	} else {
-		printf("%s%s%s%s%s\n", tip, color->leaf1, pkg, opt_str, color->off);
+		printf("%s%s%s%s%s\n", tip, color->leaf1, provision ? provision : pkg, opt_str, color->off);
 	}
 }
 
