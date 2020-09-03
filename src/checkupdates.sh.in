@@ -30,6 +30,24 @@ USE_COLOR=0
 source "$LIBRARY"/util/message.sh
 source "$LIBRARY"/util/parseopts.sh
 
+die() {
+	error "$@"
+	exit 1
+}
+
+runcmd() {
+	if (( EUID != 0 )); then
+		msg 'Escalating privileges using sudo'
+		if sudo -v &>/dev/null && sudo -l &>/dev/null; then
+			sudo "$@"
+		else
+			die 'Failed to escalate'
+		fi
+	else
+		"$@"
+	fi
+}
+
 usage() {
 	cat << __EOF__
 ${myname} v${myver}
@@ -80,8 +98,7 @@ else
 fi
 
 if ! type -P fakeroot >/dev/null; then
-	error 'Cannot find the fakeroot binary.'
-	exit 1
+	die 'Cannot find the fakeroot binary'
 fi
 
 if [[ -z $CHECKUPDATES_DB ]]; then
@@ -98,15 +115,14 @@ fi
 mkdir -p "$CHECKUPDATES_DB"
 ln -s "${DBPath}/local" "$CHECKUPDATES_DB" &> /dev/null
 if ! fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" --logfile /dev/null &> /dev/null; then
-	error 'Cannot fetch updates'
-	exit 1
+	die 'Cannot fetch updates'
 fi
 mapfile -t updates < <(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -v '\[.*\]')
 
 if (( ${#updates[@]} )); then
 	printf '%s\n' "${updates[@]}"
 	if (( DOWNLOAD_CACHE )); then
-		sudo pacman -Sw --noconfirm "${updates[@]%% *}" --dbpath "$CHECKUPDATES_DB" --logfile /dev/null
+		runcmd pacman -Sw --noconfirm "${updates[@]%% *}" --dbpath "$CHECKUPDATES_DB" --logfile /dev/null
 	fi
 else
 	exit 2
