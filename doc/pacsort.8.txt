@@ -41,7 +41,7 @@ Options
 *-t, \--separator <sep>*::
 	Field separator.  Default separator is space.
 
-*-v, \--version*:
+*-v, \--version*::
 	Display the version.
 
 *-z, \--null*::
