@@ -87,8 +87,8 @@ cmd() {
 		awk '/^%BACKUP%$/ {
 		while (getline) {
 			if (/^$/) { nextfile }
-				print $1
-			}
+			print $1
+		}
 		}' "${pac_db}"/*/files | while read -r bkup; do
 			print_existing "/$bkup.pacnew"
 			print_existing "/$bkup.pacorig"
