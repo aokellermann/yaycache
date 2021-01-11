@@ -26,6 +26,10 @@ Options
 *-d, \--download*::
 	Download any pending updates to the pacman cache.
 
+*-n, \--nosync*::
+	Do not sync the temporary database, works best when the temporary database is 
+	update regularly through some other means such as a cronjob or systemd timer.
+
 *-h, \--help*::
 	Display syntax and command line options.
 

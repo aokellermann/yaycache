@@ -58,6 +58,7 @@ Usage: ${myname} [options]
 
   Options:
     -d, --download        download pending updates to the pacman cache.
+    -n, --nosync          do not sync the temporary database.
     -h, --help            display this help message and exit.
 
 Note: Export the "CHECKUPDATES_DB" variable to change the path of the temporary database.
@@ -65,8 +66,8 @@ Note: Export the "CHECKUPDATES_DB" variable to change the path of the temporary 
 __EOF__
 }
 
-OPT_SHORT='dh'
-OPT_LONG=('download' 'help' 'nocolor')
+OPT_SHORT='dnh'
+OPT_LONG=('download' 'help' 'nocolor' 'norefresh')
 
 if ! parseopts "$OPT_SHORT" "${OPT_LONG[@]}" -- "$@"; then
 	exit 1
@@ -74,10 +75,13 @@ fi
 set -- "${OPTRET[@]}"
 unset OPT_SHORT OPT_LONG OPTRET
 
+SYNC=1
 while :; do
 	case $1 in
 		-d|--download)
 			DOWNLOAD_CACHE=1 ;;
+		-n|--nosync)
+			SYNC=0 ;;
 		-h|--help)
 			usage
 			exit 0 ;;
@@ -112,10 +116,12 @@ if [[ -z "$DBPath" ]] || [[ ! -d "$DBPath" ]]; then
 	DBPath="@localstatedir@/lib/pacman/"
 fi
 
-mkdir -p "$CHECKUPDATES_DB"
-ln -s "${DBPath}/local" "$CHECKUPDATES_DB" &> /dev/null
-if ! fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" --logfile /dev/null &> /dev/null; then
-	die 'Cannot fetch updates'
+if (( ${SYNC} )); then
+	mkdir -p "$CHECKUPDATES_DB"
+	ln -s "${DBPath}/local" "$CHECKUPDATES_DB" &> /dev/null
+	if ! fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" --logfile /dev/null &> /dev/null; then
+	    die 'Cannot fetch updates'
+	fi
 fi
 mapfile -t updates < <(pacman -Qu --dbpath "$CHECKUPDATES_DB" 2> /dev/null | grep -v '\[.*\]')
 
