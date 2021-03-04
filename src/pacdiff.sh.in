@@ -34,6 +34,11 @@ declare -i USE_FIND=0 USE_LOCATE=0 USE_PACDB=0 OUTPUTONLY=0
 # Import libmakepkg
 source "$LIBRARY"/util/message.sh
 
+die() {
+	error "$@"
+	exit 1
+}
+
 usage() {
 	cat <<EOF
 ${myname} v${myver}
@@ -127,8 +132,7 @@ else
 fi
 
 if ! type -p ${diffprog%% *} >/dev/null && (( ! OUTPUTONLY )); then
-	error "Cannot find the $diffprog binary required for viewing differences."
-	exit 1
+	die "Cannot find the $diffprog binary required for viewing differences."
 fi
 
 case $(( USE_FIND + USE_LOCATE + USE_PACDB )) in
