@@ -18,8 +18,8 @@ Description
 -----------
 pacdiff is a script which looks for pacorig, pacnew and pacsave files from the
 backup entries found in the local Pacman db. For every found file the option is
-given to view, skip, diff, remove or overwrite the found pacorig, pacnew or
-pacsave file.
+given to view, merge, skip, diff, remove or overwrite the found pacorig, pacnew
+or pacsave file.
 
 Environment
 -----------
@@ -29,6 +29,9 @@ Environment
 *DIFFSEARCHPATH*::
 	Override the default search path '/etc', only when using find.
 
+*MERGEPROG*::
+	Override the default 'diff3 -m' 3-way merge program. One possible
+	alternative is 'git merge-file -p'.
 
 Options
 -------
@@ -47,6 +50,8 @@ Options
 *\--nocolor*::
 	Remove colors from output.
 
+*-c, \--cachedir <dir>*::
+	Scan 'dir' instead as the pacman cache for 3-way merge base candidates.
 
 See Also
 --------

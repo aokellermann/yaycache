@@ -27,6 +27,8 @@ LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
 diffprog=${DIFFPROG:-'vim -d'}
 diffsearchpath=${DIFFSEARCHPATH:-/etc}
+mergeprog=${MERGEPROG:-'diff3 -m'}
+cachedir=
 USE_COLOR='y'
 declare -a oldsaves
 declare -i USE_FIND=0 USE_LOCATE=0 USE_PACDB=0 OUTPUTONLY=0
@@ -53,15 +55,18 @@ Search Options:     select one (default: --pacmandb)
   -p/--pacmandb     scan active config files from pacman database
 
 General Options:
-  -o/--output       print files instead of merging them
-  --nocolor         remove colors from output
+  -o/--output         print files instead of merging them
+  --nocolor           remove colors from output
+  -c/--cachedir <dir> scan "dir" for 3-way merge base candidates.
+                      (default: read from @sysconfdir@/pacman.conf)
 
 Environment Variables:
   DIFFPROG          override the merge program: (default: 'vim -d')
   DIFFSEARCHPATH    override the search path. (only when using find)
                     (default: /etc)
+  MERGEPROG         override the 3-way merge program: (default: 'diff3 -m')
 
-Example: DIFFPROG=meld DIFFSEARCHPATH="/boot /etc /usr" $myname
+Example: DIFFPROG=meld DIFFSEARCHPATH="/boot /etc /usr" MERGEPROG="git merge-file -p" $myname
 Example: $myname --output --locate
 
 EOF
@@ -81,6 +86,62 @@ print_existing_pacsave(){
 	for f in "${1}"?(.+([0-9])); do
 		[[ -f $f ]] && printf '%s\0' "$f"
 	done
+}
+
+base_cache_tar() {
+	package="$1"
+
+	[[ -d $cachedir ]] ||
+		die "cachedir '%s' does not exist or is not a directory" "$cachedir"
+
+	# unlikely that this will fail, but better make sure
+	pushd "$cachedir" &>/dev/null || die "failed to chdir to '%s'" "$cachedir"
+
+	find "$PWD" -name "$package-[0-9]*.pkg.tar*" | pacsort --files | sed -ne '2p'
+
+	popd &>/dev/null
+}
+
+merge_file() {
+	pacfile="$1"
+	file="$2"
+
+	package="$(pacman -Qoq "$file")" || return 1
+	base_tar="$(base_cache_tar "$package")"
+
+	if [[ -z $base_tar ]]; then
+		msg2 "Unable to find a base package."
+		return 1
+	fi
+
+	basename="$(basename "$file")"
+	base="$(mktemp --tmpdir "$basename.base.XXX")"
+	merged="$(mktemp --tmpdir "$basename.merged.XXX")"
+
+	tar -xOf "$base_tar" "${file#/}" >"$base"
+	if $mergeprog "$file" "$base" "$pacfile" >"$merged"; then
+		msg2 "Merged without conflicts."
+	fi
+
+	$diffprog "$file" "$merged"
+
+	while :; do
+		ask "Would you like to use the results of the merge? [y/n] "
+
+		read c || return 1
+		case $c in
+			y|Y) break ;;
+			n|N) return 1 ;;
+			*) msg2 "Invalid answer." ;;
+		esac
+	done
+
+	if ! cp -v "$merged" "$file"; then
+		warning "Unable to write merged file to %s. Merged file is preserved at %s" "$file" "$merged"
+		return 1
+	fi
+	rm -v "$pacfile" "$base" "$merged"
+	return 0
 }
 
 cmd() {
@@ -114,6 +175,8 @@ while [[ -n "$1" ]]; do
 			OUTPUTONLY=1;;
 		--nocolor)
 			USE_COLOR='n';;
+		-c|--cachedir)
+			cachedir="$2"; shift;;
 		-V|--version)
 			version; exit 0;;
 		-h|--help)
@@ -135,6 +198,10 @@ if ! type -p ${diffprog%% *} >/dev/null && (( ! OUTPUTONLY )); then
 	die "Cannot find the $diffprog binary required for viewing differences."
 fi
 
+if ! type -p ${mergeprog%% *} >/dev/null && (( ! OUTPUTONLY )); then
+	die "Cannot find the $mergeprog binary required for merging differences."
+fi
+
 case $(( USE_FIND + USE_LOCATE + USE_PACDB )) in
 	0) USE_PACDB=1;; # set the default search option
 	[^1]) error "Only one search option may be used at a time"
@@ -151,6 +218,10 @@ if (( USE_PACDB )); then
 		error "unable to read pacman database %s". "${pac_db}"
 		usage; exit 1
 	fi
+fi
+
+if [[ -z $cachedir ]]; then
+	cachedir="$(pacman-conf CacheDir)"
 fi
 
 # see http://mywiki.wooledge.org/BashFAQ/020
@@ -181,7 +252,7 @@ while IFS= read -u 3 -r -d '' pacfile; do
 		rm -v "$pacfile"
 	else
 		while :; do
-			ask "(V)iew, (S)kip, (R)emove %s, (O)verwrite with %s, (Q)uit: [v/s/r/o/q] " "$file_type" "$file_type"
+			ask "(V)iew, (M)erge, (S)kip, (R)emove %s, (O)verwrite with %s, (Q)uit: [v/m/s/r/o/q] " "$file_type" "$file_type"
 			read c || break
 			case $c in
 				q|Q) exit 0;;
@@ -192,6 +263,10 @@ while IFS= read -u 3 -r -d '' pacfile; do
 					if cmp -s "$pacfile" "$file"; then
 						msg2 "Files are identical, removing..."
 						rm -v "$pacfile"
+						break
+					fi ;;
+				m|M)
+					if merge_file "$pacfile" "$file"; then
 						break
 					fi ;;
 				s|S) break ;;
