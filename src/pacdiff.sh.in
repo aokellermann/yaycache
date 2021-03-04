@@ -180,8 +180,9 @@ while IFS= read -u 3 -r -d '' pacfile; do
 		msg2 "Files are identical, removing..."
 		rm -v "$pacfile"
 	else
-		ask "(V)iew, (S)kip, (R)emove %s, (O)verwrite with %s, (Q)uit: [v/s/r/o/q] " "$file_type" "$file_type"
-		while read c; do
+		while :; do
+			ask "(V)iew, (S)kip, (R)emove %s, (O)verwrite with %s, (Q)uit: [v/s/r/o/q] " "$file_type" "$file_type"
+			read c || break
 			case $c in
 				q|Q) exit 0;;
 				r|R) rm -v "$pacfile"; break ;;
@@ -192,11 +193,9 @@ while IFS= read -u 3 -r -d '' pacfile; do
 						msg2 "Files are identical, removing..."
 						rm -v "$pacfile"
 						break
-					fi
-					ask "(V)iew, (S)kip, (R)emove %s, (O)verwrite with %s, (Q)uit: [v/s/r/o/q] " "$file_type" "$file_type";
-					continue ;;
+					fi ;;
 				s|S) break ;;
-				*) ask "Invalid answer. Try again: [v/s/r/o/q] "; continue ;;
+				*) msg2 "Invalid answer." ;;
 			esac
 		done
 	fi
