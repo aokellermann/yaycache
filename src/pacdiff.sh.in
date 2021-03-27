@@ -30,6 +30,7 @@ diffsearchpath=${DIFFSEARCHPATH:-/etc}
 mergeprog=${MERGEPROG:-'diff3 -m'}
 cachedir=
 USE_COLOR='y'
+SUDO=''
 declare -a oldsaves
 declare -i USE_FIND=0 USE_LOCATE=0 USE_PACDB=0 OUTPUTONLY=0
 
@@ -59,6 +60,7 @@ General Options:
   --nocolor           remove colors from output
   -c/--cachedir <dir> scan "dir" for 3-way merge base candidates.
                       (default: read from @sysconfdir@/pacman.conf)
+  -s/--sudo         use sudo to merge/remove files
 
 Environment Variables:
   DIFFPROG          override the merge program: (default: 'vim -d')
@@ -115,15 +117,20 @@ merge_file() {
 	fi
 
 	basename="$(basename "$file")"
-	base="$(mktemp --tmpdir "$basename.base.XXX")"
-	merged="$(mktemp --tmpdir "$basename.merged.XXX")"
+	tempdir="$($SUDO mktemp -d --tmpdir "pacdiff-merge-$basename.XXX")"
+	base="$($SUDO mktemp "$tempdir"/"$basename.base.XXX")"
+	merged="$($SUDO mktemp "$tempdir"/"$basename.merged.XXX")"
 
-	tar -xOf "$base_tar" "${file#/}" >"$base"
-	if $mergeprog "$file" "$base" "$pacfile" >"$merged"; then
+	tar -xOf "$base_tar" "${file#/}" | $SUDO tee "$base" > /dev/null
+	if $SUDO $mergeprog "$file" "$base" "$pacfile" | $SUDO tee "$merged" > /dev/null; then
 		msg2 "Merged without conflicts."
 	fi
 
-	$diffprog "$file" "$merged"
+	if [[ -n "$SUDO" ]]; then
+		SUDO_EDITOR="$diffprog" sudoedit "$file" "$merged"
+	else
+		$diffprog "$file" "$merged"
+	fi
 
 	while :; do
 		ask "Would you like to use the results of the merge? [y/n] "
@@ -136,11 +143,11 @@ merge_file() {
 		esac
 	done
 
-	if ! cp -v "$merged" "$file"; then
+	if ! $SUDO cp -v "$merged" "$file"; then
 		warning "Unable to write merged file to %s. Merged file is preserved at %s" "$file" "$merged"
 		return 1
 	fi
-	rm -v "$pacfile" "$base" "$merged"
+	$SUDO rm -rv "$pacfile" "$tempdir"
 	return 0
 }
 
@@ -177,6 +184,8 @@ while [[ -n "$1" ]]; do
 			USE_COLOR='n';;
 		-c|--cachedir)
 			cachedir="$2"; shift;;
+		-s|--sudo)
+			SUDO=sudo;;
 		-V|--version)
 			version; exit 0;;
 		-h|--help)
@@ -243,26 +252,30 @@ while IFS= read -u 3 -r -d '' pacfile; do
 	msg "%s file found for %s" "$file_type" "$file"
 	if [ ! -f "$file" ]; then
 		warning "$file does not exist"
-		rm -iv "$pacfile"
+		$SUDO rm -iv "$pacfile"
 		continue
 	fi
 
 	if cmp -s "$pacfile" "$file"; then
 		msg2 "Files are identical, removing..."
-		rm -v "$pacfile"
+		$SUDO rm -v "$pacfile"
 	else
 		while :; do
 			ask "(V)iew, (M)erge, (S)kip, (R)emove %s, (O)verwrite with %s, (Q)uit: [v/m/s/r/o/q] " "$file_type" "$file_type"
 			read c || break
 			case $c in
 				q|Q) exit 0;;
-				r|R) rm -v "$pacfile"; break ;;
-				o|O) mv -v "$pacfile" "$file"; break ;;
+				r|R) $SUDO rm -v "$pacfile"; break ;;
+				o|O) $SUDO mv -v "$pacfile" "$file"; break ;;
 				v|V)
-					$diffprog "$pacfile" "$file"
+					if [[ -n "$SUDO" ]]; then
+						SUDO_EDITOR="$diffprog" sudoedit "$pacfile" "$file"
+					else
+						$diffprog "$pacfile" "$file"
+					fi
 					if cmp -s "$pacfile" "$file"; then
 						msg2 "Files are identical, removing..."
-						rm -v "$pacfile"
+						$SUDO rm -v "$pacfile"
 						break
 					fi ;;
 				m|M)
