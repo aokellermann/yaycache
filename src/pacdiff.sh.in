@@ -122,7 +122,8 @@ merge_file() {
 	merged="$($SUDO mktemp "$tempdir"/"$basename.merged.XXX")"
 
 	tar -xOf "$base_tar" "${file#/}" | $SUDO tee "$base" > /dev/null
-	if $SUDO $mergeprog "$file" "$base" "$pacfile" | $SUDO tee "$merged" > /dev/null; then
+	$SUDO $mergeprog "$file" "$base" "$pacfile" | $SUDO tee "$merged" > /dev/null
+	if [ "${PIPESTATUS[0]}" -ne "1" ]; then
 		msg2 "Merged without conflicts."
 	fi
 
