@@ -60,7 +60,7 @@ General Options:
   --nocolor           remove colors from output
   -c/--cachedir <dir> scan "dir" for 3-way merge base candidates.
                       (default: read from @sysconfdir@/pacman.conf)
-  -s/--sudo         use sudo to merge/remove files
+  -s/--sudo           use sudo to merge/remove files
 
 Environment Variables:
   DIFFPROG          override the merge program: (default: 'vim -d')

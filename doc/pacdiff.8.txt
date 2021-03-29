@@ -53,6 +53,9 @@ Options
 *-c, \--cachedir <dir>*::
 	Scan 'dir' instead as the pacman cache for 3-way merge base candidates.
 
+*-s, \--sudo*::
+	Use sudo to merge/remove files.
+
 See Also
 --------
 linkman:pacman[8], linkman:pacman.conf[5]
