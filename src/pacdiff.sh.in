@@ -117,21 +117,16 @@ merge_file() {
 	fi
 
 	basename="$(basename "$file")"
-	tempdir="$($SUDO mktemp -d --tmpdir "pacdiff-merge-$basename.XXX")"
-	base="$($SUDO mktemp "$tempdir"/"$basename.base.XXX")"
-	merged="$($SUDO mktemp "$tempdir"/"$basename.merged.XXX")"
+	tempdir="$(mktemp -d --tmpdir "pacdiff-merge-$basename.XXX")"
+	base="$(mktemp "$tempdir"/"$basename.base.XXX")"
+	merged="$(mktemp "$tempdir"/"$basename.merged.XXX")"
 
-	tar -xOf "$base_tar" "${file#/}" | $SUDO tee "$base" > /dev/null
-	$SUDO $mergeprog "$file" "$base" "$pacfile" | $SUDO tee "$merged" > /dev/null
-	if [ "${PIPESTATUS[0]}" -ne "1" ]; then
+	tar -xOf "$base_tar" "${file#/}" >"$base"
+	if $mergeprog "$file" "$base" "$pacfile" >"$merged"; then
 		msg2 "Merged without conflicts."
 	fi
 
-	if [[ -n "$SUDO" ]]; then
-		SUDO_EDITOR="$diffprog" sudoedit "$file" "$merged"
-	else
-		$diffprog "$file" "$merged"
-	fi
+	$diffprog "$file" "$merged"
 
 	while :; do
 		ask "Would you like to use the results of the merge? [y/n] "
