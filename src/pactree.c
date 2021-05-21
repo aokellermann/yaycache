@@ -135,8 +135,10 @@ static const char *dbpath = DBPATH;
 static const char *configfile = CONFFILE;
 static const char *gpgdir = GPGDIR;
 
-void cb_log(alpm_loglevel_t level, const char *fmt, va_list args)
+void cb_log(void *ctx, alpm_loglevel_t level, const char *fmt, va_list args)
 {
+	(void)ctx;
+
 	switch(level) {
 		case ALPM_LOG_ERROR:
 			fprintf(stderr, "%s%s%s", color->error, "error: ",
@@ -621,7 +623,7 @@ int main(int argc, char *argv[])
 	}
 
 	if(debug) {
-		alpm_option_set_logcb(handle, cb_log);
+		alpm_option_set_logcb(handle, cb_log, NULL);
 	}
 
 	/* no need to fail on error here */
