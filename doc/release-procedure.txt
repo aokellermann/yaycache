@@ -15,7 +15,7 @@ Procedure
 ---------
 
 --
-Assuming `$VERSION` is the version number in `X.Y.Z` format and `$REMOTE` is the Git remote for the `pacman-contrib` repository on `git.archlinux.org`:
+Assuming `$VERSION` is the version number in `X.Y.Z` format and `$REMOTE` is the Git remote for the `pacman-contrib` repository on `gitlab.archlinux.org`:
 
 * Update the version in `configure.ac`.
 * In `CHANGES.md`:

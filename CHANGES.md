@@ -114,9 +114,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs.
 
 
-[Unreleased]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.4.0..master
-[1.0.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v0.0.1..v1.0.0
-[1.1.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.0.0..v1.1.0
-[1.2.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.1.0..v1.2.0
-[1.3.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.2.0..v1.3.0
-[1.4.0]: https://git.archlinux.org/pacman-contrib.git/log/?qt=range&q=v1.3.0..v1.4.0
+[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.4.0...master
+[1.0.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v0.0.1...v1.0.0
+[1.1.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.0...v1.1.0
+[1.2.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.1...v1.2.0
+[1.3.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.2...v1.3.0
+[1.4.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.3...v1.4.0
