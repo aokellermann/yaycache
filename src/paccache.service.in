@@ -4,6 +4,13 @@ Description=Remove unused cached package files
 [Service]
 Type=oneshot
 ExecStart=@bindir@/paccache -r
+# Lowering priority
+OOMScoreAdjust=1000
+Nice=19
+CPUSchedulingPolicy=idle
+CPUSchedulingPriority=1
+IOSchedulingClass=idle
+IOSchedulingPriority=7
 # Sandboxing and other hardening
 ProtectProc=invisible
 ProcSubset=pid
