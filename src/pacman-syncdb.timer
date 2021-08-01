@@ -1,0 +1,10 @@
+[Unit]
+Description=Download pacman fresh files databases from the server weekly
+
+[Timer]
+OnCalendar=weekly
+AccuracySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

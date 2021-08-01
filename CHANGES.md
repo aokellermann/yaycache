@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- pacman-syncdb: systemd service and timer for `pacman -Fy` (https://bbs.archlinux.org/viewtopic.php?pid=1981076)
 
 ### Changed
 

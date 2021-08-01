@@ -1,0 +1,12 @@
+[Unit]
+Description=Download pacman fresh files databases from the server
+RequiresMountsFor="/var/lib/pacman/sync"
+After=network-online.target nss-lookup.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=@bindir@/pacman -Fy
+Nice=19
+StandardOutput=null
+StandardError=journal

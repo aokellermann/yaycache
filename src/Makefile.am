@@ -30,7 +30,8 @@ vim_syntax__DATA = \
 systemd_dir = ${libdir}/systemd/system
 
 systemd__DATA = \
-	paccache.service paccache.timer
+	paccache.service paccache.timer \
+	pacman-syncdb.service pacman-syncdb.timer
 
 BASHSCRIPTS = \
 	checkupdates \
@@ -50,7 +51,8 @@ OURSCRIPTS = \
 	$(PERLSCRIPTS)
 
 OURFILES = \
-	paccache.service
+	paccache.service \
+	pacman-syncdb.service
 
 EXTRA_DIST = \
 	checkupdates.sh.in \
@@ -60,6 +62,8 @@ EXTRA_DIST = \
 	pacdiff.sh.in \
 	paclist.sh.in \
 	paclog-pkglist.sh.in \
+	pacman-syncdb.service.in \
+	pacman-syncdb.timer \
 	pacscripts.sh.in \
 	pacsearch.pl.in \
 	pacsort.c \
