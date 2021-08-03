@@ -1,5 +1,5 @@
 [Unit]
-Description=Download pacman fresh files databases from the server weekly
+Description=Refresh pacman files databases weekly
 
 [Timer]
 OnCalendar=weekly

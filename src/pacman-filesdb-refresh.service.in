@@ -1,5 +1,5 @@
 [Unit]
-Description=Download pacman fresh files databases from the server
+Description=Refresh pacman files databases
 RequiresMountsFor="/var/lib/pacman/sync"
 After=network-online.target nss-lookup.target
 Wants=network-online.target

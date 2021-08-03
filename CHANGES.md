@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- pacman-syncdb: systemd service and timer for `pacman -Fy` (https://bbs.archlinux.org/viewtopic.php?pid=1981076)
+- pacman-syncdb: systemd service and timer for `pacman -Fy`
+- Rename `pacman -Fy` units to pacman-filesdb-refresh from pacman-syncdb and simplify descriptions
 
 ### Changed
 
