@@ -36,5 +36,5 @@ RestrictRealtime=yes
 RestrictSUIDSGID=yes
 RemoveIPC=yes
 PrivateMounts=yes
-SystemCallFilter=@file-system
+SystemCallFilter=@system-service @file-system
 SystemCallArchitectures=native
