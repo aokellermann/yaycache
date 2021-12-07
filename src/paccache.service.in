@@ -8,7 +8,6 @@ ExecStart=@bindir@/paccache -r
 OOMScoreAdjust=1000
 Nice=19
 CPUSchedulingPolicy=idle
-CPUSchedulingPriority=1
 IOSchedulingClass=idle
 IOSchedulingPriority=7
 # Sandboxing and other hardening
