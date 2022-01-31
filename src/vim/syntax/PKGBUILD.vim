@@ -234,7 +234,7 @@ syn region pbValidPGPKeysGroup start=/^validpgpkeys=(/ end=/)/ contains=pb_k_val
 
 " options
 syn keyword pb_k_options options contained
-syn match pbOptions /\(no\)\?\(strip\|docs\|libtool\|emptydirs\|zipman\|purge\|distcc\|color\|ccache\|check\|sign\|makeflags\|buildflags\)/ contained
+syn match pbOptions /\(no\)\?\(strip\|docs\|libtool\|emptydirs\|zipman\|purge\|distcc\|color\|ccache\|check\|sign\|makeflags\|buildflags\|lto\|debug\)/ contained
 syn match   pbOptionsNeg     /\!/ contained
 syn match   pbOptionsDeprec  /no/ contained
 syn region pbOptionsGroup start=/^options=(/ end=/)/ contains=pb_k_options,pbOptions,pbOptionsNeg,pbOptionsDeprec,pbIllegalOption
