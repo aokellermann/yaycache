@@ -1,11 +1,14 @@
+.ccls-cache/
 Makefile
 Makefile.in
 aclocal.m4
 autom4te.cache/
+build-aux/
 compile
 config.*
 configure
 depcomp
 install-sh
 missing
+src/pacman-filesdb-refresh.service
 test-driver
