@@ -67,7 +67,7 @@ __EOF__
 }
 
 OPT_SHORT='dnh'
-OPT_LONG=('download' 'help' 'nocolor' 'norefresh')
+OPT_LONG=('download' 'nosync' 'help' 'nocolor')
 
 if ! parseopts "$OPT_SHORT" "${OPT_LONG[@]}" -- "$@"; then
 	exit 1
