@@ -6,12 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- pacman-syncdb: systemd service and timer for `pacman -Fy`
-- Rename `pacman -Fy` units to pacman-filesdb-refresh from pacman-syncdb and simplify descriptions
+- pacdiff: automatically delete pacfile after viewing if identical (3528b32c)
+- pacdiff: Learn the (M)erge mode (94b2a194)
+- pacdiff: Add option to use sudo/sudoedit to manage files (19ab4fac)
+- paccache.service.in: Harden unit (59fd4efb)
+- pacman-filesdb: systemd service and timer for `pacman -Fy` (dff74498) (871ffc94)
+- checkupdates: Provide --nosync option (!2)
 
 ### Changed
+- PKGBUILD.vim improvements (!5)
 
 ### Fixed
+- updpkgsums: don't try to add nonexistent checksums (80275d21)
 
 
 ## [1.4.0] - 2020-07-28
