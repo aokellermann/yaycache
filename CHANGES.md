@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Fixed
+
+
+## [1.5.0] - 2022-05-03
+### Added
 - pacdiff: automatically delete pacfile after viewing if identical (3528b32c)
 - pacdiff: Learn the (M)erge mode (94b2a194)
 - pacdiff: Add option to use sudo/sudoedit to manage files (19ab4fac)
@@ -125,6 +133,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.4.0...master
 [1.0.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v0.0.1...v1.0.0
 [1.1.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.0...v1.1.0
-[1.2.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.1...v1.2.0
-[1.3.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.2...v1.3.0
-[1.4.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.3...v1.4.0
+[1.2.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.1.0...v1.2.0
+[1.3.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.2.0...v1.3.0
+[1.4.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.3.0...v1.4.0
+[1.5.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.4.0...v1.5.0
