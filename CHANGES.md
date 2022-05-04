@@ -10,7 +10,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 ### Fixed
-- Fix version bump oversights
+
+
+## [1.5.1] - 2022-05-04
+### Fixed
+- Fix version bump oversights (5350d1e4)
 
 
 ## [1.5.0] - 2022-05-03
@@ -131,7 +135,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs.
 
 
-[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.0...master
+[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.1...master
+[1.5.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.0...v1.5.1
 [1.5.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.4.0...v1.5.0
 [1.4.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.3.0...v1.4.0
 [1.3.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.2.0...v1.3.0
