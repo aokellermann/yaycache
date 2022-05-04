@@ -122,5 +122,3 @@ awk -v sumtypes="$sumtypes" -v newsums="$newsums" '
 if ! cat -- "$newbuildfile" >"$buildfile"; then
 	die "Failed to update %s. The file has not been modified." "$buildfile"
 fi
-
-# vim: set noet:

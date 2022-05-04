@@ -1,8 +1,5 @@
-/////
-vim:set ts=4 sw=4 syntax=asciidoc noet spell spelllang=en_us:
-/////
 pactree(8)
-=========
+==========
 
 Name
 ----
@@ -79,4 +76,4 @@ See Also
 --------
 linkman:pacman[8], linkman:pacman.conf[5], linkman:makepkg[8]
 
-include::footer.txt[]
+include::footer.adoc[]

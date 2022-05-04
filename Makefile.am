@@ -17,4 +17,4 @@ TEST_SUITE_LOG = test/test-suite.log
 AM_TESTS_ENVIRONMENT = \
 	PMTEST_BIN_DIR=$(top_builddir)/src/; export PMTEST_BIN_DIR;
 LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
-								 $(top_srcdir)/build-aux/tap-driver.sh
+	$(top_srcdir)/build-aux/tap-driver.sh

@@ -139,5 +139,3 @@ pacsort_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)
 
 pactree_SOURCES = pactree.c
 pactree_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)
-
-# vim:set noet:

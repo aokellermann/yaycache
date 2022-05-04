@@ -346,5 +346,3 @@ hi def link pb_k_maintainer pbKeywords
 hi def link pbKeywords Keyword
 
 hi def link pbDate Special
-
-"let b:current_syntax = 'PKGBUILD'

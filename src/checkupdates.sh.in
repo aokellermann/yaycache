@@ -133,5 +133,3 @@ if (( ${#updates[@]} )); then
 else
 	exit 2
 fi
-
-# vim: set noet:

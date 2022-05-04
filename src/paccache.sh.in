@@ -406,5 +406,3 @@ elif (( move )); then
 fi
 
 summarize "$pkgcount" "${candidates[@]}"
-
-# vim: set noet:

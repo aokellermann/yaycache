@@ -665,5 +665,3 @@ int main(int argc, char *argv[])
 
 	cleanup(0);
 }
-
-/* vim: set noet: */

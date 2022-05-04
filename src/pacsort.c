@@ -563,5 +563,3 @@ cleanup:
 
 	return ret;
 }
-
-/* vim: set noet: */
