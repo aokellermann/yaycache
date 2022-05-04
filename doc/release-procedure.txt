@@ -23,7 +23,7 @@ Assuming `$VERSION` is the version number in `X.Y.Z` format and `$REMOTE` is the
   - Populate new `Unreleased` section.
   - Add the Git log URL for the new tag to the bottom of the file.
   - Bump the version in the `Unreleased` Git log URL.
-* `git add CHANGES.md`
+* `git add configure.ac CHANGES.md`
 * `git commit -sm "Release v$VERSION"`
 * `git tag -s v$VERSION -m v$VERSION`
 * {blank}
