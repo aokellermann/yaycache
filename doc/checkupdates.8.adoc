@@ -1,8 +1,5 @@
-/////
-vim:set ts=4 sw=4 syntax=asciidoc noet spell spelllang=en_us:
-/////
 checkupdates(8)
-=============
+===============
 
 Name
 ----
@@ -27,8 +24,8 @@ Options
 	Download any pending updates to the pacman cache.
 
 *-n, \--nosync*::
-	Do not sync the temporary database, works best when the temporary database is 
-	update regularly through some other means such as a cronjob or systemd timer.
+	Do not sync the temporary database, works best when the temporary database is
+	updated regularly through some other means such as a cronjob or systemd timer.
 
 *-h, \--help*::
 	Display syntax and command line options.
@@ -61,4 +58,4 @@ See Also
 --------
 linkman:pacman[8], linkman:pacman.conf[5]
 
-include::footer.txt[]
+include::footer.adoc[]

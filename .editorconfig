@@ -1,0 +1,13 @@
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+
+[{configure.ac,Makefile.am,*.c,*.pl.in,*.sh,*.sh.in}]
+indent_style = tab
+
+[*.adoc]
+indent_style = tab
+indent_size = 4

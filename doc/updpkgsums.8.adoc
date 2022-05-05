@@ -1,8 +1,5 @@
-/////
-vim:set ts=4 sw=4 syntax=asciidoc noet spell spelllang=en_us:
-/////
 updpkgsums(8)
-===========
+=============
 
 Name
 ----
@@ -34,4 +31,4 @@ See Also
 --------
 linkman:makepkg[8], linkman:pkgbuild[5]
 
-include::footer.txt[]
+include::footer.adoc[]

@@ -30,13 +30,13 @@ HTML_DOCS = \
 EXTRA_DIST = \
 	asciidoc.conf \
 	asciidoc-override.css \
-	checkupdates.8.txt \
-	paccache.8.txt \
-	pacdiff.8.txt \
-	pacsort.8.txt \
-	pactree.8.txt \
-	updpkgsums.8.txt \
-	footer.txt \
+	checkupdates.8.adoc \
+	paccache.8.adoc \
+	pacdiff.8.adoc \
+	pacsort.8.adoc \
+	pactree.8.adoc \
+	updpkgsums.8.adoc \
+	footer.adoc \
 	$(ASCIIDOC_MANS)
 
 # Files that should be removed, but which Automake does not know.
@@ -89,11 +89,11 @@ A2X_OPTS = \
 	--xsltproc-opts='-param man.endnotes.list.enabled 0 -param man.endnotes.are.numbered 0'
 
 # These rules are due to the includes and files of the asciidoc text
-$(ASCIIDOC_MANS): asciidoc.conf footer.txt Makefile.am
-	$(AM_V_GEN)a2x $(A2X_OPTS) --asciidoc-opts="$(ASCIIDOC_OPTS) --out-file=./$@.xml" $(srcdir)/$@.txt
+$(ASCIIDOC_MANS): asciidoc.conf footer.adoc Makefile.am
+	$(AM_V_GEN)a2x $(A2X_OPTS) --asciidoc-opts="$(ASCIIDOC_OPTS) --out-file=./$@.xml" $(srcdir)/$@.adoc
 
-%.html: %.txt
-	$(AM_V_GEN)asciidoc $(ASCIIDOC_OPTS) -o - $*.txt | \
+%.html: %.adoc
+	$(AM_V_GEN)asciidoc $(ASCIIDOC_OPTS) -o - $*.adoc | \
 		sed -e 's/\r$$//' > $@
 
 HACKING.html: ../HACKING
@@ -101,7 +101,7 @@ HACKING.html: ../HACKING
 		sed -e 's/\r$$//' > $@
 
 # Customizations for certain HTML docs
-$(HTML_MANPAGES): asciidoc.conf footer.txt Makefile.am
+$(HTML_MANPAGES): asciidoc.conf footer.adoc Makefile.am
 $(HTML_OTHER): asciidoc.conf Makefile.am
 %.html: ASCIIDOC_OPTS += -a linkcss -a toc -a icons -a max-width=960px -a stylesheet=asciidoc-override.css
 %.8.html: ASCIIDOC_OPTS += -d manpage
@@ -109,11 +109,9 @@ $(HTML_OTHER): asciidoc.conf Makefile.am
 %.3.html: ASCIIDOC_OPTS += -d manpage
 
 # Dependency rules
-checkupdates.8 checkupdates.8.html: checkupdates.8.txt
-paccache.8 paccache.8.html: paccache.8.txt
-pacdiff.8 pacdiff.8.html: pacdiff.8.txt
-pactree.8 pactree.8.html: pactree.8.txt
-pacsort.8 pacsort.8.html: pacsort.8.txt
-updpkgsums.8 updpkgsums.8.html: updpkgsums.8.txt
-
-# vim:set noet:
+checkupdates.8 checkupdates.8.html: checkupdates.8.adoc
+paccache.8 paccache.8.html: paccache.8.adoc
+pacdiff.8 pacdiff.8.html: pacdiff.8.adoc
+pactree.8 pactree.8.html: pactree.8.adoc
+pacsort.8 pacsort.8.html: pacsort.8.adoc
+updpkgsums.8 updpkgsums.8.html: updpkgsums.8.adoc

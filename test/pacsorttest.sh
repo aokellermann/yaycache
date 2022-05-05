@@ -109,5 +109,3 @@ tap_runtest "$separator_reverse" "$separator_reverse" "really long input, sort k
 tap_runtest "$separator" "$separator_reverse" "really long input, sort key, separator, reversed" "-k 3 -t| -r"
 
 tap_finish
-
-# vim: set noet:

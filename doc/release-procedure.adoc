@@ -38,7 +38,3 @@ git notes --ref=refs/notes/signatures/tar add -C "$(
 * `git push $REMOTE master $VERSION refs/notes/signatures/tar`
 
 --
-
-/////
-vim:set ts=4 sw=4 syntax=asciidoc noet spell spelllang=en_us:
-/////

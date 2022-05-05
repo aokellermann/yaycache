@@ -59,7 +59,3 @@ submission of commits with corrections or a follow-up comment asking
 for clarifications.
 
 --
-
-/////
-vim:set ts=4 sw=4 syntax=asciidoc noet spell spelllang=en_us:
-/////

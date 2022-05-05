@@ -240,5 +240,3 @@ for line in "${linearray[@]}"; do
 	fi
 done
 finaloutput
-
-# vim: set noet:

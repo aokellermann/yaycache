@@ -1,8 +1,5 @@
-/////
-vim:set ts=4 sw=4 syntax=asciidoc noet spell spelllang=en_us:
-/////
 pacsort(8)
-=========
+==========
 
 Name
 ----
@@ -52,4 +49,4 @@ See Also
 --------
 linkman:pacman[8], linkman:vercmp[8]
 
-include::footer.txt[]
+include::footer.adoc[]
