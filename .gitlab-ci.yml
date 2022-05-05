@@ -1,0 +1,8 @@
+test:
+  image: archlinux
+  before_script:
+    - pacman -Syu --noconfirm asciidoc perl
+    - ./autogen.sh
+    - ./configure
+    - make
+  script: make check
