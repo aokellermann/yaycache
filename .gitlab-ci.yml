@@ -1,5 +1,5 @@
 test:
-  image: archlinux
+  image: archlinux:base-devel
   before_script:
     - pacman -Syu --noconfirm asciidoc perl
     - ./autogen.sh
