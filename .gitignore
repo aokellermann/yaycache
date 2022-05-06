@@ -10,5 +10,4 @@ configure
 depcomp
 install-sh
 missing
-src/pacman-filesdb-refresh.service
 test-driver

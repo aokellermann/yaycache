@@ -5,6 +5,7 @@ paccache.service
 pacdiff
 paclist
 paclog-pkglist
+pacman-filesdb-refresh.service
 pacscripts
 pacsearch
 pacsort
