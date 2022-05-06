@@ -7,6 +7,7 @@ build-aux/
 compile
 config.*
 configure
+configure~
 depcomp
 install-sh
 missing
