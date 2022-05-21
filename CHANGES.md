@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 
+## [1.5.2]
+### Added
+- Vim: Add ISC and OFL as special licenses (!11)
+- Add continuous testing (bbdf959f) (b05ed44f) (a0b1d8e1)
+
+### Changed
+- Switch to EditorConfig from Vim modelines (!9)
+
+### Fixed
+- paccache: Use more accurate --min-a/mtime description (!10)
+- Remove PrivateUsers=yes from paccache.service (!13)
+
+
 ## [1.5.1] - 2022-05-04
 ### Fixed
 - Fix version bump oversights (5350d1e4)
@@ -135,7 +148,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs.
 
 
-[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.1...master
+[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.2...master
+[1.5.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.1...v1.5.2
 [1.5.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.0...v1.5.1
 [1.5.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.4.0...v1.5.0
 [1.4.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.3.0...v1.4.0
