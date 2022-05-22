@@ -1,4 +1,4 @@
-SUBDIRS = src lib test
+SUBDIRS = src lib test completions
 if WANT_DOC
 SUBDIRS += doc
 endif

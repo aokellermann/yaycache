@@ -1,0 +1,20 @@
+#compdef pacdiff
+
+declare -a args
+args=(
+	# Use a mutually exlusive group, indicated by parenthesis around group name
+	+ '(search)'
+	{-f,--find}'[scan using find]'
+	{-l,--locate}'[scan using locate]'
+	{-p,--pacmandb}'[scan active config files from pacman database]'
+
+	+ options
+	'(-c --cachedir)'{-c,--cachedir}'[scan directory for 3-way merge base candidates]:directory:_files -/'
+	'--nocolor[remove colors from output]'
+	'(-o --output)'{-o,--output}'[print files instead of merging them]'
+	'(-s --sudo)'{-s,--sudo}'[use sudo to merge/remove files]'
+	'(-)'{--help,-h}'[display help message]'
+	'(-)--version[display version]'
+)
+
+_arguments $args
