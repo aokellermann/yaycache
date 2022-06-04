@@ -121,7 +121,11 @@ merge_file() {
 	base="$(mktemp "$tempdir"/"$basename.base.XXX")"
 	merged="$(mktemp "$tempdir"/"$basename.merged.XXX")"
 
-	tar -xOf "$base_tar" "${file#/}" >"$base"
+	if ! bsdtar -xqOf "$base_tar" "${file#/}" >"$base"; then
+		msg2 "Unable to extract the previous version of this file."
+		return 1
+	fi
+
 	if $mergeprog "$file" "$base" "$pacfile" >"$merged"; then
 		msg2 "Merged without conflicts."
 	fi
