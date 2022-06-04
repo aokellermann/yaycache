@@ -99,7 +99,8 @@ base_cache_tar() {
 	# unlikely that this will fail, but better make sure
 	pushd "$cachedir" &>/dev/null || die "failed to chdir to '%s'" "$cachedir"
 
-	find "$PWD" -name "$package-[0-9]*.pkg.tar*" | pacsort --files | sed -ne '2p'
+	find "$PWD" -name "$package-[0-9]*.pkg.tar*" ! -name '*.sig' |
+		pacsort --files --reverse | sed -ne '2p'
 
 	popd &>/dev/null
 }
