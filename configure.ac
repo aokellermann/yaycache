@@ -1,4 +1,4 @@
-AC_INIT([pacman-contrib], [1.5.2], [pacman-contrib@lists.archlinux.org])
+AC_INIT([pacman-contrib], [1.5.3], [pacman-contrib@lists.archlinux.org])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])

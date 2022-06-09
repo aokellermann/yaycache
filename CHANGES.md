@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 
 
+## [1.5.3]
+### Changed
+- pacdiff: stop if the base file extraction fails (a4a32b5f)
+
+### Fixed
+- pacdiff: fix base package filtering expression (bb26f141)
+
+
 ## [1.5.2]
 ### Added
 - Vim: Add ISC and OFL as special licenses (!11)
