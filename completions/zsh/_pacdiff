@@ -12,7 +12,7 @@ args=(
 	'(-c --cachedir)'{-c,--cachedir}'[scan directory for 3-way merge base candidates]:directory:_files -/'
 	'--nocolor[remove colors from output]'
 	'(-o --output)'{-o,--output}'[print files instead of merging them]'
-	'(-s --sudo)'{-s,--sudo}'[use sudo to merge/remove files]'
+	'(-s --sudo)'{-s,--sudo}'[use sudo and sudoedit to merge/remove files]'
 	'(-)'{--help,-h}'[display help message]'
 	'(-)--version[display version]'
 )
