@@ -159,6 +159,7 @@ else
 fi
 
 AC_CONFIG_FILES([
+	completions/Makefile
 	lib/Makefile
 	src/Makefile
 	doc/Makefile
