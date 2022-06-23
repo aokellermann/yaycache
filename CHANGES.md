@@ -6,11 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- pacdiff: Add backup option to save old files (.bak) when (O)verwriting
-
-### Changed
-
-### Fixed
+- zsh completions (!14)
+- pacdiff: Add backup option to save old files (.bak) when (O)verwriting (!17)
 
 
 ## [1.5.3]
