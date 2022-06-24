@@ -51,7 +51,7 @@ Options
 	Scan 'dir' instead as the pacman cache for 3-way merge base candidates.
 
 *-s, \--sudo*::
-	Use sudo to merge/remove files.
+	Use sudo and sudoedit to merge/remove files.
 
 See Also
 --------
