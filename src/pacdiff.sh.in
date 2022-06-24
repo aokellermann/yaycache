@@ -32,7 +32,7 @@ cachedir=
 USE_COLOR='y'
 SUDO=''
 declare -a oldsaves
-declare -i USE_FIND=0 USE_LOCATE=0 USE_PACDB=0 OUTPUTONLY=0
+declare -i USE_FIND=0 USE_LOCATE=0 USE_PACDB=0 OUTPUTONLY=0 BACKUP=0
 
 # Import libmakepkg
 source "$LIBRARY"/util/message.sh
@@ -61,6 +61,7 @@ General Options:
   -c/--cachedir <dir> scan "dir" for 3-way merge base candidates.
                       (default: read from @sysconfdir@/pacman.conf)
   -s/--sudo           use sudo and sudoedit to merge/remove files
+  -b/--backup         when overwriting, save old files with .bak
 
 Environment Variables:
   DIFFPROG          override the merge program: (default: 'vim -d')
@@ -187,6 +188,8 @@ while [[ -n "$1" ]]; do
 			cachedir="$2"; shift;;
 		-s|--sudo)
 			SUDO=sudo;;
+		-b|--backup)
+			BACKUP=1;;
 		-V|--version)
 			version; exit 0;;
 		-h|--help)
@@ -267,7 +270,12 @@ while IFS= read -u 3 -r -d '' pacfile; do
 			case $c in
 				q|Q) exit 0;;
 				r|R) $SUDO rm -v "$pacfile"; break ;;
-				o|O) $SUDO mv -v "$pacfile" "$file"; break ;;
+				o|O)
+					if (( BACKUP )); then
+						$SUDO mv -v "$file" "$file.bak"
+					fi
+					$SUDO mv -v "$pacfile" "$file"
+					break ;;
 				v|V)
 					if [[ -n "$SUDO" ]]; then
 						SUDO_EDITOR="$diffprog" sudoedit "$pacfile" "$file"

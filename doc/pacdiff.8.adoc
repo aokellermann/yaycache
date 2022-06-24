@@ -53,6 +53,9 @@ Options
 *-s, \--sudo*::
 	Use sudo and sudoedit to merge/remove files.
 
+*-b, \--backup*::
+	When overwriting, save old files with .bak.
+
 See Also
 --------
 linkman:pacman[8], linkman:pacman.conf[5]
