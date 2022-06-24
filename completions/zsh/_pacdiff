@@ -13,6 +13,7 @@ args=(
 	'--nocolor[remove colors from output]'
 	'(-o --output)'{-o,--output}'[print files instead of merging them]'
 	'(-s --sudo)'{-s,--sudo}'[use sudo and sudoedit to merge/remove files]'
+	'(-b --backup)'{-b,--backup}'[when overwriting, save old files with .bak]'
 	'(-)'{--help,-h}'[display help message]'
 	'(-)--version[display version]'
 )
