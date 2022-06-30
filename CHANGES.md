@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - zsh completions (!14)
 - pacdiff: Add backup option to save old files (.bak) when (O)verwriting (!17)
+- pacdiff: Add -3/--threeway option to view diffs in 3-way fashion
 
 
 ## [1.5.3]
