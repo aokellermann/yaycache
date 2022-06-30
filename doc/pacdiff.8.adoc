@@ -56,6 +56,10 @@ Options
 *-b, \--backup*::
 	When overwriting, save old files with .bak.
 
+*-3, \--threeway*::
+	View diffs in 3-way fashion if the base package is available in the cache.
+    Fall back to regular 2-way diff otherwise.
+
 See Also
 --------
 linkman:pacman[8], linkman:pacman.conf[5]
