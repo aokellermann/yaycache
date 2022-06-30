@@ -5,10 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+
+## [1.5.4]
 ### Added
 - zsh completions (!14)
 - pacdiff: Add backup option to save old files (.bak) when (O)verwriting (!17)
-- pacdiff: Add -3/--threeway option to view diffs in 3-way fashion
+- pacdiff: Add -3/--threeway option to view diffs in 3-way fashion (!18)
 
 
 ## [1.5.3]
@@ -155,7 +158,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs.
 
 
-[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.2...master
+[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.4...master
+[1.5.4]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.3...v1.5.4
+[1.5.3]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.2...v1.5.3
 [1.5.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.1...v1.5.2
 [1.5.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.0...v1.5.1
 [1.5.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.4.0...v1.5.0
