@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
-## [1.5.4]
+## [1.6.0]
 ### Added
 - zsh completions (!14)
 - pacdiff: Add backup option to save old files (.bak) when (O)verwriting (!17)
@@ -158,8 +158,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs.
 
 
-[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.4...master
-[1.5.4]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.3...v1.5.4
+[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.6.0...master
+[1.6.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.3...v1.6.0
 [1.5.3]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.2...v1.5.3
 [1.5.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.1...v1.5.2
 [1.5.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.0...v1.5.1
