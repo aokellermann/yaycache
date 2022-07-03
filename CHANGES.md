@@ -127,7 +127,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - `--version` option to pactree. (17beb345) (Johannes Löthberg)
 - Import pacsort utility. (f3084926) (Daniel M. Capella)
-- systemd service and timer for paccache. (769a3db6) (Daniel M. Capella)
+- systemd service and timer for paccache. (769a3db6) (Isaac Good)
 
 ### Changed
 - Make pacscripts use `-v` as the short flag for version output instead of `-V`, in accordance with its documentation. (a970b3aa) (Johannes Löthberg)
