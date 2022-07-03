@@ -145,7 +145,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.0.1] - 2016-10-17
 ### Added
 - Imported the following utilities: (Johannes Löthberg)
-  - checkupdates
+  - checkupdates (db366b32)
   - paccache (bf8826e4)
   - pacdiff (9948ec2b)
   - paclist (7d91b1d7)
