@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.5.2] - 2022-05-21
 ### Added
 - Vim: Add ISC and OFL as special licenses (!11) (Daniel M. Capella)
-- Add continuous testing (bbdf959f) (b05ed44f) (a0b1d8e1) (Daniel M. Capella)
+- Add continuous testing (bbdf959f, b05ed44f, a0b1d8e1) (Daniel M. Capella)
 
 ### Changed
 - Switch to EditorConfig from Vim modelines (!9) (Daniel M. Capella)
@@ -37,18 +37,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove PrivateUsers=yes from paccache.service (!13) (David Runge)
 
 
-## [1.5.1] - 2022-05-04
-### Fixed
-- Fix version bump oversights (5350d1e4) (Daniel M. Capella)
-
-
 ## [1.5.0] - 2022-05-03
 ### Added
 - pacdiff: automatically delete pacfile after viewing if identical (3528b32c) (John A. Leuenhagen)
 - pacdiff: Learn the (M)erge mode (94b2a194) (Denton Liu)
 - pacdiff: Add option to use sudo/sudoedit to manage files (19ab4fac) (Daniel Parks)
 - paccache.service.in: Harden unit (59fd4efb) (Frederik “Freso” S. Olesen)
-- pacman-filesdb: systemd service and timer for `pacman -Fy` (dff74498) (871ffc94) (Thiago Perrotta)
+- pacman-filesdb: systemd service and timer for `pacman -Fy` (dff74498, 871ffc94) (Thiago Perrotta)
 - checkupdates: Provide --nosync option (!2) (Samir Benmendil)
 
 ### Changed
@@ -144,7 +139,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.0.1] - 2016-10-17
 ### Added
-- Imported the following utilities: (Johannes Löthberg)
+- Imported the following utilities (Johannes Löthberg):
   - checkupdates (db366b32)
   - paccache (bf8826e4)
   - pacdiff (9948ec2b)
