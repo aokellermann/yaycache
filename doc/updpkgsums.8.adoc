@@ -20,11 +20,14 @@ directory.
 
 Options
 -------
-*-V, \--version*::
-	Display version information and exit.
+*-h, \--help*::
+	Display syntax and command-line options.
 
 *-m, \--nocolor*::
-	Disable colorized output messages.
+	Do not colorize output.
+
+*-V, \--version*::
+	Display version information and exit.
 
 
 See Also

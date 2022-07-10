@@ -8,12 +8,12 @@ paccache - flexible pacman cache cleaning utility
 
 Synopsis
 --------
-'paccache' <operation> [options] [targets...]
+'paccache' <operation> [options] [target ...]
 
 
 Description
 -----------
-Paccache removes old packages from the pacman cache directory.
+'paccache' removes old packages from the pacman cache directory.
 By default the last three versions of a package are kept.
 
 
@@ -32,15 +32,8 @@ Operations
 Options
 -------
 *-a, \--arch <arch>*::
-	Scan for packages for a specific architecture. Default is to scan for
-	all architectures.
-
-*\--min-atime <time>*::
-*\--min-mtime <time>*::
-	Keep packages with an atime/mtime that is not older than the time given,
-	even if this means keeping more than specified through the '--keep' option.
-	Accepts arguments according to 'info "Date input formats"', e.g. '30 days
-	ago'.
+	Scan for packages for a specific architecture. Default is to scan for all
+	architectures.
 
 *-c, \--cachedir <dir>*::
 	Specify a different cache directory. This option can be used more than once.
@@ -50,7 +43,7 @@ Options
 	Apply force to 'mv' and 'rm' operations.
 
 *-h, \--help*::
-	Display syntax and command line options.
+	Display syntax and command-line options.
 
 *-i, \--ignore <pkgs>*::
 	Specify packages to ignore, comma-separated. Alternatively "-" can be used
@@ -60,8 +53,18 @@ Options
 	Specify how many versions of each package are kept in the cache directory,
 	default is 3.
 
+*\--min-atime <time>*::
+*\--min-mtime <time>*::
+	Keep packages with an atime/mtime that is not older than the time given,
+	even if this means keeping more than specified through the '--keep' option.
+	Accepts arguments according to 'info "Date input formats"', e.g. '30 days
+	ago'.
+
 *\--nocolor*::
-	Remove color from the output.
+	Do not colorize output.
+
+*-z, \--null*::
+	Use null delimiters for candidate names (only with -v and -vv).
 
 *-q, \--quiet*::
 	Minimize the output.
@@ -72,14 +75,15 @@ Options
 *-v, \--verbose*::
 	Increase verbosity, can be specified up to 3 times.
 
-*-z, \--null*::
-	Use null delimiters for candidate names (only with -v and -vv).
+*-V, \--version*::
+	Display version information.
 
 
 Systemd Timer
 -------------
-The package cache can be cleaned periodically using the systemd timer 'paccache.timer'.
-If the timer is enabled the cache will be cleaned weekly with paccache's default options.
+The package cache can be cleaned periodically using the systemd timer
+'paccache.timer'. If the timer is enabled the cache will be cleaned weekly with
+paccache's default options.
 
 
 See Also

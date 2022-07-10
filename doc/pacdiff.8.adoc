@@ -13,10 +13,51 @@ Synopsis
 
 Description
 -----------
-pacdiff is a script which looks for pacorig, pacnew and pacsave files from the
-backup entries found in the local Pacman db. For every found file the option is
+'pacdiff' is a script which looks for pacorig, pacnew and pacsave files from the
+backup entries found in the local pacman db. For every found file the option is
 given to view, merge, skip, diff, remove or overwrite the found pacorig, pacnew
 or pacsave file.
+
+Options
+-------
+
+Search Options
+~~~~~~~~~~~~~~
+*-f, \--find*::
+	Scan using find.
+
+*-l, \--locate*::
+	Scan using locate.
+
+*-p, \--pacmandb*::
+	Scan active config files from pacman database. (default)
+
+General Options
+~~~~~~~~~~~~~~~
+*-b, \--backup*::
+	When overwriting, save old files with .bak.
+
+*-c, \--cachedir <dir>*::
+	Scan 'dir' instead as the pacman cache for 3-way merge base candidates.
+
+*-h, \--help*::
+	Display syntax and command-line options.
+
+*\--nocolor*::
+	Do not colorize output.
+
+*-o, \--output*::
+	Print files instead of merging them.
+
+*-s, \--sudo*::
+	Use sudo and sudoedit to merge/remove files.
+
+*-3, \--threeway*::
+	View diffs in 3-way fashion if the base package is available in the cache.
+	Fall back to regular 2-way diff otherwise.
+
+*-V, \--version*::
+	Display version information.
 
 Environment
 -----------
@@ -29,36 +70,6 @@ Environment
 *MERGEPROG*::
 	Override the default 'diff3 -m' 3-way merge program. One possible
 	alternative is 'git merge-file -p'.
-
-Options
--------
-*-l, \--locate*::
-	Scan using locate.
-
-*-f, \--find*::
-	Scan using find.
-
-*-p, \--pacmandb*::
-	Scan active config files from Pacman database. (default)
-
-*-o, \--output*::
-	Print files instead of merging them.
-
-*\--nocolor*::
-	Remove colors from output.
-
-*-c, \--cachedir <dir>*::
-	Scan 'dir' instead as the pacman cache for 3-way merge base candidates.
-
-*-s, \--sudo*::
-	Use sudo and sudoedit to merge/remove files.
-
-*-b, \--backup*::
-	When overwriting, save old files with .bak.
-
-*-3, \--threeway*::
-	View diffs in 3-way fashion if the base package is available in the cache.
-    Fall back to regular 2-way diff otherwise.
 
 See Also
 --------
