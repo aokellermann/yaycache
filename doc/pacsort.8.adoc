@@ -8,7 +8,7 @@ pacsort - sort utility implementing alpm_pkg_vercmp
 
 Synopsis
 --------
-'pacsort' [options] [files...]
+'pacsort' [options] [files ...]
 
 
 Description
@@ -24,13 +24,17 @@ By default the lines are treated as lists of plain version strings.
 Options
 -------
 *-f, \--files*::
-	If the input lists are in the format '\*-\*.pkg.tar*', sort lines by pkgname and pkgver.
+	If the input lists are in the format '\*-\*.pkg.tar*', sort lines by pkgname
+	and pkgver.
 
 *-h, \--help*::
-	Display syntax and command line options.
+	Display syntax and command-line options.
 
 *-k, \--key <index>*::
 	Sort the input starting on the specified column.
+
+*-z, \--null*::
+	Lines end with null bytes rather than newlines.
 
 *-r, \--reverse*::
 	Sort in reverse order.
@@ -38,11 +42,8 @@ Options
 *-t, \--separator <sep>*::
 	Field separator.  Default separator is space.
 
-*-v, \--version*::
+*-V, \--version*::
 	Display the version.
-
-*-z, \--null*::
-	Lines end with null bytes rather than newlines.
 
 
 See Also

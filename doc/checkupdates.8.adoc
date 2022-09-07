@@ -13,9 +13,9 @@ Synopsis
 
 Description
 -----------
-Checks for pending updates using a separate Pacman database located in
-*`TMPDIR`* if *`CHECKUPDATES_DB`* is not set and outputs a list of updates with the
-old and new version.
+'checkupdates' checks for pending updates using a separate pacman database
+located in *`TMPDIR`* if *`CHECKUPDATES_DB`* is not set and outputs a list of
+updates with the old and new version.
 
 
 Options
@@ -23,21 +23,29 @@ Options
 *-d, \--download*::
 	Download any pending updates to the pacman cache.
 
-*-n, \--nosync*::
-	Do not sync the temporary database, works best when the temporary database is
-	updated regularly through some other means such as a cronjob or systemd timer.
-
 *-h, \--help*::
-	Display syntax and command line options.
+	Display syntax and command-line options.
+
+\--nocolor*::
+	Do not colorize output.
+
+*-n, \--nosync*::
+	Do not sync the temporary database, works best when the temporary database
+	is updated regularly through some other means such as a cronjob or systemd
+	timer.
+
+*-V, \--version*::
+	Display version information.
 
 
 Environment
 -----------
 *CHECKUPDATES_DB*::
-	Override the default update db location.
+	Override the default '$\{TMPDIR:-/tmp}/checkup-db-$\{UID}' temporary
+	database location.
 
 *TMPDIR*::
-	Overrides the default '/tmp' temporary directory.
+	Override the default '/tmp' temporary directory.
 
 
 Errors

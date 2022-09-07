@@ -420,18 +420,19 @@ static char escape_char(const char *string)
 static void usage(void)
 {
 	printf("pacsort v" PACKAGE_VERSION "\n\n"
-			"A sort utility implementing alpm_pkg_vercmp.\n\n"
-			"Usage: pacsort [options] [files...]\n\n"
-			"  -f, --files             assume inputs are file paths of packages\n"
-			"  -h, --help              display this help message\n"
-			"  -k, --key <index>       sort input starting on specified column\n"
-			"  -r, --reverse           sort in reverse order (default: oldest to newest)\n"
-			"  -t, --separator <sep>   specify field separator (default: space)\n"
-			"  -v, --version           display the version\n"
-			"  -z, --null              lines end with null bytes, not newlines\n\n"
+			"Sort utility implementing alpm_pkg_vercmp.\n\n"
+			"Usage: pacsort [options] [files ...]\n\n"
+			"Options:\n"
+			"  -f, --files            assume inputs are file paths of packages\n"
+			"  -k, --key <index>      sort input starting on specified column\n"
+			"  -z, --null             lines end with null bytes, not newlines\n"
+			"  -r, --reverse          sort in reverse order (default: oldest to newest)\n"
+			"  -t, --separator <sep>  specify field separator (default: space)\n"
+			"  -h, --help             display this help message and exit\n"
+			"  -V, --version          display version information and exit\n\n"
 			"pacsort writes the sorted concatenation of all files, to standard output.\n"
 			"Files should contain a list of inputs to sort.\n\n"
-			"Standard input is read when no files are given.\n\n");
+			"Standard input is read when no files are given.\n");
 }
 
 static void version(void)
@@ -449,7 +450,7 @@ static int parse_options(int argc, char **argv)
 		{"key",       required_argument,    0, 'k'},
 		{"reverse",   no_argument,          0, 'r'},
 		{"separator", required_argument,    0, 't'},
-		{"version",   no_argument,          0, 'v'},
+		{"version",   no_argument,          0, 'V'},
 		{"null",      no_argument,          0, 'z'},
 		{0, 0, 0, 0}
 	};
@@ -459,9 +460,6 @@ static int parse_options(int argc, char **argv)
 			case 'f':
 				opts.filemode = 1;
 				break;
-			case 'h':
-				opts.help = 1;
-				return 0;
 			case 'k':
 				opts.sortkey = (int)strtol(optarg, NULL, 10);
 				if(opts.sortkey <= 0) {
@@ -479,12 +477,15 @@ static int parse_options(int argc, char **argv)
 					return 1;
 				}
 				break;
-			case 'v':
-				opts.version = 1;
-				return 0;
 			case 'z':
 				opts.null = 1;
 				break;
+			case 'h':
+				opts.help = 1;
+				return 0;
+			case 'V':
+				opts.version = 1;
+				return 0;
 			default:
 				return 1;
 		}
