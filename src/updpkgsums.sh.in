@@ -106,7 +106,7 @@ if [[ -z $newsums ]]; then
 fi
 
 awk -v sumtypes="$sumtypes" -v newsums="$newsums" '
-	$0 ~"^[[:blank:]]*(" sumtypes ")sums(_[^=]+)?=", $0 ~ "\\)[[:blank:]]*(#.*)?$" {
+	$0 ~"^[[:blank:]]*(" sumtypes ")sums(_[^=]+)?\\+?=", $0 ~ "\\)[[:blank:]]*(#.*)?$" {
 		if (!w) {
 			print newsums
 			w++
