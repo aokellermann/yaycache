@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - rankmirrors: Allow parallel time check (6614285b) (Dmitry Kuzmenko)
 
-### Changed
+### Fixed
 - Consistency fixes (!20) (Daniel M. Capella)
 
 
