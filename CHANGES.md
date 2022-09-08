@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
+## [1.7.1] - 2022-09-07
+### Fixed
+- updpkgsums: fix when PKGBUILD contains *sums+= (!22) (Piggy NL)
+
+
 ## [1.7.0] - 2022-09-07
 ### Added
 - rankmirrors: Allow parallel time check (6614285b) (Dmitry Kuzmenko)
@@ -161,7 +166,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs. (43ae503e) (Johannes Löthberg)
 
 
-[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.0...master
+[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.1...master
+[1.7.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.0...v1.7.1
 [1.7.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.6.0...v1.7.0
 [1.6.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.3...v1.6.0
 [1.5.3]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.2...v1.5.3
