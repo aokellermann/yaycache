@@ -17,21 +17,21 @@ syn case match
 " pkgname
 " FIXME if '=' is in pkgname/pkgver, it highlights whole string, not just '='
 syn keyword pb_k_pkgname pkgname contained
-syn match pbValidPkgname /\([[:alnum:]]\|+\|-\|_\){,32}/ contained contains=pbIllegalPkgname
-syn match pbIllegalPkgname /[[:upper:]]\|[^[:alnum:]-+_=]\|=.*=\|=['"]\?.\{33,\}['"]\?/ contained
+syn match pbValidPkgname /[[:alnum:]@._+-]{,32}/ contained contains=pbIllegalPkgname
+syn match pbIllegalPkgname /[[:upper:]]\|[^[:alnum:]=@._+-]\|=.*=\|=['"]\?.\{33,\}['"]\?/ contained
 syn match pbPkgnameGroup /^pkgname=.*/ contains=pbIllegalPkgname,pb_k_pkgname,shDoubleQuote,shSingleQuote
 
 " pkgbase
 " FIXME if '=' is in pkgbase/pkgname/pkgver, it highlights whole string, not just '='
 syn keyword pb_k_pkgbase pkgbase contained
-syn match pbValidPkgbase /\([[:alnum:]]\|+\|-\|_\){,32}/ contained contains=pbIllegalPkgbase
-syn match pbIllegalPkgbase /[[:upper:]]\|[^[:alnum:]-+_=]\|=.*=\|=['"]\?.\{33,\}['"]\?/ contained
+syn match pbValidPkgbase /[[:alnum:]@._+-]{,32}/ contained contains=pbIllegalPkgbase
+syn match pbIllegalPkgbase /[[:upper:]]\|[^[:alnum:]=@._+-]\|=.*=\|=['"]\?.\{33,\}['"]\?/ contained
 syn match pbPkgbaseGroup /^pkgbase=.*/ contains=pbIllegalPkgbase,pb_k_pkgbase,shDoubleQuote,shSingleQuote
 
 " pkgver
 syn keyword pb_k_pkgver pkgver contained
-syn match pbValidPkgver /\([[:alnum:]]\|\.\|+\|_\)/ contained contains=pbIllegalPkgver
-syn match pbIllegalPkgver /[^[:alnum:]+=\.\_]\|=.*=/ contained
+syn match pbValidPkgver /[[:alnum:]]+._]/ contained contains=pbIllegalPkgver
+syn match pbIllegalPkgver /[^[:alnum:]=+._]\|=.*=/ contained
 syn match pbPkgverGroup /^pkgver=.*/ contains=pbIllegalPkgver,pbValidPkgver,pb_k_pkgver,shDoubleQuote,shSingleQuote
 
 " pkgrel
@@ -69,7 +69,7 @@ syn keyword pbLicense AGPL AGPL3 Apache APACHE Boost CCPL CDDL CPL EPL FDL GPL G
 syn match pbLicense /Artistic2\.0\|FDL1\.2\|FDL1\.3\|LGPL2\.1/ contained
 " special cases from https://wiki.archlinux.org/index.php/PKGBUILD#license
 syn keyword pbLicenseSpecial  BSD ISC MIT OFL Python ZLIB contained
-syn match pbLicenseCustom /custom\(:[[:alnum:]]*\)*/ contained
+syn match pbLicenseCustom /custom\(:[[:alnum:].]*\)*/ contained
 syn keyword pbLicenseUnknown unknown contained
 syn match pbIllegalLicense /[^='"() ]/ contained contains=pbLicenseUnknown,pbLicenseCustom,pbLicenseSpecial,pbLicense
 syn region pbLicenseGroup start=/^license=(/ end=/)/ contains=pb_k_license,pbLicenseCustom,pbLicenseSpecial,pbLicense,pbIllegalLicense
@@ -81,7 +81,7 @@ syn region pbBackupGroup start=/^backup=(/ end=/)/ contains=pb_k_backup,pbValidB
 
 " arch
 syn keyword pb_k_arch arch contained
-syn keyword pbArch i686 x86_64 ppc any contained
+syn keyword pbArch i686 x86_64 ppc pentium4 armv7h aarch64 any contained
 syn match pbIllegalArch /[^='"() ]/ contained contains=pbArch
 syn region pbArchGroup start=/^arch=(/ end=/)/ contains=pb_k_arch,pbArch,pbIllegalArch
 
