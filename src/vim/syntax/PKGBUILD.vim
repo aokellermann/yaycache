@@ -261,7 +261,12 @@ syn keyword    pbTodo   contained       COMBAK FIXME TODO XXX
 syn match      pbComment        "^#.*$" contains=@pbCommentGroup
 syn match      pbComment        "[^0-9]#.*$"    contains=@pbCommentGroup
 
-" quotes are handled by sh.vim
+" quotes
+" XXX redefined to fix #6 & #10
+syn clear shSingleQuote
+syn clear shDoubleQuote
+syn region shSingleQuote matchgroup=shQuote start=+'+ end=+'+ contains=@Spell nextgroup=shSpecialStart,shSpecialSQ
+syn region shDoubleQuote matchgroup=shQuote start=+\%(\%(\\\\\)*\\\)\@<!"+ skip=+\\.+ end=+"+ contains=@shDblQuoteList,shStringSpecial,@Spell nextgroup=shSpecialStart
 
 hi def link pbComment Comment
 hi def link pbTodo Todo
