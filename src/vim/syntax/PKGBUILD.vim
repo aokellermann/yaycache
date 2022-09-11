@@ -126,10 +126,6 @@ syn match pbValidReplaces /\([[:alnum:]]\|+\|-\|_\)*/ contained
 syn region pbReplacesGroup start=/^replaces=(/  end=/)/ contains=pb_k_replaces,pbValidReplaces,shDoubleQuote,shSingleQuote
 
 " install
-" XXX remove install from bashStatement, fix strange bug
-syn clear bashStatement
-syn keyword bashStatement chmod clear complete du egrep expr fgrep find gnufind gnugrep grep less ls mkdir mv rm rmdir rpm sed sleep sort strip tail touch
-
 syn keyword pb_k_install install contained
 syn match pbValidInstall /\([[:alnum:]]\|\$\|+\|-\|_\)*\.install/ contained
 syn match pbIllegalInstall /[^=]/ contained contains=pbValidInstall
@@ -144,7 +140,8 @@ syn match pbChangelogGroup /^changelog=.*/ contains=pb_k_changelog,pbValidChange
 " source:
 " XXX remove source from shStatement, fix strange bug
 syn clear shStatement
-syn keyword shStatement xxx wait getopts return autoload whence printf true popd nohup enable r trap readonly fc fg kill ulimit umask disown stop pushd read history logout times local exit test pwd time eval integer suspend dirs shopt hash false newgrp bg print jobs continue functions exec help cd break unalias chdir type shift builtin let bind
+syn keyword shStatement alias break cd chdir continue eval exec exit kill newgrp pwd read readonly return shift test trap ulimit umask wait
+syn keyword shStatement bg builtin disown export false fg getopts jobs let printf sleep true unalias typeset fc hash history suspend times type bind builtin caller compopt declare dirs disown enable export help logout mapfile popd pushd readarray shopt typeset
 
 syn keyword pb_k_source source contained
 syn match pbIllegalSource /\(http\|ftp\|https\).*\.\+\(dl\|download.\?\)\.\(sourceforge\|sf\).net/
