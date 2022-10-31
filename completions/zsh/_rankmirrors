@@ -10,7 +10,7 @@ args=(
 	'(--url -u)'{--url,-u}'[test a specific UR]'
 	'(--verbose -v)'{--verbose,-v}'[be verbose in output]'
 	'(-)'{--help,-h}'[display help message and exit]'
-	'(-)'{--version, -V}'[display version information and exit]'
+	'(-)'{--version,-V}'[display version information and exit]'
 
 	':mirror file or URL:{_alternative files:file:_files urls:url:_urls}'
 )
