@@ -19,13 +19,15 @@ vim_ftplugin_dir = $(vim_dir)/ftplugin
 vim_syntax_dir = $(vim_dir)/syntax
 
 vim_ftdetect__DATA = \
-	vim/ftdetect/PKGBUILD.vim
+	vim/ftdetect/PKGBUILD.vim \
+	vim/ftdetect/SRCINFO.vim
 
 vim_ftplugin__DATA = \
 	vim/ftplugin/PKGBUILD.vim
 
 vim_syntax__DATA = \
-	vim/syntax/PKGBUILD.vim
+	vim/syntax/PKGBUILD.vim \
+	vim/syntax/SRCINFO.vim
 
 systemd_dir = ${libdir}/systemd/system
 
@@ -71,7 +73,9 @@ EXTRA_DIST = \
 	rankmirrors.sh.in \
 	updpkgsums.sh.in \
 	vim/syntax/PKGBUILD.vim \
+	vim/syntax/SRCINFO.vim \
 	vim/ftdetect/PKGBUILD.vim \
+	vim/ftdetect/SRCINFO.vim \
 	vim/ftplugin/PKGBUILD.vim
 
 # Files that should be removed, but which Automake does not know.
