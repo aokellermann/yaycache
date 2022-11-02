@@ -5,8 +5,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+
+## [1.8.0] - 2022-11-01
 ## Added
 - Add SRCINFO syntax for Vim (!23) (ObserverOfTime)
+
+## Fixed
+- rankmirrors: Fix zsh completion & consistency touch-up (!25) (Frederick Zhang)
+- Vim: PKGBUILD syntax fixes (!24) (ObserverOfTime)
 
 
 ## [1.7.1] - 2022-09-07
@@ -168,7 +175,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs. (43ae503e) (Johannes Löthberg)
 
 
-[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.1...master
+[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.0...master
+[1.8.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.1...v1.8.0
 [1.7.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.0...v1.7.1
 [1.7.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.6.0...v1.7.0
 [1.6.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.3...v1.6.0
