@@ -26,7 +26,7 @@ Options
 *-h, \--help*::
 	Display syntax and command-line options.
 
-\--nocolor*::
+*\--nocolor*::
 	Do not colorize output.
 
 *-n, \--nosync*::
