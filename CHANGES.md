@@ -180,8 +180,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Added vim highlighting for PKGBUILDs. (43ae503e) (Johannes Löthberg)
 
 
-[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.1...master
-[1.8.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.0...v1.8.1
+[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.2...master
+[1.8.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.0...v1.8.2
 [1.8.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.1...v1.8.0
 [1.7.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.0...v1.7.1
 [1.7.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.6.0...v1.7.0
