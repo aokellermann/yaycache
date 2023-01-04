@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 
-## [1.8.1] - 2023-01-04
+## [1.8.2] - 2023-01-04
 ## Fixed
 - Fix pacdiff with multiple CacheDirs (!27) (Baltazár Radics)
 
