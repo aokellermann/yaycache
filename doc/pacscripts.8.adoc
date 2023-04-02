@@ -3,7 +3,7 @@ pacscripts(8)
 
 Name
 ----
-pacscripts - tries to print out the {pre,post}_{install,remove,upgrade} scripts of a given package.
+pacscripts - print out the {pre,post}_{install,remove,upgrade} scripts of a given package.
 
 
 Synopsis
@@ -23,7 +23,7 @@ Options
 	Display syntax and command-line options.
 
 *-V, \--version*::
-	Display version information and exit.
+	Display version information.
 
 
 See Also

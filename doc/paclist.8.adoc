@@ -25,7 +25,7 @@ Options
 	Display syntax and command-line options.
 
 *-V, \--version*::
-	Display version information and exit.
+	Display version information.
 
 
 See Also

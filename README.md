@@ -35,17 +35,17 @@ Scripts available in this repository:
 
 * paclog-pkglist - list currently installed packages based pacman's log.
 
-* pacscripts - tries to print out the {pre,post}\_{install,remove,upgrade}
+* pacscripts - print out the {pre,post}\_{install,remove,upgrade}
                scripts of a given package.
 
 * pacsearch - a colorized search combining both -Ss and -Qs output. Installed
               packages are easily identified with a `[installed]`, and
               local-only packages are also listed.
 
-* pacsort - concatenates the given files, sorts them, and writes them to standard output.
+* pacsort - concatenate the given files, sort them, and write them to standard output.
 
 * pactree - a package dependency tree viewer.
 
-* rankmirrors - ranks pacman mirrors by their connection and opening speed.
+* rankmirrors - rank pacman mirrors by their connection and opening speed.
 
-* updpkgsums - performs an in-place update of the checksums in a PKGBUILD.
+* updpkgsums - perform an in-place update of the checksums in a PKGBUILD.

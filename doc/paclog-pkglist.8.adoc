@@ -3,7 +3,7 @@ paclog-pkglist(8)
 
 Name
 ----
-paclog-pkglist - list currently installed packages based pacman's log
+paclog-pkglist - list currently installed packages based on pacman's log
 
 
 Synopsis
@@ -24,7 +24,7 @@ Options
 	Display syntax and command-line options.
 
 *-V, \--version*::
-	Display version information and exit.
+	Display version information.
 
 
 See Also

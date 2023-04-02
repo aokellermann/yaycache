@@ -27,7 +27,7 @@ Options
 	Do not colorize output.
 
 *-V, \--version*::
-	Display version information and exit.
+	Display version information.
 
 
 See Also

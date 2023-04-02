@@ -3,7 +3,7 @@ rankmirrors(8)
 
 Name
 ----
-rankmirrors - ranks pacman mirrors by their connection and opening speed.
+rankmirrors - rank pacman mirrors by their connection and opening speed.
 
 
 Synopsis
@@ -13,7 +13,7 @@ Synopsis
 
 Description
 -----------
-'pacsearch' will rank pacman mirrors by their connection and opening speed. 
+'rankmirrors' will rank pacman mirrors by their connection and opening speed.
 Pacman mirror files are located in /etc/pacman.d/.
 It can also rank one mirror if the URL is provided.
 
@@ -45,7 +45,7 @@ Options
 	Display syntax and command-line options.
 
 *-V, \--version*::
-	Display version information and exit.
+	Display version information.
 
 
 include::footer.adoc[]
