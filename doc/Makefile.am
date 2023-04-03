@@ -7,16 +7,26 @@ ASCIIDOC_MANS = \
 	checkupdates.8 \
 	paccache.8 \
 	pacdiff.8 \
+	paclist.8 \
+	paclog-pkglist.8 \
+	pacscripts.8 \
+	pacsearch.8 \
 	pacsort.8 \
 	pactree.8 \
+	rankmirrors.8 \
 	updpkgsums.8
 
 HTML_MANPAGES = \
 	checkupdates.8.html \
 	paccache.8.html \
 	pacdiff.8.html \
+	paclist.8.html \
+	paclog-pkglist.8.html \
+	pacscripts.8.html \
+	pacsearch.8.html \
 	pacsort.8.html \
 	pactree.8.html \
+	rankmirrors.8.html \
 	updpkgsums.8.html
 
 HTML_OTHER = \
@@ -33,8 +43,13 @@ EXTRA_DIST = \
 	checkupdates.8.adoc \
 	paccache.8.adoc \
 	pacdiff.8.adoc \
+	paclist.8.adoc \
+	paclog-pkglist.8.adoc \
+	pacscripts.8.adoc \
+	pacsearch.8.adoc \
 	pacsort.8.adoc \
 	pactree.8.adoc \
+	rankmirrors.8.adoc \
 	updpkgsums.8.adoc \
 	footer.adoc \
 	$(ASCIIDOC_MANS)
@@ -112,6 +127,11 @@ $(HTML_OTHER): asciidoc.conf Makefile.am
 checkupdates.8 checkupdates.8.html: checkupdates.8.adoc
 paccache.8 paccache.8.html: paccache.8.adoc
 pacdiff.8 pacdiff.8.html: pacdiff.8.adoc
-pactree.8 pactree.8.html: pactree.8.adoc
+paclist.8 paclist.8.html: paclist.8.adoc
+paclog-pkglist.8 paclog-pkglist.8.html: paclog-pkglist.8.adoc
+pacscripts.8 pacscripts.8.html: pacscripts.8.adoc
+pacsearch.8 pacsearch.8.html: pacsearch.8.adoc
 pacsort.8 pacsort.8.html: pacsort.8.adoc
+pactree.8 pactree.8.html: pactree.8.adoc
+rankmirrors.8 rankmirrors.8.html: rankmirrors.8.adoc
 updpkgsums.8 updpkgsums.8.html: updpkgsums.8.adoc
