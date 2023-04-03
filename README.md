@@ -33,7 +33,7 @@ Scripts available in this repository:
             which packages you may have installed from the testing repository,
             for instance.
 
-* paclog-pkglist - lists currently installs packages based pacman's log.
+* paclog-pkglist - list currently installed packages based pacman's log.
 
 * pacscripts - tries to print out the {pre,post}\_{install,remove,upgrade}
                scripts of a given package.
@@ -41,6 +41,10 @@ Scripts available in this repository:
 * pacsearch - a colorized search combining both -Ss and -Qs output. Installed
               packages are easily identified with a `[installed]`, and
               local-only packages are also listed.
+
+* pacsort - concatenates the given files, sorts them, and writes them to standard output.
+
+* pactree - a package dependency tree viewer.
 
 * rankmirrors - ranks pacman mirrors by their connection and opening speed.
 
