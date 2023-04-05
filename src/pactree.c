@@ -307,7 +307,7 @@ static int parse_options(int argc, char *argv[])
 		style = &graph_utf8;
 	}
 
-	while((opt = getopt_long(argc, argv, "ab:cd:ghlrsuo::v", opts, &option_index))) {
+	while((opt = getopt_long(argc, argv, "ab:cd:ghlrsuo::V", opts, &option_index))) {
 		if(opt < 0) {
 			break;
 		}
