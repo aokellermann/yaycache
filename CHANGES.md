@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.9.1] - 2023-07-13
 ## Fixed
-- pacdiff: Fix the .bak workflow being broken for /etc/sudoers
+- pacdiff: Fix the .bak workflow being broken for /etc/sudoers (!31) (Matt Armand)
 
 
 ## [1.9.0] - 2023-04-03
