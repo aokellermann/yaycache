@@ -1,10 +1,8 @@
-Maintainers
------------
+## Maintainers
 
-* Johannes Löthberg <johannes@kyriasis.com>
-* Daniel M. Capella <polyzen@archlinux.org>
+- Johannes Löthberg <johannes@kyriasis.com>
+- Daniel M. Capella <polyzen@archlinux.org>
 
-Contributors
-------------
+## Contributors
 
 Use `git shortlog -s` for a list of contributors.

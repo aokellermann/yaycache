@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 
-- updpkgsums: fix when PKGBUILD contains *sums+= (!22) (Piggy NL)
+- updpkgsums: fix when PKGBUILD contains \*sums+= (!22) (Piggy NL)
 
 ## [1.7.0] - 2022-09-07
 
@@ -225,20 +225,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   - updpkgsums (bda662e1)
 - Added vim highlighting for PKGBUILDs. (43ae503e) (Johannes Löthberg)
 
-[Unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.0...master
-[1.9.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.0...v1.9.1
-[1.9.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.2...v1.9.0
-[1.8.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.0...v1.8.2
-[1.8.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.1...v1.8.0
-[1.7.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.0...v1.7.1
-[1.7.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.6.0...v1.7.0
-[1.6.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.3...v1.6.0
-[1.5.3]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.2...v1.5.3
-[1.5.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.0...v1.5.2
-[1.5.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.4.0...v1.5.0
-[1.4.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.3.0...v1.4.0
-[1.3.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.2.0...v1.3.0
-[1.2.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.1.0...v1.2.0
-[1.1.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.0...v1.1.0
-[1.0.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v0.0.1...v1.0.0
 [0.0.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/commits/v0.0.1
+[1.0.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v0.0.1...v1.0.0
+[1.1.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.0.0...v1.1.0
+[1.2.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.1.0...v1.2.0
+[1.3.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.2.0...v1.3.0
+[1.4.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.3.0...v1.4.0
+[1.5.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.4.0...v1.5.0
+[1.5.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.0...v1.5.2
+[1.5.3]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.2...v1.5.3
+[1.6.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.5.3...v1.6.0
+[1.7.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.6.0...v1.7.0
+[1.7.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.0...v1.7.1
+[1.8.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.7.1...v1.8.0
+[1.8.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.0...v1.8.2
+[1.9.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.2...v1.9.0
+[1.9.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.0...v1.9.1
+[unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.0...master
