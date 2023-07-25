@@ -152,7 +152,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 
 - checkupdates: Add option for downloading updates. (ab69666)
-- docs: Add manpages for checkupdates, pacdiff, pacsort, updpkgsums. (d25a8b2, 35eef6b, ef63784, b258c31)  (Jelle van der Waa, Johannes Löthberg)
+- docs: Add manpages for checkupdates, pacdiff, pacsort, updpkgsums. (d25a8b2, 35eef6b, ef63784, b258c31) (Jelle van der Waa, Johannes Löthberg)
 - paccache: Add --age-atime and --age-mtime arguments. (45c1916) (wisp3rwind)
 - vim: Add indent file. (020b533) (Daniel M. Capella)
 - vim: Add b2sums to PKGBUILD syntax file. (fc21909) (Eli Schwartz)
