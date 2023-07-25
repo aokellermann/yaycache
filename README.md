@@ -5,8 +5,7 @@ This repository contains contributed scripts to pacman.
 
 *Note*: This used to be part of pacman.git, but was moved out to make pacman maintenance easier.
 
-
-How to build:
+How to build
 -------------
 
     ./autogen.sh
@@ -17,8 +16,7 @@ How to build:
     make check
     make install DESTDIR="$pkgdir"
 
-
-Scripts available in this repository:
+Scripts available in this repository
 -------------------------------------
 
 * checkupdates - print a list of pending updates without touching the system
