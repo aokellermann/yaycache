@@ -2,11 +2,11 @@
 
 This repository contains contributed scripts to pacman.
 
-*Note*: This used to be part of pacman.git, but was moved out to make pacman maintenance easier.
+*Note*: These existed in pacman.git, but were moved out to ease maintenance.
 
 ## How to build
 
-```
+```sh
 ./autogen.sh
 ./configure --prefix=/usr \
             --sysconfdir=/etc \

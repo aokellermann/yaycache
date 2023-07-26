@@ -242,3 +242,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [1.9.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.2...v1.9.0
 [1.9.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.0...v1.9.1
 [unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.1...master
+
+<!-- markdownlint-disable-file MD013 MD024 -->
