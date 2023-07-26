@@ -1,3 +1,12 @@
+---
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+
+
 test:
   image: archlinux:base-devel
   before_script:
@@ -6,8 +15,24 @@ test:
     - ./configure
     - make
   script: make check
+
+.lint-workflow:
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || ($CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "push")'
+      changes:
+        paths:
+          - $FILE_GLOB
+        compare_to: 'master'
     - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"'
       when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
+
+vint:
+  image: alpine
+  variables:
+    FILE_GLOB: "src/vim/*/*.vim"
+  before_script:
+    - apk add vint py3-setuptools
+  script:
+    - vint src/vim
+  rules:
+    - !reference [.lint-workflow, rules]
