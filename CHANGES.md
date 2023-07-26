@@ -9,30 +9,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.9.1] - 2023-07-13
 
-## Fixed
+### Fixed
 
 - pacdiff: Fix the .bak workflow being broken for /etc/sudoers (!31) (Matt Armand)
 
 ## [1.9.0] - 2023-04-03
 
-## Added
+### Added
 
 - Vim: recognise comments inside array groups (!29) (éclairevoyant)
 - Add the missing man pages as well as the missing utils from the README (!30) (Robin Candau)
 
 ## [1.8.2] - 2023-01-04
 
-## Fixed
+### Fixed
 
 - Fix pacdiff with multiple CacheDirs (!27) (Baltazár Radics)
 
 ## [1.8.0] - 2022-11-01
 
-## Added
+### Added
 
 - Add SRCINFO syntax for Vim (!23) (ObserverOfTime)
 
-## Fixed
+### Fixed
 
 - rankmirrors: Fix zsh completion & consistency touch-up (!25) (Frederick Zhang)
 - Vim: PKGBUILD syntax fixes (!24) (ObserverOfTime)
@@ -241,4 +241,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [1.8.2]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.0...v1.8.2
 [1.9.0]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.8.2...v1.9.0
 [1.9.1]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.0...v1.9.1
-[unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.0...master
+[unreleased]: https://gitlab.archlinux.org/pacman/pacman-contrib/-/compare/v1.9.1...master
