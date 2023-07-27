@@ -36,7 +36,9 @@ QUIET=0
 USE_COLOR='y'
 
 # Import libmakepkg
+# shellcheck source=/dev/null
 source "$LIBRARY"/util/message.sh
+# shellcheck source=/dev/null
 source "$LIBRARY"/util/parseopts.sh
 
 die() {
@@ -153,7 +155,7 @@ summarize() {
 	(( QUIET )) && return
 
 	local -i filecount=$1; shift
-	local seenarch= seen= arch= name=
+	local seenarch='' seen='' arch='' name=''
 	local -r pkg_re='(.+)-[^-]+-[0-9]+-([^.]+)\.pkg.*'
 
 	if (( delete )); then
@@ -271,13 +273,15 @@ while :; do
 			shift ;;
 		--min-atime)
 			min_atime=$(date -d "$2" +%s)
-			if (( $? )); then
+			min_atime_status=$?
+			if (( min_atime_status )); then
 				die "argument to option --min-atime must be of the form described by 'info \"Date input formats\" '."
 			fi
 			shift ;;
 		--min-mtime)
 			min_mtime=$(date -d "$2" +%s)
-			if (( $? )); then
+			min_mtime_status=$?
+			if (( min_mtime_status )); then
 				die "argument to option --min-mtime must be of the form described by 'info \"Date input formats\" '."
 			fi
 			shift ;;
@@ -321,8 +325,8 @@ else
 fi
 
 # setting default cachedirs
-if [[ -z $cachedirs ]]; then
-	cachedirs=($(pacman-conf CacheDir))
+if [[ -z "${cachedirs[0]}" ]]; then
+	cachedirs=("$(pacman-conf CacheDir)")
 fi
 
 # remaining args are a whitelist
