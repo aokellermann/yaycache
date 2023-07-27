@@ -30,7 +30,7 @@ LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 declare -a cachedirs=() candidates=() cmdopts=() whitelist=() blacklist=()
 declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0
 declare -i min_atime=0 min_mtime=0
-declare    delim=$'\n' keep=3 movedir= scanarch=
+declare    delim=$'\n' keep=3 movedir='' scanarch=''
 
 QUIET=0
 USE_COLOR='y'

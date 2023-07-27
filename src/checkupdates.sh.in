@@ -27,7 +27,9 @@ DOWNLOAD_CACHE=0
 USE_COLOR='y'
 
 # Import libmakepkg
+# shellcheck source=/dev/null
 source "$LIBRARY"/util/message.sh
+# shellcheck source=/dev/null
 source "$LIBRARY"/util/parseopts.sh
 
 die() {
@@ -127,7 +129,7 @@ if [[ -z "$DBPath" ]] || [[ ! -d "$DBPath" ]]; then
 	DBPath="@localstatedir@/lib/pacman/"
 fi
 
-if (( ${SYNC} )); then
+if (( SYNC )); then
 	mkdir -p "$CHECKUPDATES_DB"
 	ln -s "${DBPath}/local" "$CHECKUPDATES_DB" &> /dev/null
 	if ! fakeroot -- pacman -Sy --dbpath "$CHECKUPDATES_DB" --logfile /dev/null &> /dev/null; then

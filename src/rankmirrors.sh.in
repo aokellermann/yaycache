@@ -69,9 +69,9 @@ err() {
 # gettime fetchurl (e.g gettime http://foo.com/core/os/i686/core.db.tar.gz)
 # returns the fetching time, or timeout, or unreachable
 gettime() {
-	IFS=' ' output=( $(curl -s -m $MAX_TIME -w "%{time_total} %{http_code}" "$1" -o/dev/null) )
+	IFS=' ' output=( "$(curl -s -m "$MAX_TIME" -w "%{time_total} %{http_code}" "$1" -o/dev/null)" )
 	(( $? == 28 )) && echo timeout && return
-	(( ${output[1]} >= 400 || ! ${output[1]} )) && echo unreachable && return
+	(( output[1] >= 400 || ! output[1] )) && echo unreachable && return
 	echo "${output[0]}"
 }
 
@@ -83,19 +83,19 @@ ARCH="$(uname -m)"
 getfetchurl() {
 	local strippedurl="${1%/}"
 
-	local replacedurl="${strippedurl//'$arch'/$ARCH}"
+	local replacedurl="${strippedurl//"$arch"/$ARCH}"
 	if [[ ! $TARGETREPO ]]; then
-		replacedurl="${replacedurl//'$repo'/core}"
+		replacedurl="${replacedurl//"$repo"/core}"
 		local tmp="${replacedurl%/*}"
 		tmp="${tmp%/*}"
 
 		local reponame="${tmp##*/}"
 	else
-		replacedurl="${replacedurl//'$repo'/$TARGETREPO}"
+		replacedurl="${replacedurl//"$repo"/$TARGETREPO}"
 		local reponame="$TARGETREPO"
 	fi
 
-	if [[ -z $reponame || $reponame = $replacedurl ]]; then
+	if [[ -z $reponame || $reponame = "$replacedurl" ]]; then
 		echo "fail"
 	else
 		local fetchurl="${replacedurl}/$reponame.db"
@@ -107,8 +107,8 @@ getfetchurl() {
 finaloutput() {
 	local -a timesarray=()
 	if [[ -f "$tmpfile" ]]; then
-		readarray -t timesarray <$tmpfile
-		rm $tmpfile
+		readarray -t timesarray <"$tmpfile"
+		rm "$tmpfile"
 	fi
 	IFS=$'\n' read -r -d '' -a sortedarray < \
 		<(printf '%s\n' "${timesarray[@]}" | LC_COLLATE=C sort)
@@ -163,7 +163,7 @@ while [[ $1 ]]; do
 
 		if [[ ! ${1:1:1} ]]; then
 			[[ -t 0 ]] && err "Stdin is empty."
-			IFS=$'\n' linearray=( $(</dev/stdin) )
+			IFS=$'\n' linearray=( "$(</dev/stdin)" )
 			STDIN=1
 			shift
 		else
@@ -199,9 +199,11 @@ while [[ $1 ]]; do
 		fi
 	elif [[ -f $1 ]]; then
 		FILE="1"
-		IFS=$'\n' linearray=( $(<$1) )
-		[[ $linearray ]] || err "File is empty."
-		shift
+		IFS=$'\n' linearray=( "$(<"$1")" )
+		for value in "${linearray[@]}"; do
+			[[ "$value" ]] || err "File is empty."
+			shift
+		done
 	else
 		err "'$1' does not exist."
 	fi
@@ -236,7 +238,7 @@ get_url_time() {
 	url="$(getfetchurl "$server")"
 	[[ $url = fail ]] && err "URL '$server' is malformed."
 	time=$(gettime "$url")
-	echo "$time $server" >>$tmpfile
+	echo "$time $server" >>"$tmpfile"
 
 	# Output
 	if [[ $VERBOSE && $TIMESONLY ]]; then
@@ -257,7 +259,7 @@ if [[ $PARALLEL ]]; then
 fi
 for line in "${linearray[@]}"; do
 	if [[ $line =~ ^[[:space:]]*# ]]; then
-		[[ $TIMESONLY ]] || echo $line
+		[[ $TIMESONLY ]] || echo "$line"
 	elif [[ $line =~ ^[[:space:]]*Server ]]; then
 
 		# Getting values and times and such
@@ -265,9 +267,9 @@ for line in "${linearray[@]}"; do
 		server="${server%%#*}"
 
 		if [[ $PARALLEL ]]; then
-			servers+=($server)
+			servers+=("$server")
 		else
-			get_url_time $server
+			get_url_time "$server"
 		fi
 	fi
 done
