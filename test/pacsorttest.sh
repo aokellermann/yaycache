@@ -33,7 +33,7 @@ fi
 # runtest input expected test_description optional_opts
 tap_runtest() {
 	# run the test
-	tap_diff <(printf "%s" "$1" | $bin "$4") <(printf "%s" "$2") "$3"
+	tap_diff <(printf "$1" | $bin $4) <(printf "$2") "$3"
 }
 
 tap_plan 26
