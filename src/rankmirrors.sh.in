@@ -83,15 +83,18 @@ ARCH="$(uname -m)"
 getfetchurl() {
 	local strippedurl="${1%/}"
 
-	local replacedurl="${strippedurl//"$arch"/$ARCH}"
+	# shellcheck disable=SC2016
+	local replacedurl="${strippedurl//'$arch'/$ARCH}"
 	if [[ ! $TARGETREPO ]]; then
-		replacedurl="${replacedurl//"$repo"/core}"
+		# shellcheck disable=SC2016
+		replacedurl="${replacedurl//'$repo'/core}"
 		local tmp="${replacedurl%/*}"
 		tmp="${tmp%/*}"
 
 		local reponame="${tmp##*/}"
 	else
-		replacedurl="${replacedurl//"$repo"/$TARGETREPO}"
+		# shellcheck disable=SC2016
+		replacedurl="${replacedurl//'$repo'/$TARGETREPO}"
 		local reponame="$TARGETREPO"
 	fi
 
