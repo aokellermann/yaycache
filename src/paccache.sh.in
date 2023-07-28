@@ -136,6 +136,7 @@ pkgfilter() {
 	}' "${@:5}"
 }
 
+# shellcheck disable=SC1073,SC1065,SC1064,SC1072
 m4_include(../lib/size_to_human.sh)
 
 runcmd() {
