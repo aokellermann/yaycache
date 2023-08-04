@@ -33,6 +33,7 @@ fi
 # runtest input expected test_description optional_opts
 tap_runtest() {
 	# run the test
+	# shellcheck disable=SC2059,SC2086
 	tap_diff <(printf "$1" | $bin $4) <(printf "$2") "$3"
 }
 
