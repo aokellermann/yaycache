@@ -85,7 +85,7 @@ in="/packages/systemd-217-1-x86_64.pkg.tar.xz\n/packages/systemd-sysvcompat-217-
 tap_runtest $in $in "filename sort with package names as shared substring" "--files"
 
 # generate some long input/expected for the next few tests
-declare normal reverse names_normal names_reverse
+declare fields fields_reverse normal reverse separator separator_reverse
 for ((i=1; i<600; i++)); do
 	normal="${normal}${i}\n"
 	reverse="${reverse}$((600 - i))\n"
