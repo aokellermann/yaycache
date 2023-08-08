@@ -25,6 +25,7 @@ declare -r myver='@PACKAGE_VERSION@'
 LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
 # Import libmakepkg
+# shellcheck source=/dev/null
 source "$LIBRARY"/util/schema.sh
 
 usage() {
@@ -50,7 +51,7 @@ version() {
 }
 
 die() {
-	printf "==> ERROR: $1\n" "${@:2}" >&2
+	printf "==> ERROR: %s\n" "$1" "${@:2}" >&2
 	exit 1
 }
 
@@ -75,7 +76,7 @@ fi
 while [[ -L $buildfile ]]; do
 	buildfile=$(readlink "$buildfile")
 	if [[ $buildfile = */* ]]; then
-		cd "${buildfile%/*}"
+		cd "${buildfile%/*}" || exit
 		buildfile=${buildfile##*/}
 	fi
 done
@@ -84,7 +85,7 @@ done
 # directories scattered about the filesystem, and avoids cases where we might
 # not be able to write in the $PWD.
 if [[ $buildfile = */* ]]; then
-	cd "${buildfile%/*}"
+	cd "${buildfile%/*}" || exit
 	buildfile=${buildfile##*/}
 fi
 
@@ -94,10 +95,12 @@ if [[ ! -w . ]]; then
 fi
 
 # Generate the new sums
-export BUILDDIR=$(mktemp -d  "${TMPDIR:-/tmp}/updpkgsums.XXXXXX")
+BUILDDIR=$(mktemp -d  "${TMPDIR:-/tmp}/updpkgsums.XXXXXX")
+export BUILDDIR
 newbuildfile=$(mktemp "${TMPDIR:-/tmp}/updpkgsums.XXXXXX")
 
-trap "rm -rf '$BUILDDIR' '$newbuildfile'" EXIT
+trap 'rm -rf "$BUILDDIR" "$newbuildfile"' EXIT
+# shellcheck disable=SC2154 # known_hash_algos imported via libmakepkg
 sumtypes=$(IFS='|'; echo "${known_hash_algos[*]}")
 newsums=$(makepkg -g -p "$buildfile" "${MAKEPKG_OPTS[@]}") || die 'Failed to generate new checksums'
 

@@ -59,4 +59,4 @@ pacman -Sl "$@" | awk '/\[.*[[:alpha:]]+]$/ {print $2,$3};
                      /\[.*[[:digit:]]+]$/ {print $2,substr($NF, 1, length($NF) - 1)}'
 
 # exit with pacman's return value, not awk's
-exit ${PIPESTATUS[0]}
+exit "${PIPESTATUS[0]}"

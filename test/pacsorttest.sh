@@ -18,6 +18,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+# shellcheck source=/dev/null
 source "$(dirname "$0")"/tap.sh || exit 1
 
 # default binary if one was not specified as $1
@@ -32,6 +33,7 @@ fi
 # runtest input expected test_description optional_opts
 tap_runtest() {
 	# run the test
+	# shellcheck disable=SC2059,SC2086
 	tap_diff <(printf "$1" | $bin $4) <(printf "$2") "$3"
 }
 
@@ -83,20 +85,20 @@ in="/packages/systemd-217-1-x86_64.pkg.tar.xz\n/packages/systemd-sysvcompat-217-
 tap_runtest $in $in "filename sort with package names as shared substring" "--files"
 
 # generate some long input/expected for the next few tests
-declare normal reverse names_normal names_reverse
+declare fields fields_reverse normal reverse separator separator_reverse
 for ((i=1; i<600; i++)); do
 	normal="${normal}${i}\n"
-	reverse="${reverse}$((600 - ${i}))\n"
-	fields="${fields}colA bogus$((600 - ${i})) ${i}\n"
-	fields_reverse="${fields_reverse}colA bogus${i} $((600 - ${i}))\n"
-	separator="${separator}colA|bogus$((600 - ${i}))|${i}\n"
-	separator_reverse="${separator_reverse}colA|bogus${i}|$((600 - ${i}))\n"
+	reverse="${reverse}$((600 - i))\n"
+	fields="${fields}colA bogus$((600 - i)) ${i}\n"
+	fields_reverse="${fields_reverse}colA bogus${i} $((600 - i))\n"
+	separator="${separator}colA|bogus$((600 - i))|${i}\n"
+	separator_reverse="${separator_reverse}colA|bogus${i}|$((600 - i))\n"
 done
 
-tap_runtest $normal $normal "really long input"
-tap_runtest $reverse $normal "really long input"
-tap_runtest $reverse $reverse "really long input, reversed" "-r"
-tap_runtest $normal $reverse "really long input, reversed" "-r"
+tap_runtest "$normal" "$normal" "really long input"
+tap_runtest "$reverse" "$normal" "really long input"
+tap_runtest "$reverse" "$reverse" "really long input, reversed" "-r"
+tap_runtest "$normal" "$reverse" "really long input, reversed" "-r"
 
 tap_runtest "$fields" "$fields" "really long input, sort key" "-k3"
 tap_runtest "$fields_reverse" "$fields" "really long input, sort key" "-k3"

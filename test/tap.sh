@@ -1,3 +1,5 @@
+#!/bin/bash
+#
 # Copyright 2014 Andrew Gregory <andrew.gregory.8@gmail.com>
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -48,7 +50,7 @@ tap_diag() {
 
 tap_note() {
     printf "# "
-    printf -- "$@"
+    printf -- "%s" "$@"
     printf "\n"
 }
 
@@ -84,7 +86,7 @@ _tap_print_reason() {
     local sep="$1"; shift
     if [[ $# -gt 0 ]]; then
         printf "%s" "$sep"
-        printf -- "$@"
+        printf -- "%s" "$@"
     fi
 }
 
@@ -107,10 +109,10 @@ tap_ok() {
         local line func file
         local -i i=0
 
-        read line func file < <(caller $i)
+        read -r line func file < <(caller $i)
         while [[ -n $func && $func == tap_* ]]; do
             (( i++ ))
-            read line func file < <(caller $i)
+            read -r line func file < <(caller $i)
         done
 
         if [[ -n $file ]]; then
@@ -122,12 +124,12 @@ tap_ok() {
             fi
         fi
     fi
-    return $ok
+    return "$ok"
 }
 
 tap_is_str() {
     local got="$1" expected="$2"; shift 2
-    [[ $got == $expected ]]
+    [[ $got == "$expected" ]]
     local ret=$?
     if ! tap_ok $ret "$@"; then
         tap_diag "         got: '%s'" "$got"
@@ -153,7 +155,7 @@ tap_diff() {
     output="$(diff -u --label got --label expected "$got" "$expected" 2>&1)"
     ret=$?
     if ! tap_ok $ret "$@"; then
-        while IFS= read line; do
+        while IFS= read -r line; do
             tap_diag "$line"
         done <<<"$output"
     fi

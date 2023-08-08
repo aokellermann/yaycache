@@ -1,3 +1,5 @@
+#!/bin/bash
+
 size_to_human() {
 	awk -v size="$1" '
 	BEGIN {

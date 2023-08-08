@@ -6,7 +6,6 @@ workflow:
       when: never
     - if: '$CI_COMMIT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
 
-
 test:
   image: archlinux:base-devel
   before_script:
@@ -25,6 +24,15 @@ test:
         compare_to: 'master'
     - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"'
       when: never
+
+shellcheck:
+  image: koalaman/shellcheck-alpine
+  variables:
+    FILE_GLOB: "**/*.sh*"
+  script:
+    - find . -name '*.sh*' -exec shellcheck --color=always {} +
+  rules:
+    - !reference [.lint-workflow, rules]
 
 vint:
   image: alpine
