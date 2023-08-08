@@ -25,6 +25,17 @@ test:
     - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"'
       when: never
 
+markdownlint:
+  image:
+    name: davidanson/markdownlint-cli2
+    entrypoint: ['']
+  variables:
+    FILE_GLOB: "*.md"
+  script:
+    - markdownlint-cli2
+  rules:
+    - !reference [.lint-workflow, rules]
+
 shellcheck:
   image: koalaman/shellcheck-alpine
   variables:
