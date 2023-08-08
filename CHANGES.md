@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Create pipelines for and satisfy markdownlint-cli2, ShellCheck, and Vint (!32, !33, !34, 41554d65, d674bf23) (Matthew Armand, Robin Candau, Daniel M. Capella)
+
 ## [1.9.1] - 2023-07-13
 
 ### Fixed
