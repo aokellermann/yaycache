@@ -25,6 +25,17 @@ test:
     - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"'
       when: never
 
+cppcheck:
+  image: alpine
+  variables:
+    FILE_GLOB: "src/*.c"
+  before_script:
+    - apk add cppcheck
+  script:
+    - cppcheck --error-exitcode=1 .
+  rules:
+    - !reference [.lint-workflow, rules]
+
 markdownlint:
   image:
     name: davidanson/markdownlint-cli2
