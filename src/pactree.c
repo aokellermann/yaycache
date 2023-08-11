@@ -547,7 +547,7 @@ static void print_dep_list(alpm_list_t *deps, alpm_list_t *dblist, alpm_pkg_t *p
 			tdepth d;
 			print(alpm_pkg_get_name(pkg), alpm_pkg_get_name(dep_pkg), pkgname, depth, last, opt_dep);
 			if(dep_pkg) {
-				d = {
+				d = (tdepth){
 					depth,
 					NULL,
 					depth->level + 1
