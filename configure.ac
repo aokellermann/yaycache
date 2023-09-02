@@ -52,7 +52,7 @@ AS_IF([test "x$BASH_SHELL" = "xfalse"],
 
 # Check for libmakepkg
 PKG_CHECK_VAR(LIBMAKEPKGDIR, [libmakepkg], [libmakepkgdir], ,
-	AC_MSG_ERROR([*** libmakepkg is needed to build pacman-contrib!]))
+	AC_MSG_ERROR([*** libmakepkg is needed to build yaycache!]))
 AC_SUBST(LIBMAKEPKGDIR)
 
 # Enable or disable use of git version in version string

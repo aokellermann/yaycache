@@ -1,8 +1,6 @@
 Bugs
 ----
-Bugs? You must be kidding; there are no bugs in this software. But if we
-happen to be wrong, file an issue with as much detail as possible at
-https://github.com/aokellermann/yaycache/issues/new.
+Bugs can be reported through github: https://github.com/aokellermann/yaycache/issues/new.
 
 
 Authors
@@ -11,5 +9,5 @@ Current maintainers:
 
 * Antony Kellermann <antony@aokellermann.dev>
 
-For additional contributors, use `git shortlog -s` on the pacman-contrib.git
+For additional contributors, use `git shortlog -s` on the yaycache.git
 repository.
