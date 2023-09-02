@@ -3,7 +3,7 @@ yaycache(8)
 
 Name
 ----
-yaycache - flexible pacman cache cleaning utility
+yaycache - flexible yay cache cleaning utility
 
 
 Synopsis
@@ -13,7 +13,7 @@ Synopsis
 
 Description
 -----------
-'yaycache' removes old packages from the pacman cache directory.
+'yaycache' removes old packages from the yay cache directory.
 By default the last three versions of a package are kept.
 
 
@@ -84,10 +84,5 @@ Systemd Timer
 The package cache can be cleaned periodically using the systemd timer
 'yaycache.timer'. If the timer is enabled the cache will be cleaned weekly with
 yaycache's default options.
-
-
-See Also
---------
-linkman:pacman[8], linkman:pacman.conf[5], linkman:systemctl[1]
 
 include::footer.adoc[]
