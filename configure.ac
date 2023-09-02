@@ -15,16 +15,6 @@ AC_ARG_ENABLE(doc,
 	AS_HELP_STRING([--disable-doc], [prevent make from looking at doc/ dir]),
 	[wantdoc=$enableval], [wantdoc=yes])
 
-# Help line for debug
-AC_ARG_ENABLE(debug,
-	AS_HELP_STRING([--enable-debug], [enable debugging support]),
-	[debug=$enableval], [debug=no])
-
-# Help line for compiler warning flags
-AC_ARG_ENABLE(warningflags,
-	AS_HELP_STRING([--enable-warningflags], [enable extra compiler warning flags]),
-	[warningflags=$enableval], [warningflags=no])
-
 # Help line for using git version in pacman version string
 AC_ARG_ENABLE(git-version,
 	AS_HELP_STRING([--enable-git-version],
@@ -94,21 +84,6 @@ else
 fi
 AM_CONDITIONAL(WANT_DOC, test "x$wantdoc" = "xyes")
 
-# Enable or disable debug code
-if test "x$debug" = "xyes" ; then
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-
-# Enable or disable compiler warning flags
-AC_MSG_CHECKING(for excessive compiler warning flags)
-if test "x$warningflags" = "xyes" ; then
-	AC_MSG_RESULT(yes)
-else
-	AC_MSG_RESULT(no)
-fi
-
 AC_CONFIG_FILES([
 	completions/Makefile
 	lib/Makefile
@@ -134,7 +109,5 @@ ${PACKAGE_NAME}:
 
   Compilation options:
     Run make in doc/ dir   : ${wantdoc} ${asciidoc}
-    debug support          : ${debug}
-    extra warning flags    : ${warningflags}
     use git version        : ${wantgitver}
 "
