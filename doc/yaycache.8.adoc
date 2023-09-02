@@ -1,19 +1,19 @@
-paccache(8)
+yaycache(8)
 ===========
 
 Name
 ----
-paccache - flexible pacman cache cleaning utility
+yaycache - flexible pacman cache cleaning utility
 
 
 Synopsis
 --------
-'paccache' <operation> [options] [target ...]
+'yaycache' <operation> [options] [target ...]
 
 
 Description
 -----------
-'paccache' removes old packages from the pacman cache directory.
+'yaycache' removes old packages from the pacman cache directory.
 By default the last three versions of a package are kept.
 
 
@@ -82,8 +82,8 @@ Options
 Systemd Timer
 -------------
 The package cache can be cleaned periodically using the systemd timer
-'paccache.timer'. If the timer is enabled the cache will be cleaned weekly with
-paccache's default options.
+'yaycache.timer'. If the timer is enabled the cache will be cleaned weekly with
+yaycache's default options.
 
 
 See Also

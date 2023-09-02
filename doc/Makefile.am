@@ -4,10 +4,10 @@
 # man_MANS if --enable-asciidoc and/or --enable-doxygen are used.
 
 ASCIIDOC_MANS = \
-	paccache.8
+	yaycache.8
 
 HTML_MANPAGES = \
-	paccache.8.html
+	yaycache.8.html
 
 HTML_DOCS = \
 	$(HTML_MANPAGES)
@@ -15,7 +15,7 @@ HTML_DOCS = \
 EXTRA_DIST = \
 	asciidoc.conf \
 	asciidoc-override.css \
-	paccache.8.adoc \
+	yaycache.8.adoc \
 	footer.adoc \
 	$(ASCIIDOC_MANS)
 
@@ -89,4 +89,4 @@ $(HTML_OTHER): asciidoc.conf Makefile.am
 %.3.html: ASCIIDOC_OPTS += -d manpage
 
 # Dependency rules
-paccache.8 paccache.8.html: paccache.8.adoc
+yaycache.8 yaycache.8.html: yaycache.8.adoc

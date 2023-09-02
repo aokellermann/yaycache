@@ -1,8 +1,9 @@
 #!/bin/bash
 #
-# paccache - flexible pacman cache cleaning
+# yaycache - flexible yay cache cleaning
 #
 # Copyright (C) 2011 Dave Reisner <dreisner@archlinux.org>
+# Copyright (C) 2023 Antony Kellermann <antony@aokellermann.dev>
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,7 +23,7 @@
 shopt -s nullglob
 shopt -s extglob
 
-declare -r myname='paccache'
+declare -r myname='yaycache'
 declare -r myver='@PACKAGE_VERSION@'
 
 LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
@@ -192,7 +193,7 @@ usage() {
 	cat <<EOF
 ${myname} v${myver}
 
-Flexible pacman cache cleaning utility.
+Flexible yay cache cleaning utility.
 
 Usage: ${myname} <operation> [options] [target ...]
 
@@ -230,6 +231,7 @@ EOF
 version() {
 	printf "%s %s\n" "$myname" "$myver"
 	echo 'Copyright (C) 2011 Dave Reisner <dreisner@archlinux.org>'
+	echo 'Copyright (C) 2023 Antony Kellermann <antony@aokellermann.dev>'
 }
 
 OPT_SHORT=':a:c:dfhi:k:m:qrsuVvz'

@@ -1,4 +1,4 @@
-#compdef paccache
+#compdef yaycache
 
 # TODO: Valid targets and --ignore values are package names in the cache. This
 # is not the same as package names installed or available in sync. How do we

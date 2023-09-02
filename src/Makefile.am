@@ -15,21 +15,21 @@ bin_SCRIPTS = \
 systemd_dir = ${libdir}/systemd/system
 
 systemd__DATA = \
-	paccache.service paccache.timer
+	yaycache.service yaycache.timer
 
 BASHSCRIPTS = \
-	paccache
+	yaycache
 
 OURSCRIPTS = \
 	$(BASHSCRIPTS)
 
 OURFILES = \
-	paccache.service
+	yaycache.service
 
 EXTRA_DIST = \
-	paccache.service.in \
-	paccache.sh.in \
-	paccache.timer
+	yaycache.service.in \
+	yaycache.sh.in \
+	yaycache.timer
 
 # Files that should be removed, but which Automake does not know.
 MOSTLYCLEANFILES = $(OURSCRIPTS) $(OURFILES) *.tmp
@@ -82,4 +82,4 @@ all-am: $(OURSCRIPTS) $(OURFILES)
 $(BASHSCRIPTS): %: $(srcdir)/%.sh.in
 
 # dependency links
-paccache: $(top_srcdir)/lib/size_to_human.sh
+yaycache: $(top_srcdir)/lib/size_to_human.sh

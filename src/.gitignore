@@ -1,7 +1,7 @@
 .deps/
 checkupdates
-paccache
-paccache.service
+yaycache
+yaycache.service
 pacdiff
 paclist
 paclog-pkglist
