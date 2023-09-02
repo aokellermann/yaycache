@@ -327,7 +327,11 @@ fi
 
 # setting default cachedirs
 if [[ -z "${cachedirs[0]}" ]]; then
-	cachedirs=("$(pacman-conf CacheDir)")
+  if [ -z ${XDG_CACHE_HOME+x} ]; then
+    cachedirs=("$HOME/.cache/yay")
+  else
+    cachedirs=("$XDG_CACHE_HOME/yay/")
+  fi
 fi
 
 # remaining args are a whitelist
@@ -366,7 +370,7 @@ for cachedir in "${cachedirs[@]}"; do
 				find "$PWD" -name '*.pkg.tar*.sig' -prune -o \( -name '*.pkg.tar*' -printf '%A@ %T@ %p\n' \) |
 				pacsort --files --key 3 --separator ' '
 			else
-				printf '%s\n' "$PWD"/*.pkg.tar!(*.sig) |
+				printf '%s\n' "$PWD"/*/*.pkg.tar.zst |
 				pacsort --files
 			fi |
 			pkgfilter "$keep" "$scanarch" "$min_atime" "$min_mtime" \
