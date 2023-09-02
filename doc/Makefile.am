@@ -46,12 +46,11 @@ website: website.tar.gz
 website.tar.gz: html
 	$(AM_V_GEN)bsdtar czf $@ $(HTML_DOCS) \
 		asciidoc-override.css \
-		-C /etc/asciidoc/stylesheets/ \
+		-C /usr/lib/python3.11/site-packages/asciidoc/resources/stylesheets/ \
 		asciidoc.css \
-		-C /etc/asciidoc/javascripts/ \
+		-C /usr/lib/python3.11/site-packages/asciidoc/resources/javascripts/ \
 		asciidoc.js \
-		-C /etc/asciidoc/ \
-		images
+		-C /usr/lib/python3.11/site-packages/asciidoc/resources/
 
 pkgdatadir = ${datadir}/${PACKAGE}
 
