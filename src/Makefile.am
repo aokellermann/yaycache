@@ -12,71 +12,24 @@ gpgdir    = ${sysconfdir}/pacman.d/gnupg/
 bin_SCRIPTS = \
 	$(OURSCRIPTS)
 
-bin_PROGRAMS = pacsort pactree
-
-vim_ftdetect_dir = $(vim_dir)/ftdetect
-vim_ftplugin_dir = $(vim_dir)/ftplugin
-vim_syntax_dir = $(vim_dir)/syntax
-
-vim_ftdetect__DATA = \
-	vim/ftdetect/PKGBUILD.vim \
-	vim/ftdetect/SRCINFO.vim
-
-vim_ftplugin__DATA = \
-	vim/ftplugin/PKGBUILD.vim
-
-vim_syntax__DATA = \
-	vim/syntax/PKGBUILD.vim \
-	vim/syntax/SRCINFO.vim
-
 systemd_dir = ${libdir}/systemd/system
 
 systemd__DATA = \
-	paccache.service paccache.timer \
-	pacman-filesdb-refresh.service pacman-filesdb-refresh.timer
+	paccache.service paccache.timer
 
 BASHSCRIPTS = \
-	checkupdates \
-	paccache \
-	pacdiff \
-	paclist \
-	paclog-pkglist \
-	pacscripts \
-	rankmirrors \
-	updpkgsums
-
-PERLSCRIPTS = \
-	pacsearch
+	paccache
 
 OURSCRIPTS = \
-	$(BASHSCRIPTS) \
-	$(PERLSCRIPTS)
+	$(BASHSCRIPTS)
 
 OURFILES = \
-	paccache.service \
-	pacman-filesdb-refresh.service
+	paccache.service
 
 EXTRA_DIST = \
-	checkupdates.sh.in \
 	paccache.service.in \
 	paccache.sh.in \
-	paccache.timer \
-	pacdiff.sh.in \
-	paclist.sh.in \
-	paclog-pkglist.sh.in \
-	pacman-filesdb-refresh.service.in \
-	pacman-filesdb-refresh.timer \
-	pacscripts.sh.in \
-	pacsearch.pl.in \
-	pacsort.c \
-	pactree.c \
-	rankmirrors.sh.in \
-	updpkgsums.sh.in \
-	vim/syntax/PKGBUILD.vim \
-	vim/syntax/SRCINFO.vim \
-	vim/ftdetect/PKGBUILD.vim \
-	vim/ftdetect/SRCINFO.vim \
-	vim/ftplugin/PKGBUILD.vim
+	paccache.timer
 
 # Files that should be removed, but which Automake does not know.
 MOSTLYCLEANFILES = $(OURSCRIPTS) $(OURFILES) *.tmp
@@ -118,12 +71,6 @@ $(BASHSCRIPTS): Makefile
 	$(AM_V_at)chmod +x,a-w $@
 	@$(BASH_SHELL) -O extglob -n $@
 
-$(PERLSCRIPTS): Makefile
-	$(AM_V_at)$(RM) $@ $@.tmp
-	$(AM_V_GEN)$(edit) $(srcdir)/$@.pl.in >$@.tmp
-	$(AM_V_at)chmod +x,a-w $@.tmp
-	$(AM_V_at)mv $@.tmp $@
-
 $(OURFILES): Makefile
 	$(AM_V_at)$(RM) $@ $@.tmp
 	$(AM_V_GEN)$(edit) $(srcdir)/$@.in >$@.tmp
@@ -133,13 +80,6 @@ $(OURFILES): Makefile
 all-am: $(OURSCRIPTS) $(OURFILES)
 
 $(BASHSCRIPTS): %: $(srcdir)/%.sh.in
-$(PERLSCRIPTS): %: $(srcdir)/%.pl.in
 
 # dependency links
 paccache: $(top_srcdir)/lib/size_to_human.sh
-
-pacsort_SOURCES = pacsort.c
-pacsort_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)
-
-pactree_SOURCES = pactree.c
-pactree_LDADD = $(LIBARCHIVE_LIBS) $(LIBALPM_LIBS)

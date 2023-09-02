@@ -3,7 +3,7 @@ Description=Remove unused cached package files
 
 [Service]
 Type=oneshot
-ExecStart=@bindir@/paccache -r
+ExecStart=@bindir@/yaycache -r
 # Lowering priority
 OOMScoreAdjust=1000
 Nice=19
