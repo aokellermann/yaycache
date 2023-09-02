@@ -172,11 +172,6 @@ ${PACKAGE_NAME}:
 
   Build information:
     prefix                 : ${prefix}
-    sysconfdir             : $(eval echo ${sysconfdir})
-       conf file           : $(eval echo ${sysconfdir})/pacman.conf
-    localstatedir          : $(eval echo ${localstatedir})
-       database dir        : $(eval echo ${localstatedir})/lib/pacman/
-       cache dir           : $(eval echo ${localstatedir})/cache/pacman/pkg/
     libmakepkg dir         : $(eval echo ${LIBMAKEPKGDIR})
 
     compiler               : ${CC}

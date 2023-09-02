@@ -4,11 +4,6 @@ SUBDIRS=
 
 DIST_SUBDIRS = $(SUBDIRS)
 
-# paths set at make time
-conffile  = ${sysconfdir}/pacman.conf
-dbpath    = ${localstatedir}/lib/pacman/
-gpgdir    = ${sysconfdir}/pacman.d/gnupg/
-
 bin_SCRIPTS = \
 	$(OURSCRIPTS)
 
@@ -41,23 +36,8 @@ else
 REAL_PACKAGE_VERSION = $(PACKAGE_VERSION)
 endif
 
-AM_CPPFLAGS = \
-	-DLOCALEDIR=\"@localedir@\" \
-	-DCONFFILE=\"$(conffile)\" \
-	-DDBPATH=\"$(dbpath)\" \
-	-DGPGDIR=\"$(gpgdir)\"
-
-AM_CFLAGS = \
-	-pedantic \
-	-D_GNU_SOURCE \
-	$(WARNING_CFLAGS) \
-	$(LIBARCHIVE_CFLAGS) \
-	$(LIBALPM_CFLAGS)
-
 edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
-	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
-	-e 's|@localstatedir[@]|$(localstatedir)|g' \
 	-e 's|@PACKAGE_VERSION[@]|$(REAL_PACKAGE_VERSION)|g' \
 	-e 's|@libmakepkgdir[@]|$(LIBMAKEPKGDIR)|g' \
 	-e 's|@SIZECMD[@]|$(SIZECMD)|g' \

@@ -5,7 +5,7 @@ endif
 
 DIST_SUBDIRS = $(SUBDIRS)
 
-DISTCHECK_CONFIGURE_FLAGS = --prefix=/usr --sysconfdir=/etc --localstatedir=/var --enable-doc --disable-git-version
+DISTCHECK_CONFIGURE_FLAGS = --prefix=/usr --enable-doc --disable-git-version
 
 EXTRA_DIST = README.md AUTHORS.md
 

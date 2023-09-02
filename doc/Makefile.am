@@ -57,10 +57,7 @@ pkgdatadir = ${datadir}/${PACKAGE}
 
 ASCIIDOC_OPTS = \
 	-f $(srcdir)/asciidoc.conf \
-	-a yaycache_version="$(REAL_PACKAGE_VERSION)" \
-	-a pkgdatadir=$(pkgdatadir) \
-	-a localstatedir=$(localstatedir) \
-	-a sysconfdir=$(sysconfdir)
+	-a yaycache_version="$(REAL_PACKAGE_VERSION)"
 
 A2X_OPTS = \
 	--no-xmllint \

@@ -12,9 +12,7 @@ This repository contains contributed scripts to pacman.
 
 ```sh
 ./autogen.sh
-./configure --prefix=/usr \
-            --sysconfdir=/etc \
-            --localstatedir=/var
+./configure --prefix=/usr
 make
 make check
 make install DESTDIR="$pkgdir"

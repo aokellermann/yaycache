@@ -37,7 +37,7 @@ Options
 
 *-c, \--cachedir <dir>*::
 	Specify a different cache directory. This option can be used more than once.
-	Default is to use the cache directory configured in 'pacman.conf'.
+	The default config directory is '$XDG_CONFIG_HOME/yay/'. If $XDG_CONFIG_HOME is unset, the config directory will fall back to '$HOME/.config/yay'
 
 *-f, \--force*::
 	Apply force to 'mv' and 'rm' operations.
