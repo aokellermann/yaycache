@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 10.2.0" />
+<title>yaycache(8)</title>
+<link rel="stylesheet" href="./asciidoc.css" type="text/css" />
+
+
+<link rel="stylesheet" href="./asciidoc-override.css" type="text/css" />
+<script type="text/javascript" src="./asciidoc.js"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="manpage" style="max-width:960px">
+<div id="header">
+<h1>
+yaycache(8) Manual Page
+</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+<h2>NAME</h2>
+<div class="sectionbody">
+<p>yaycache -
+   flexible pacman cache cleaning utility
+</p>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_synopsis">Synopsis</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><em>yaycache</em> &lt;operation&gt; [options] [target &#8230;]</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_description">Description</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><em>yaycache</em> removes old packages from the pacman cache directory.
+By default the last three versions of a package are kept.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_operations">Operations</h2>
+<div class="sectionbody">
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>-d, --dryrun</strong>
+</dt>
+<dd>
+<p>
+        Perform a dry run, only finding candidate packages.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-m, --move &lt;dir&gt;</strong>
+</dt>
+<dd>
+<p>
+        Move candidate packages from the cache directory to <em>dir</em>.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-r, --remove</strong>
+</dt>
+<dd>
+<p>
+        Remove candidate packages from the cache directory.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_options">Options</h2>
+<div class="sectionbody">
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>-a, --arch &lt;arch&gt;</strong>
+</dt>
+<dd>
+<p>
+        Scan for packages for a specific architecture. Default is to scan for all
+        architectures.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-c, --cachedir &lt;dir&gt;</strong>
+</dt>
+<dd>
+<p>
+        Specify a different cache directory. This option can be used more than once.
+        The default config directory is <em>$XDG_CONFIG_HOME/yay/</em>. If $XDG_CONFIG_HOME is unset, the config directory will fall back to <em>$HOME/.config/yay</em>
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-f, --force</strong>
+</dt>
+<dd>
+<p>
+        Apply force to <em>mv</em> and <em>rm</em> operations.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-h, --help</strong>
+</dt>
+<dd>
+<p>
+        Display syntax and command-line options.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-i, --ignore &lt;pkgs&gt;</strong>
+</dt>
+<dd>
+<p>
+        Specify packages to ignore, comma-separated. Alternatively "-" can be used
+        to read the package names from stdin, newline-delimited.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-k, --keep &lt;num&gt;</strong>
+</dt>
+<dd>
+<p>
+        Specify how many versions of each package are kept in the cache directory,
+        default is 3.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--min-atime &lt;time&gt;</strong>
+</dt>
+<dt class="hdlist1">
+<strong>--min-mtime &lt;time&gt;</strong>
+</dt>
+<dd>
+<p>
+        Keep packages with an atime/mtime that is not older than the time given,
+        even if this means keeping more than specified through the <em>--keep</em> option.
+        Accepts arguments according to <em>info "Date input formats"</em>, e.g. <em>30 days
+        ago</em>.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--nocolor</strong>
+</dt>
+<dd>
+<p>
+        Do not colorize output.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-z, --null</strong>
+</dt>
+<dd>
+<p>
+        Use null delimiters for candidate names (only with -v and -vv).
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-q, --quiet</strong>
+</dt>
+<dd>
+<p>
+        Minimize the output.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-u, --uninstalled</strong>
+</dt>
+<dd>
+<p>
+        Target uninstalled packages.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-v, --verbose</strong>
+</dt>
+<dd>
+<p>
+        Increase verbosity, can be specified up to 3 times.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-V, --version</strong>
+</dt>
+<dd>
+<p>
+        Display version information.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_systemd_timer">Systemd Timer</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The package cache can be cleaned periodically using the systemd timer
+<em>yaycache.timer</em>. If the timer is enabled the cache will be cleaned weekly with
+yaycache&#8217;s default options.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also">See Also</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><a href="pacman.8.html">pacman(8)</a>, <a href="pacman.conf.5.html">pacman.conf(5)</a>, <a href="systemctl.1.html">systemctl(1)</a></p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bugs">Bugs</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Bugs? You must be kidding; there are no bugs in this software. But if we
+happen to be wrong, file an issue with as much detail as possible at
+<a href="https://github.com/aokellermann/yaycache/issues/new">https://github.com/aokellermann/yaycache/issues/new</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_authors">Authors</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Current maintainers:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+Antony Kellermann &lt;<a href="mailto:antony@aokellermann.dev">antony@aokellermann.dev</a>&gt;
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>For additional contributors, use <code>git shortlog -s</code> on the pacman-contrib.git
+repository.</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2023-09-01 23:56:18 EDT
+</div>
+</div>
+</body>
+</html>
