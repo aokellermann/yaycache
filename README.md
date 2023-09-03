@@ -8,6 +8,14 @@ Usage is essentially the same as with [paccache](https://man.archlinux.org/man/p
 
 See `man yaycache` for more information, or view the docs [here](https://yaycache.aokellermann.dev).
 
+### Systemd service
+
+An optional systemd service is included that will run weekly:
+
+```sh
+systemctl enable --now yaycache.timer
+```
+
 ## Installing
 
 An AUR package is available:
