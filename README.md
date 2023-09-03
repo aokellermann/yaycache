@@ -6,22 +6,21 @@ Flexible yay cache cleaning similar to paccache.
 
 Usage is essentially the same as with [paccache](https://man.archlinux.org/man/paccache.8).
 
-See `man yaycache` for more information, or view the docs online at
-[yaycache.aokellermann.dev](https://yaycache.aokellermann.dev).
+See `man yaycache` for more information, or view the docs [here](https://yaycache.aokellermann.dev).
 
 ## Installing
 
-A `PKGBUILD` is provided:
+An AUR package is available:
 
-```console
-mkdir build && cd build
-curl -o PKGBUILD https://raw.githubusercontent.com/aokellermann/yaycache/master/PKGBUILD
-yay -Bi .
+```sh
+yay -S yaycache
 ```
 
 ## Building
 
-```console
+You can build the package yourself:
+
+```sh
 ./autogen.sh
 ./configure --prefix=/usr
 make
