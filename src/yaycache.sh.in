@@ -28,8 +28,8 @@ declare -r myver='@PACKAGE_VERSION@'
 
 LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
-declare -a cachedirs=() candidates=() cmdopts=() whitelist=() blacklist=()
-declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0
+declare -a cachedirs=() candidates=() buildfiles=() cmdopts=() whitelist=() blacklist=()
+declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 keepbuild=0
 declare -i min_atime=0 min_mtime=0
 declare    delim=$'\n' keep=3 movedir='' scanarch=''
 
@@ -137,6 +137,73 @@ pkgfilter() {
 	}' "${@:5}"
 }
 
+bffilter() {
+	# there's whitelist and blacklist parameters passed to this
+	# script after the block of awk.
+
+	awk -v cachedir="$1" -v min_atime="$2" -v min_mtime="$3" '
+	function basename(str) {
+		sub(".*/", "", str);
+		return str;
+	}
+
+	function parse_filename(filename,
+				atime, mtime, parts, basepath) {
+
+		if (0 + min_atime + min_mtime != 0) {
+			# atime and mtime are in the first two columns and the
+			# separator is a single space
+			split(filename, parts, " ")
+			atime = parts[1]
+			mtime = parts[2]
+			filename = substr(filename, length(atime) + length(mtime) + 3)
+		}
+
+    basepath = basename(filename)
+
+		# filter on whitelist or blacklist
+		if (wlen && !whitelist[cachedir]) return
+		if (blen && blacklist[cachedir]) return
+
+    files[basepath] = filename
+    atimes[basepath] = atime
+    mtimes[basepath] = mtime
+	}
+
+	BEGIN {
+		# create whitelist
+		wlen = ARGV[1]; delete ARGV[1]
+		for (i = 2; i < 2 + wlen; i++) {
+			whitelist[ARGV[i]] = 1
+			delete ARGV[i]
+		}
+
+		# create blacklist
+		blen = ARGV[i]; delete ARGV[i]
+		while (i++ < ARGC) {
+			blacklist[ARGV[i]] = 1
+			delete ARGV[i]
+		}
+
+		# read filenames
+		while (getline < "/dev/stdin") {
+			parse_filename($0)
+		}
+
+		for (f in files) {
+			atime = atimes[f]
+			mtime = mtimes[f]
+
+      # If checking file age, potentially keep more candidates
+      if ((0 + min_atime == 0 || (strtonum(atime) < 0 + min_atime)) &&
+          (0 + min_mtime == 0 || (strtonum(mtime) < 0 + min_mtime)) \
+          ) {
+        print files[f]
+      }
+		}
+	}' "${@:4}"
+}
+
 # shellcheck disable=SC1073,SC1065,SC1064,SC1072
 m4_include(../lib/size_to_human.sh)
 
@@ -161,12 +228,12 @@ summarize() {
 	local -r pkg_re='(.+)-[^-]+-[0-9]+-([^.]+)\.pkg.*'
 
 	if (( delete )); then
-		printf -v output 'finished: %d packages removed' "$filecount"
+		printf -v output 'finished: %d files removed' "$filecount"
 	elif (( move )); then
 		printf -v output "finished: %d packages moved to '%s'" "$filecount" "$movedir"
 	elif (( dryrun )); then
 		if (( verbose )); then
-			msg 'Candidate packages:'
+			msg 'Candidate files:'
 			while read -r pkg; do
 				if (( verbose >= 3 )); then
 					[[ $pkg =~ $pkg_re ]] && name=${BASH_REMATCH[1]} arch=${BASH_REMATCH[2]}
@@ -199,11 +266,11 @@ Usage: ${myname} <operation> [options] [target ...]
 
 Operations:
   -d, --dryrun      perform a dry run, only finding candidate packages
-  -m, --move <dir>  move candidate packages to "dir"
+  -m, --move <dir>  move candidate packages to "dir" (build files not supported)
   -r, --remove      remove candidate packages
 
 Options:
-  -a, --arch <arch>       scan for "arch" (default: all architectures)
+  -a, --arch <arch>       scan for "arch". will not apply to build files. (default: all architectures)
   -c, --cachedir <dir>    scan "dir" for packages. can be used more than once
                           (default: '$XDG_CONFIG_HOME/yay/'. if $XDG_CONFIG_HOME is unset, the config directory will fall back to '$HOME/.config/yay')
   -f, --force             apply force to mv(1) and rm(1) operations
@@ -211,6 +278,7 @@ Options:
                           "-" to read package names from stdin, newline-
                           delimited
   -k, --keep <num>        keep "num" of each package in the cache (default: 3)
+      --keep-build-files  keep package source build files
       --min-atime <time>
       --min-mtime <time>  keep packages with an atime/mtime that is not older
                           than the time given, even if this means keeping more
@@ -237,7 +305,7 @@ version() {
 OPT_SHORT=':a:c:dfhi:k:m:qrsuVvz'
 OPT_LONG=('arch:' 'cachedir:' 'dryrun' 'force' 'help' 'ignore:' 'keep:' 'move:'
           'nocolor' 'quiet' 'remove' 'uninstalled' 'version' 'verbose' 'null'
-          'min-atime:' 'min-mtime:')
+          'min-atime:' 'min-mtime:' 'keep-build-files')
 
 if ! parseopts "$OPT_SHORT" "${OPT_LONG[@]}" -- "$@"; then
 	exit 1
@@ -274,6 +342,8 @@ while :; do
 				keep=$(( 10#$keep ))
 			fi
 			shift ;;
+    --keep-build-files)
+      keepbuild=1 ;;
 		--min-atime)
 			min_atime=$(date -d "$2" +%s)
 			min_atime_status=$?
@@ -330,9 +400,9 @@ fi
 # setting default cachedirs
 if [[ -z "${cachedirs[0]}" ]]; then
   if [ -z ${XDG_CACHE_HOME+x} ]; then
-    cachedirs=("$HOME/.cache/yay")
+    cachedirs=("$HOME"/.cache/yay/*/)
   else
-    cachedirs=("$XDG_CACHE_HOME/yay/")
+    cachedirs=("$XDG_CACHE_HOME"/yay/*/)
   fi
 fi
 
@@ -354,6 +424,8 @@ if (( move || delete )); then
 	[[ $movedir && ! -w $movedir ]] && needsroot=1
 fi
 
+pkgcount=0
+found=0
 for cachedir in "${cachedirs[@]}"; do
 	[[ -d $cachedir ]] ||
 		die "cachedir '%s' does not exist or is not a directory" "$cachedir"
@@ -372,34 +444,48 @@ for cachedir in "${cachedirs[@]}"; do
 				find "$PWD" -name '*.pkg.tar*.sig' -prune -o \( -name '*.pkg.tar*' -printf '%A@ %T@ %p\n' \) |
 				pacsort --files --key 3 --separator ' '
 			else
-				printf '%s\n' "$PWD"/*/*.pkg.tar.zst |
+				printf '%s\n' "$PWD"/*.pkg.tar.* |
 				pacsort --files
 			fi |
 			pkgfilter "$keep" "$scanarch" "$min_atime" "$min_mtime" \
 				"${#whitelist[*]}" "${whitelist[@]}" \
 				"${#blacklist[*]}" "${blacklist[@]}")
 
+  (( ${#cand[*]} )) && found=1
 	candidates+=("${cand[@]}")
 	unset cand
+
+  if (( ! keepbuild )); then
+    IFS=$'\n' read -r -d '' -a bfs < \
+      <(  if (( min_atime || min_mtime )); then
+          find $(git ls-files --others | xargs -r printf "$PWD/%s\n") -printf '%A@ %T@ %p\n'
+        else
+          find $(git ls-files --others | xargs -r printf "$PWD/%s\n")
+        fi |
+        grep -v -e '.pkg.tar.*' |
+        bffilter "$(basename "$cachedir")" "$min_atime" "$min_mtime" \
+          "${#whitelist[*]}" "${whitelist[@]}" \
+          "${#blacklist[*]}" "${blacklist[@]}")
+
+    (( ${#bfs[*]} )) && found=1
+    buildfiles+=("${bfs[@]}")
+    unset bfs
+  fi
+
+  (( found )) && (( pkgcount++ ))
+  found=0
 
 	popd &>/dev/null
 done
 
-if (( ! ${#candidates[*]} )); then
+if (( ! $pkgcount )); then
 	msg 'no candidate packages found for pruning'
 	exit 0
 fi
 
-# grab this prior to signature scavenging
-pkgcount=${#candidates[*]}
-
-# copy the list, merging in any found sigs
-for cand in "${candidates[@]}"; do
-	candtemp+=("$cand")
-	[[ -f $cand.sig ]] && candtemp+=("$cand.sig")
-done
-candidates=("${candtemp[@]}")
-unset candtemp
+# merge in build files
+# not supported for move operation
+(( move )) || candidates+=("${buildfiles[@]}")
 
 # do this before we destroy anything
 totalsaved=$(printf '%s\0' "${candidates[@]}" | xargs -0 @SIZECMD@ |
@@ -411,7 +497,7 @@ set -o errexit
 # crush. kill. destroy.
 (( verbose )) && cmdopts+=(-v)
 if (( delete )); then
-	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 rm "${cmdopts[@]}"
+	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 rm -r "${cmdopts[@]}"
 elif (( move )); then
 	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 mv "${cmdopts[@]}" -t "$movedir"
 fi
