@@ -97,7 +97,7 @@ By default the last three versions of a package are kept.</p></div>
 <dd>
 <p>
         Specify a different cache directory. This option can be used more than once.
-        The default config directory is <em>$XDG_CONFIG_HOME/yay/</em>. If $XDG_CONFIG_HOME is unset, the config directory will fall back to <em>$HOME/.config/yay</em>
+        The default config directory is <em>$XDG_CACHE_HOME/yay/*/</em>. If $XDG_CACHE_HOME is unset, the config directory will fall back to <em>$HOME/.cache/yay/*/</em>
 </p>
 </dd>
 <dt class="hdlist1">
@@ -132,6 +132,14 @@ By default the last three versions of a package are kept.</p></div>
 <p>
         Specify how many versions of each package are kept in the cache directory,
         default is 3.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--keep-build-files</strong>
+</dt>
+<dd>
+<p>
+        Keep package source build files in cache directory.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -233,7 +241,7 @@ repository.</p></div>
 <div id="footer">
 <div id="footer-text">
 Last updated
- 2023-09-02 02:00:15 EDT
+ 2023-10-08 20:56:02 EDT
 </div>
 </div>
 </body>
