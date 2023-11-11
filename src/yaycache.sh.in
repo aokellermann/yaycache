@@ -36,6 +36,8 @@ declare    delim=$'\n' keep=3 movedir='' scanarch=''
 QUIET=0
 USE_COLOR='y'
 
+declare -r pkg_re='(.+)-[^-]+-[0-9]+-([^.]+)\.pkg.*'
+
 # Import libmakepkg
 # shellcheck source=/dev/null
 source "$LIBRARY"/util/message.sh
@@ -224,8 +226,7 @@ summarize() {
 	(( QUIET )) && return
 
 	local -i filecount=$1; shift
-	local seenarch='' seen='' arch='' name=''
-	local -r pkg_re='(.+)-[^-]+-[0-9]+-([^.]+)\.pkg.*'
+	local name='' path=''
 
 	if (( delete )); then
 		printf -v output 'finished: %d files removed' "$filecount"
@@ -236,18 +237,24 @@ summarize() {
 			msg 'Candidate files:'
 			while read -r pkg; do
 				if (( verbose >= 3 )); then
-					[[ $pkg =~ $pkg_re ]] && name=${BASH_REMATCH[1]} arch=${BASH_REMATCH[2]}
-					if [[ -z $seen || $seenarch != "$arch" || $seen != "$name" ]]; then
-						seen=$name seenarch=$arch
-						printf '%s (%s):\n' "${name##*/}" "$arch"
+					if [[ -z $path || $pkg != "$path"* ]]; then
+						for cachedir in "${cachedirs[@]}"; do
+							if [[ $pkg == "$cachedir"* ]]; then
+								path=$cachedir
+								name=$(basename "$cachedir")
+								printf '%s:\n' "${name}"
+								break
+							fi
+						done
 					fi
-					printf '  %s\n' "${pkg##*/}"
+
+					printf '  %s\n' "$pkg"
 				elif (( verbose >= 2 )); then
 					printf "%s$delim" "$pkg"
 				else
 					printf "%s$delim" "${pkg##*/}"
 				fi
-			done < <(printf '%s\n' "$@" | pacsort --files)
+			done < <(printf '%s\n' "$@" | sort)
 		fi
 		printf -v output 'finished dry run: %d candidates' "$filecount"
 	fi
