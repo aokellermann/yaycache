@@ -29,7 +29,7 @@ declare -r myver='@PACKAGE_VERSION@'
 LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
 declare -a cachedirs=() candidates=() buildfiles=() cmdopts=() whitelist=() blacklist=()
-declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 keepbuild=0
+declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 removebuild=0
 declare -i min_atime=0 min_mtime=0
 declare    delim=$'\n' keep=3 movedir='' scanarch=''
 
@@ -270,29 +270,29 @@ Operations:
   -r, --remove      remove candidate packages
 
 Options:
-  -a, --arch <arch>       scan for "arch". will not apply to build files. (default: all architectures)
-  -c, --cachedir <dir>    scan "dir" for packages. can be used more than once
-                          (default: '\$XDG_CACHE_HOME/yay/*/'. if \$XDG_CACHE_HOME is unset, the config directory will fall back to '\$HOME/.cache/yay/*/')
-  -f, --force             apply force to mv(1) and rm(1) operations
-  -i, --ignore <pkgs>     ignore "pkgs", comma-separated. Alternatively, specify
-                          "-" to read package names from stdin, newline-
-                          delimited
-  -k, --keep <num>        keep "num" of each package in the cache (default: 3)
-      --keep-build-files  keep package source build files
+  -a, --arch <arch>       	scan for "arch". will not apply to build files. (default: all architectures)
+  -c, --cachedir <dir>   		scan "dir" for packages. can be used more than once
+                          	(default: '\$XDG_CACHE_HOME/yay/*/'. if \$XDG_CACHE_HOME is unset, the config directory will fall back to '\$HOME/.cache/yay/*/')
+  -f, --force             	apply force to mv(1) and rm(1) operations
+  -i, --ignore <pkgs>     	ignore "pkgs", comma-separated. Alternatively, specify
+                          	"-" to read package names from stdin, newline-
+                          	delimited
+  -k, --keep <num>        	keep "num" of each package in the cache (default: 3)
+      --remove-build-files  remove package source build files
       --min-atime <time>
-      --min-mtime <time>  keep packages with an atime/mtime that is not older
-                          than the time given, even if this means keeping more
-                          than specified through the '--keep' option. Accepts
-                          arguments according to 'info "Date input formats"',
-                          e.g. '30 days ago'
-      --nocolor           do not colorize output
-  -z, --null              use null delimiters for candidate names (only with -v
-                          and -vv)
-  -q, --quiet             minimize output
-  -u, --uninstalled       target uninstalled packages
-  -v, --verbose           increase verbosity. specify up to 3 times
-  -h, --help              display this help message and exit
-  -V, --version           display version information and exit
+      --min-mtime <time>  	keep packages with an atime/mtime that is not older
+                          	than the time given, even if this means keeping more
+                          	than specified through the '--keep' option. Accepts
+                          	arguments according to 'info "Date input formats"',
+                          	e.g. '30 days ago'
+      --nocolor           	do not colorize output
+  -z, --null              	use null delimiters for candidate names (only with -v
+                          	and -vv)
+  -q, --quiet             	minimize output
+  -u, --uninstalled       	target uninstalled packages
+  -v, --verbose           	increase verbosity. specify up to 3 times
+  -h, --help              	display this help message and exit
+  -V, --version           	display version information and exit
 EOF
 }
 
@@ -305,7 +305,7 @@ version() {
 OPT_SHORT=':a:c:dfhi:k:m:qrsuVvz'
 OPT_LONG=('arch:' 'cachedir:' 'dryrun' 'force' 'help' 'ignore:' 'keep:' 'move:'
           'nocolor' 'quiet' 'remove' 'uninstalled' 'version' 'verbose' 'null'
-          'min-atime:' 'min-mtime:' 'keep-build-files')
+          'min-atime:' 'min-mtime:' 'remove-build-files')
 
 if ! parseopts "$OPT_SHORT" "${OPT_LONG[@]}" -- "$@"; then
 	exit 1
@@ -342,8 +342,8 @@ while :; do
 				keep=$(( 10#$keep ))
 			fi
 			shift ;;
-    --keep-build-files)
-      keepbuild=1 ;;
+    --remove-build-files)
+      removebuild=1 ;;
 		--min-atime)
 			min_atime=$(date -d "$2" +%s)
 			min_atime_status=$?
@@ -455,7 +455,7 @@ for cachedir in "${cachedirs[@]}"; do
 	candidates+=("${cand[@]}")
 	unset cand
 
-  if (( ! keepbuild )); then
+  if (( removebuild )); then
     IFS=$'\n' read -r -d '' -a bfs < \
       <(  if (( min_atime || min_mtime )); then
           find $(git ls-files --others | xargs -r printf "$PWD/%s\n") -printf '%A@ %T@ %p\n'
