@@ -278,7 +278,7 @@ Operations:
 
 Options:
   -a, --arch <arch>       	scan for "arch". will not apply to build files. (default: all architectures)
-  -c, --cachedir <dir>			scan "dir" for packages. can be used more than once
+  -c, --cachedir <dir>    	scan "dir" for packages. can be used more than once
                           	(default: '\$XDG_CACHE_HOME/yay/*/'. if \$XDG_CACHE_HOME is unset, the config directory will fall back to '\$HOME/.cache/yay/*/')
   -f, --force             	apply force to mv(1) and rm(1) operations
   -i, --ignore <pkgs>     	ignore "pkgs", comma-separated. Alternatively, specify
