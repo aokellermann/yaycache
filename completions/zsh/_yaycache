@@ -18,7 +18,7 @@ args=(
 	'(--force -f)'{--force,-f}'[apply force to mv(1) and rm(1) operations]'
 	'(--ignore -i)'{--ignore=,-i+}'[ignore "pkgs", comma-separated, alternatively - for stdin]:pkgs: '
 	'(--keep -k)'{--keep=,-k+}'[keep "num" of each package in the cache (default: 3)]:number: '
-	'--keep-build-files[keep the package source build files]'
+	'--remove-build-files[remove the package source build files]'
 	'--min-atime[keep packages with an atime that is not older]:time: '
 	'--min-mtime[keep packages with an mtime that is not older]:time: '
 	'--nocolor[do not colorize output]'

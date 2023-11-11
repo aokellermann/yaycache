@@ -53,8 +53,8 @@ Options
 	Specify how many versions of each package are kept in the cache directory,
 	default is 3.
 
-*\--keep-build-files*::
-	Keep package source build files in cache directory.
+*\--remove-build-files*::
+	Remove package source build files in cache directory.
 
 *\--min-atime <time>*::
 *\--min-mtime <time>*::
