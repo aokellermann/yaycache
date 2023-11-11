@@ -457,10 +457,11 @@ for cachedir in "${cachedirs[@]}"; do
 
   if (( removebuild )); then
     IFS=$'\n' read -r -d '' -a bfs < \
-      <(  if (( min_atime || min_mtime )); then
-          find $(git ls-files --others | xargs -r printf "$PWD/%s\n") -printf '%A@ %T@ %p\n'
+      <(git ls-files --others | xargs -d '\n' -r printf "$PWD/%s\0" |
+      	if (( min_atime || min_mtime )); then
+        	find -files0-from - -printf '%A@ %T@ %p\n'
         else
-          find $(git ls-files --others | xargs -r printf "$PWD/%s\n")
+        	find -files0-from -
         fi |
         grep -v -e '.pkg.tar.*' |
         bffilter "$(basename "$cachedir")" "$min_atime" "$min_mtime" \
