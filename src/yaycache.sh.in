@@ -451,7 +451,7 @@ for cachedir in "${cachedirs[@]}"; do
 				find "$PWD" -name '*.pkg.tar*.sig' -prune -o \( -name '*.pkg.tar*' -printf '%A@ %T@ %p\n' \) |
 				pacsort --files --key 3 --separator ' '
 			else
-				printf '%s\n' "$PWD"/*.pkg.tar.* |
+				printf '%s\n' "$PWD"/*.pkg.tar* |
 				pacsort --files
 			fi |
 			pkgfilter "$keep" "$scanarch" "$min_atime" "$min_mtime" \
@@ -470,7 +470,7 @@ for cachedir in "${cachedirs[@]}"; do
         else
         	find -files0-from -
         fi |
-        grep -v -e '.pkg.tar.*' |
+        grep -v -e '.pkg.tar*' |
         bffilter "$(basename "$cachedir")" "$min_atime" "$min_mtime" \
           "${#whitelist[*]}" "${whitelist[@]}" \
           "${#blacklist[*]}" "${blacklist[@]}")
