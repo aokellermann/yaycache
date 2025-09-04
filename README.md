@@ -24,7 +24,7 @@ The configuration is stored in `/etc/yaycache-hook.conf`.
 An optional systemd service is included that will run weekly:
 
 ```sh
-systemctl enable --now yaycache.timer
+systemctl --user enable --now yaycache.timer
 ```
 
 ## Installing

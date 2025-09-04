@@ -7,7 +7,7 @@ DIST_SUBDIRS = $(SUBDIRS)
 bin_SCRIPTS = \
 	$(OURSCRIPTS)
 
-systemd_dir = ${libdir}/systemd/system
+systemd_dir = ${libdir}/systemd/user
 
 systemd__DATA = \
 	yaycache.service yaycache.timer
