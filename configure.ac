@@ -1,4 +1,4 @@
-AC_INIT([yaycache], [0.3.0], [https://github.com/aokellermann/yaycache])
+AC_INIT([yaycache], [0.3.2], [https://github.com/aokellermann/yaycache])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
