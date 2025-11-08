@@ -499,6 +499,17 @@ fi
 totalsaved=$(printf '%s\0' "${candidates[@]}" | xargs -0 @SIZECMD@ |
 		awk '{ sum += $1 } END { print sum }')
 
+# check if any candidates require root permissions
+if (( move || delete )); then
+	for candidate in "${candidates[@]}"; do
+		parent_dir=$(dirname "$candidate")
+		if [[ ! -w "$parent_dir" ]]; then
+			needsroot=1
+			break
+		fi
+	done
+fi
+
 # Exit immediately if a pipeline returns non-zero.
 set -o errexit
 
