@@ -144,13 +144,8 @@ bffilter() {
 	# script after the block of awk.
 
 	awk -v cachedir="$1" -v min_atime="$2" -v min_mtime="$3" '
-	function basename(str) {
-		sub(".*/", "", str);
-		return str;
-	}
-
 	function parse_filename(filename,
-				atime, mtime, parts, basepath) {
+				atime, mtime, parts) {
 
 		if (0 + min_atime + min_mtime != 0) {
 			# atime and mtime are in the first two columns and the
@@ -161,15 +156,14 @@ bffilter() {
 			filename = substr(filename, length(atime) + length(mtime) + 3)
 		}
 
-    basepath = basename(filename)
-
 		# filter on whitelist or blacklist
 		if (wlen && !whitelist[cachedir]) return
 		if (blen && blacklist[cachedir]) return
 
-    files[basepath] = filename
-    atimes[basepath] = atime
-    mtimes[basepath] = mtime
+    # Use full path as key to avoid basename collisions
+    files[filename] = filename
+    atimes[filename] = atime
+    mtimes[filename] = mtime
 	}
 
 	BEGIN {
