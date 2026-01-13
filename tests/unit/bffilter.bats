@@ -156,3 +156,47 @@ teardown() {
 	[ "$status" -eq 0 ]
 	[[ "$output" =~ "deep/nested/path/file.txt" ]] || [[ "$output" =~ "candidates" ]]
 }
+
+@test "bffilter: issue #19 - same basename files within single package" {
+	# This tests the specific bug from issue #19 where files like
+	# refs/pull/1/head, refs/pull/2/head, refs/pull/3/head all have
+	# basename "head" and were incorrectly deduplicated
+	mkdir -p "$TEST_CACHE"
+	cd "$TEST_CACHE"
+	git init --quiet
+	echo "PKGBUILD" > PKGBUILD
+	git add PKGBUILD
+	git config user.email "test@test.com"
+	git config user.name "Test"
+	git commit -m "init" --quiet
+
+	# Create nested git repo with multiple files having same basename
+	mkdir -p src
+	cd src
+	git init --quiet
+
+	# Create structure like refs/pull/*/head - all files named "head"
+	for i in 1 2 3 4 5; do
+		mkdir -p "refs/pull/$i"
+		echo "ref $i" > "refs/pull/$i/head"
+	done
+
+	# Also create refs/merge-requests/*/merge - all files named "merge"
+	for i in 1 2 3 4 5; do
+		mkdir -p "refs/merge-requests/$i"
+		echo "merge $i" > "refs/merge-requests/$i/merge"
+	done
+
+	cd "$TEST_CACHE"
+
+	run run_yaycache -d --remove-build-files -k0 -vv -c "$TEST_CACHE/"
+	[ "$status" -eq 0 ]
+
+	# Count how many "head" files are found - should be 5, not 1
+	local head_count=$(echo "$output" | grep -c "/head$" || true)
+	[ "$head_count" -eq 5 ]
+
+	# Count how many "merge" files are found - should be 5, not 1
+	local merge_count=$(echo "$output" | grep -c "/merge$" || true)
+	[ "$merge_count" -eq 5 ]
+}
