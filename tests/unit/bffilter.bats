@@ -161,6 +161,8 @@ teardown() {
 	# This tests the specific bug from issue #19 where files like
 	# refs/pull/1/head, refs/pull/2/head, refs/pull/3/head all have
 	# basename "head" and were incorrectly deduplicated
+	local orig_dir="$PWD"
+
 	mkdir -p "$TEST_CACHE"
 	cd "$TEST_CACHE"
 	git init --quiet
@@ -187,7 +189,7 @@ teardown() {
 		echo "merge $i" > "refs/merge-requests/$i/merge"
 	done
 
-	cd "$TEST_CACHE"
+	cd "$orig_dir"
 
 	run run_yaycache -d --remove-build-files -k0 -vv -c "$TEST_CACHE/"
 	[ "$status" -eq 0 ]
