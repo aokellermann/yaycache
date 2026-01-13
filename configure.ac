@@ -67,6 +67,25 @@ AC_DEFINE_UNQUOTED([ROOTDIR], "$ROOTDIR", [The location of the root operating di
 SIZECMD="stat -c %s"
 AC_SUBST(SIZECMD)
 
+# Check for BATS (optional, for testing)
+AC_ARG_ENABLE(tests,
+	AS_HELP_STRING([--disable-tests], [disable test suite (requires bats)]),
+	[wanttests=$enableval], [wanttests=yes])
+
+AC_MSG_CHECKING([for test suite support])
+if test "x$wanttests" = "xyes" ; then
+	AC_PATH_PROG([BATS], [bats], [no])
+	if test "x$BATS" = "xno"; then
+		AC_MSG_RESULT([no (bats not found)])
+		wanttests=no
+	else
+		AC_MSG_RESULT([yes])
+	fi
+else
+	AC_MSG_RESULT([no, disabled by configure])
+fi
+AM_CONDITIONAL(WANT_TESTS, test "x$wanttests" = "xyes")
+
 # Check for documentation support and status
 AC_CHECK_PROGS([ASCIIDOC], [asciidoc])
 AC_MSG_CHECKING([for building documentation])
@@ -89,6 +108,7 @@ AC_CONFIG_FILES([
 	lib/Makefile
 	src/Makefile
 	doc/Makefile
+	tests/Makefile
 	Makefile
 ])
 AC_OUTPUT
@@ -109,5 +129,6 @@ ${PACKAGE_NAME}:
 
   Compilation options:
     Run make in doc/ dir   : ${wantdoc} ${asciidoc}
+    Run make in tests/ dir : ${wanttests}
     use git version        : ${wantgitver}
 "

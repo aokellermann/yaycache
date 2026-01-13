@@ -2,8 +2,11 @@ SUBDIRS = src lib completions
 if WANT_DOC
 SUBDIRS += doc
 endif
+if WANT_TESTS
+SUBDIRS += tests
+endif
 
-DIST_SUBDIRS = $(SUBDIRS)
+DIST_SUBDIRS = $(SUBDIRS) tests
 
 DISTCHECK_CONFIGURE_FLAGS = --prefix=/usr --enable-doc --disable-git-version
 
