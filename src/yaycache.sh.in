@@ -28,7 +28,7 @@ declare -r myver='@PACKAGE_VERSION@'
 
 LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
-declare -a cachedirs=() candidates=() buildfiles=() cmdopts=() whitelist=() blacklist=()
+declare -a cachedirs=() candidates=() buildfiles=() cmdopts=() whitelist=() blacklist=() emptyfolders=()
 declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 removebuild=0
 declare -i min_atime=0 min_mtime=0
 declare    delim=$'\n' keep=3 movedir='' scanarch=''
@@ -469,9 +469,15 @@ for cachedir in "${cachedirs[@]}"; do
           "${#whitelist[*]}" "${whitelist[@]}" \
           "${#blacklist[*]}" "${blacklist[@]}")
 
+    # test empty build folders (from previous clean that not remove it)
+    empty=$(find "$cachedir" -type d -empty 2>/dev/null)
+    (( $? )) && empty=1  # if error, assume their are empty folders (probaly pkg)
+    [[ $empty ]] && empty=1
+
     (( ${#bfs[*]} )) && found=1
+    (( found || empty )) && emptyfolders+=("$cachedir")
     buildfiles+=("${bfs[@]}")
-    unset bfs
+    unset bfs empty
   fi
 
   (( found )) && (( pkgcount++ ))
@@ -502,6 +508,10 @@ if (( move || delete )); then
 			break
 		fi
 	done
+	if (( ${#emptyfolders[*]} )); then
+		find "${emptyfolders[@]}" -type d -empty &>/dev/null
+		(( $? )) && needsroot=1
+	fi
 fi
 
 # Exit immediately if a pipeline returns non-zero.
@@ -513,6 +523,11 @@ if (( delete )); then
 	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 rm -r "${cmdopts[@]}"
 elif (( move )); then
 	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 mv "${cmdopts[@]}" -t "$movedir"
+fi
+
+# clean the empty build folders
+if (( delete && ${#emptyfolders[*]} )); then
+	runcmd find "${emptyfolders[@]}" -type d -empty -delete
 fi
 
 summarize "$pkgcount" "${candidates[@]}"

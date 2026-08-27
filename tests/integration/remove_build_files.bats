@@ -148,6 +148,9 @@ teardown() {
 	[ ! -f "$TEST_CACHE/src/main.c" ]
 	[ ! -f "$TEST_CACHE/src/main.o" ]
 
+	# Empty build folders should be removed
+	[ ! -d "$TEST_CACHE/src/" ]
+
 	# PKGBUILD should still exist (tracked by git)
 	[ -f "$TEST_CACHE/PKGBUILD" ]
 }

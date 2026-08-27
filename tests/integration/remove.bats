@@ -129,4 +129,6 @@ teardown() {
 	# Build files should be removed
 	[ ! -f "$TEST_CACHE/src/main.c" ]
 	[ ! -f "$TEST_CACHE/src/main.o" ]
+	# Empty build folders should be removed
+	[ ! -d "$TEST_CACHE/src/" ]
 }
