@@ -28,8 +28,9 @@ declare -r myver='@PACKAGE_VERSION@'
 
 LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
-declare -a cachedirs=() candidates=() buildfiles=() cmdopts=() whitelist=() blacklist=()
-declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 removebuild=0
+declare -a cachedirs=() candidates=() buildfiles=() builddirs=() dircandidates=() cmdopts=() whitelist=() blacklist=()
+declare -A blacklisted=() whitelisted=()
+declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 removebuild=0 removedirs=0 uninstalled=0
 declare -i min_atime=0 min_mtime=0
 declare    delim=$'\n' keep=3 movedir='' scanarch=''
 
@@ -144,13 +145,8 @@ bffilter() {
 	# script after the block of awk.
 
 	awk -v cachedir="$1" -v min_atime="$2" -v min_mtime="$3" '
-	function basename(str) {
-		sub(".*/", "", str);
-		return str;
-	}
-
 	function parse_filename(filename,
-				atime, mtime, parts, basepath) {
+				atime, mtime, parts) {
 
 		if (0 + min_atime + min_mtime != 0) {
 			# atime and mtime are in the first two columns and the
@@ -161,15 +157,14 @@ bffilter() {
 			filename = substr(filename, length(atime) + length(mtime) + 3)
 		}
 
-    basepath = basename(filename)
-
 		# filter on whitelist or blacklist
 		if (wlen && !whitelist[cachedir]) return
 		if (blen && blacklist[cachedir]) return
 
-    files[basepath] = filename
-    atimes[basepath] = atime
-    mtimes[basepath] = mtime
+    # Use full path as key to avoid basename collisions
+    files[filename] = filename
+    atimes[filename] = atime
+    mtimes[filename] = mtime
 	}
 
 	BEGIN {
@@ -220,6 +215,43 @@ runcmd() {
 	else
 		"$@"
 	fi
+}
+
+# print, NUL-delimited, the top-level subdirectories of every cache directory
+# that had build-file candidates, except the AUR clone's own .git: these are the
+# trees in which now-empty directories get pruned after a removal
+builddir_roots() {
+	(( ${#builddirs[@]} )) || return 0
+	printf '%s\0' "${builddirs[@]}" |
+		find -files0-from - -mindepth 1 -maxdepth 1 -type d ! -name .git -print0
+}
+
+# With --remove-uninstalled-dirs: is the AUR clone in $PWD one whose packages
+# are all uninstalled, i.e. none of them is on the blacklist (installed or
+# --ignore'd), selected by the whitelist if one was given, and, with
+# --min-atime/--min-mtime, not touched since that time?
+dir_is_uninstalled() {
+	local -a names=()
+	local name
+	local -i listed=0
+
+	# the package(s) this clone builds: .SRCINFO, else the directory name
+	mapfile -t names < <(sed -n 's/^pkgname = //p' .SRCINFO 2>/dev/null)
+	(( ${#names[@]} )) || names=("${PWD##*/}")
+
+	for name in "${names[@]}"; do
+		[[ -n ${blacklisted[$name]} ]] && return 1
+		[[ -n ${whitelisted[$name]} ]] && listed=1
+	done
+	(( ${#whitelist[@]} == 0 || listed )) || return 1
+
+	if (( min_atime )) && [[ -n $(find . -newerat "@$min_atime" -print -quit) ]]; then
+		return 1
+	fi
+	if (( min_mtime )) && [[ -n $(find . -newermt "@$min_mtime" -print -quit) ]]; then
+		return 1
+	fi
+	return 0
 }
 
 summarize() {
@@ -286,6 +318,10 @@ Options:
                           	delimited
   -k, --keep <num>        	keep "num" of each package in the cache (default: 3)
       --remove-build-files	remove package source build files
+      --remove-uninstalled-dirs
+                          	remove the whole cache directory of packages that
+                          	are no longer installed, instead of individual
+                          	files (requires -u)
       --min-atime <time>
       --min-mtime <time>  	keep packages with an atime/mtime that is not older
                           	than the time given, even if this means keeping more
@@ -312,7 +348,7 @@ version() {
 OPT_SHORT=':a:c:dfhi:k:m:qrsuVvz'
 OPT_LONG=('arch:' 'cachedir:' 'dryrun' 'force' 'help' 'ignore:' 'keep:' 'move:'
           'nocolor' 'quiet' 'remove' 'uninstalled' 'version' 'verbose' 'null'
-          'min-atime:' 'min-mtime:' 'remove-build-files')
+          'min-atime:' 'min-mtime:' 'remove-build-files' 'remove-uninstalled-dirs')
 
 if ! parseopts "$OPT_SHORT" "${OPT_LONG[@]}" -- "$@"; then
 	exit 1
@@ -351,6 +387,8 @@ while :; do
 			shift ;;
     --remove-build-files)
       removebuild=1 ;;
+    --remove-uninstalled-dirs)
+      removedirs=1 ;;
 		--min-atime)
 			min_atime=$(date -d "$2" +%s)
 			min_atime_status=$?
@@ -377,6 +415,7 @@ while :; do
 		-r|--remove)
 			delete=1 ;;
 		-u|--uninstalled)
+			uninstalled=1
 			IFS=$'\n' read -r -d '' -a ign < <(pacman -Qq)
 			# pacman -Qq may exit with an error, thus making ign an empty array
 			(( ${#ign[@]} )) || die 'failed to retrieve the list of installed packages'
@@ -416,6 +455,13 @@ fi
 # remaining args are a whitelist
 whitelist=("$@")
 
+if (( removedirs )); then
+	(( uninstalled )) || die "option --remove-uninstalled-dirs requires -u"
+	for pkg in "${blacklist[@]}"; do blacklisted[$pkg]=1; done
+	for pkg in "${whitelist[@]}"; do whitelisted[$pkg]=1; done
+	unset pkg
+fi
+
 # sanity checks
 case $(( dryrun+delete+move )) in
 	0) die 'no operation specified (use -h for help)' ;;
@@ -444,6 +490,14 @@ for cachedir in "${cachedirs[@]}"; do
 	# unlikely that this will fail, but better make sure
 	pushd "$cachedir" &>/dev/null || die "failed to chdir to '%s'" "$cachedir"
 
+	# the whole directory goes if it belongs to uninstalled packages only
+	if (( removedirs )) && dir_is_uninstalled; then
+		dircandidates+=("$PWD")
+		(( pkgcount++ ))
+		popd &>/dev/null
+		continue
+	fi
+
 	# note that these results are returned in an arbitrary order from awk, but
 	# they'll be resorted (in summarize) iff we have a verbosity level set.
 	IFS=$'\n' read -r -d '' -a cand < \
@@ -451,7 +505,7 @@ for cachedir in "${cachedirs[@]}"; do
 				find "$PWD" -name '*.pkg.tar*.sig' -prune -o \( -name '*.pkg.tar*' -printf '%A@ %T@ %p\n' \) |
 				pacsort --files --key 3 --separator ' '
 			else
-				printf '%s\n' "$PWD"/*.pkg.tar.* |
+				printf '%s\n' "$PWD"/*.pkg.tar* |
 				pacsort --files
 			fi |
 			pkgfilter "$keep" "$scanarch" "$min_atime" "$min_mtime" \
@@ -463,19 +517,25 @@ for cachedir in "${cachedirs[@]}"; do
 	unset cand
 
   if (( removebuild )); then
+    # Only files (and symlinks) are candidates: listing a directory as well as
+    # its contents would make `rm -r` fail on the children once the directory
+    # is gone. The directories left empty by the removal are pruned afterwards.
     IFS=$'\n' read -r -d '' -a bfs < \
       <(git ls-files --others | xargs -d '\n' -r printf "$PWD/%s\0" |
       	if (( min_atime || min_mtime )); then
-        	find -files0-from - -printf '%A@ %T@ %p\n'
+        	find -files0-from - ! -type d -printf '%A@ %T@ %p\n'
         else
-        	find -files0-from -
+        	find -files0-from - ! -type d
         fi |
-        grep -v -e '.pkg.tar.*' |
+        grep -v -e '.pkg.tar*' |
         bffilter "$(basename "$cachedir")" "$min_atime" "$min_mtime" \
           "${#whitelist[*]}" "${whitelist[@]}" \
           "${#blacklist[*]}" "${blacklist[@]}")
 
-    (( ${#bfs[*]} )) && found=1
+    if (( ${#bfs[*]} )); then
+      found=1
+      builddirs+=("$PWD")
+    fi
     buildfiles+=("${bfs[@]}")
     unset bfs
   fi
@@ -496,8 +556,32 @@ fi
 (( move )) || candidates+=("${buildfiles[@]}")
 
 # do this before we destroy anything
-totalsaved=$(printf '%s\0' "${candidates[@]}" | xargs -0 @SIZECMD@ |
-		awk '{ sum += $1 } END { print sum }')
+if (( ${#candidates[@]} )); then
+	totalsaved=$(printf '%s\0' "${candidates[@]}" | xargs -0 @SIZECMD@ |
+			awk '{ sum += $1 } END { print sum }')
+fi
+if (( ${#dircandidates[@]} )); then
+	totalsaved+=$(printf '%s\0' "${dircandidates[@]}" | xargs -0 du -sb |
+			awk '{ sum += $1 } END { print sum }')
+	candidates+=("${dircandidates[@]}")
+fi
+
+# check if any candidates require root permissions
+if (( move || delete )); then
+	for candidate in "${candidates[@]}"; do
+		parent_dir=$(dirname "$candidate")
+		if [[ ! -w "$parent_dir" ]]; then
+			needsroot=1
+			break
+		fi
+	done
+	# pruning the emptied build directories needs every directory in those
+	# trees to be writable as well
+	if (( delete && ! needsroot )) &&
+	   [[ -n $(builddir_roots | find -files0-from - -type d ! -writable -print -quit) ]]; then
+		needsroot=1
+	fi
+fi
 
 # Exit immediately if a pipeline returns non-zero.
 set -o errexit
@@ -506,6 +590,15 @@ set -o errexit
 (( verbose )) && cmdopts+=(-v)
 if (( delete )); then
 	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 rm -r "${cmdopts[@]}"
+
+	# Removing build files leaves behind the (untracked) directory skeletons
+	# that held them, e.g. src/<pkg>/ trees of extracted tarballs or the .git
+	# of a nested upstream clone. Prune every directory that ended up empty,
+	# bottom-up, but never touch the AUR clone's own .git (git keeps some of
+	# its subdirectories legitimately empty).
+	if (( ${#builddirs[@]} )); then
+		builddir_roots | runcmd find -files0-from - -depth -type d -empty -delete
+	fi
 elif (( move )); then
 	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 mv "${cmdopts[@]}" -t "$movedir"
 fi

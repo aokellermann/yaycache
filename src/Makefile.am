@@ -7,10 +7,13 @@ DIST_SUBDIRS = $(SUBDIRS)
 bin_SCRIPTS = \
 	$(OURSCRIPTS)
 
-systemd_dir = ${libdir}/systemd/system
+systemd_dir = ${libdir}/systemd/user
 
 systemd__DATA = \
 	yaycache.service yaycache.timer
+
+sysconf_DATA = \
+	yaycache.conf
 
 BASHSCRIPTS = \
 	yaycache
@@ -22,6 +25,7 @@ OURFILES = \
 	yaycache.service
 
 EXTRA_DIST = \
+	yaycache.conf \
 	yaycache.service.in \
 	yaycache.sh.in \
 	yaycache.timer
@@ -38,6 +42,7 @@ endif
 
 edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
+	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
 	-e 's|@PACKAGE_VERSION[@]|$(REAL_PACKAGE_VERSION)|g' \
 	-e 's|@libmakepkgdir[@]|$(LIBMAKEPKGDIR)|g' \
 	-e 's|@SIZECMD[@]|$(SIZECMD)|g' \

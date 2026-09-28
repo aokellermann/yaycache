@@ -1,4 +1,4 @@
-AC_INIT([yaycache], [0.3.0], [https://github.com/aokellermann/yaycache])
+AC_INIT([yaycache], [0.4.0], [https://github.com/aokellermann/yaycache])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
@@ -20,6 +20,12 @@ AC_ARG_ENABLE(git-version,
 	AS_HELP_STRING([--enable-git-version],
 		[enable use of git version in version string if available]),
 	[wantgitver=$enableval], [wantgitver=no])
+
+# Like most system packages, install the service's configuration file under
+# /etc rather than /usr/etc when installing to /usr and --sysconfdir was not
+# given explicitly.
+AS_IF([test "x$prefix" = "x/usr" && test "x$sysconfdir" = 'x${prefix}/etc'],
+	[sysconfdir=/etc])
 
 # Checks for programs.
 AC_PATH_PROGS([BASH_SHELL], [bash bash4], [false])
@@ -67,6 +73,36 @@ AC_DEFINE_UNQUOTED([ROOTDIR], "$ROOTDIR", [The location of the root operating di
 SIZECMD="stat -c %s"
 AC_SUBST(SIZECMD)
 
+# Test suite (optional). bats-core is vendored as a git submodule under
+# tests/lib/; a system-wide bats is used only as a fallback. bubblewrap is
+# needed to run the tests in an isolated filesystem (tests/sandbox.sh).
+AC_ARG_ENABLE(tests,
+	AS_HELP_STRING([--disable-tests], [disable test suite]),
+	[wanttests=$enableval], [wanttests=yes])
+
+AC_MSG_CHECKING([for test suite support])
+if test "x$wanttests" = "xyes" ; then
+	if test -x "$srcdir/tests/lib/bats-core/bin/bats"; then
+		BATS=`cd "$srcdir" && pwd`/tests/lib/bats-core/bin/bats
+		AC_MSG_RESULT([yes (vendored bats)])
+	else
+		AC_MSG_RESULT([checking for system bats])
+		AC_PATH_PROG([BATS], [bats], [no])
+		if test "x$BATS" = "xno"; then
+			AC_MSG_WARN([bats not found; run 'git submodule update --init' to fetch the vendored copy. Tests disabled.])
+			wanttests=no
+		fi
+	fi
+	AC_SUBST(BATS)
+	AC_PATH_PROG([BWRAP], [bwrap], [no])
+	if test "x$BWRAP" = "xno"; then
+		AC_MSG_WARN([bubblewrap (bwrap) not found; 'make check' will refuse to run unless YAYCACHE_NO_SANDBOX=1 is set (only do that inside a container)])
+	fi
+else
+	AC_MSG_RESULT([no, disabled by configure])
+fi
+AM_CONDITIONAL(WANT_TESTS, test "x$wanttests" = "xyes")
+
 # Check for documentation support and status
 AC_CHECK_PROGS([ASCIIDOC], [asciidoc])
 AC_MSG_CHECKING([for building documentation])
@@ -89,6 +125,7 @@ AC_CONFIG_FILES([
 	lib/Makefile
 	src/Makefile
 	doc/Makefile
+	tests/Makefile
 	Makefile
 ])
 AC_OUTPUT
@@ -109,5 +146,8 @@ ${PACKAGE_NAME}:
 
   Compilation options:
     Run make in doc/ dir   : ${wantdoc} ${asciidoc}
+    Run make in tests/ dir : ${wanttests}
+    bats                   : ${BATS}
+    bubblewrap             : ${BWRAP}
     use git version        : ${wantgitver}
 "

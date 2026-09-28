@@ -56,6 +56,16 @@ Options
 *\--remove-build-files*::
 	Remove package source build files in cache directory.
 
+*\--remove-uninstalled-dirs*::
+	Remove the whole cache directory of a package that is no longer installed
+	(the AUR clone with its PKGBUILD, '.git', sources and built packages),
+	instead of only its old built packages and build files. Requires '-u'. A
+	directory is removed when none of the packages it builds (read from its
+	'.SRCINFO', falling back to the directory name) is installed or ignored,
+	and, if '\--min-atime' or '\--min-mtime' is given, when nothing in it has
+	been accessed or modified since then. '\--keep' does not apply to these
+	directories. With '-m' the directory is moved instead.
+
 *\--min-atime <time>*::
 *\--min-mtime <time>*::
 	Keep packages with an atime/mtime that is not older than the time given,
@@ -84,8 +94,18 @@ Options
 
 Systemd Timer
 -------------
-The package cache can be cleaned periodically using the systemd timer
-'yaycache.timer'. If the timer is enabled the cache will be cleaned weekly with
-yaycache's default options.
+The package cache can be cleaned periodically using the systemd user timer
+'yaycache.timer'. If the timer is enabled the cache will be cleaned weekly by
+'yaycache.service', which runs 'yaycache -r $YAYCACHE_ARGS'.
+
+Additional options are read from the 'YAYCACHE_ARGS' variable in
+'/etc/yaycache.conf', or in '$XDG_CONFIG_HOME/yaycache.conf'
+('~/.config/yaycache.conf') which takes precedence. For example, to keep one
+version of each package and also remove build files older than a month:
+
+	YAYCACHE_ARGS="-k1 --remove-build-files --min-mtime '30 days ago'"
+
+The unit itself can still be customised with 'systemctl --user edit
+yaycache.service'.
 
 include::footer.adoc[]
