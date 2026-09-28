@@ -63,9 +63,8 @@ first thing to look at if the suite ever behaves surprisingly.
 - The `N candidates` / `N files removed` summary counts candidate files,
   packages and build files alike (a nested clone directory expanded by
   `find` contributes every entry). `list_candidates` prints them one per line.
-- `--remove-build-files` currently exits non-zero when a nested git clone is
-  among the build files (`rm -r` gets the directory and its children; see the
-  skipped test in `yay_layout.bats`). Tests assert the resulting tree and
-  tolerate the exit status until that is fixed.
+- Build-file candidates can contain a directory *and* its children (nested
+  git clones); `prune_nested` in the script drops the children before `rm -r`
+  so removal exits 0. `yay_layout.bats` guards this.
 - Writability tests are skipped for root (`skip_if_root`); the docker image
   runs as user `tester` for this reason.
