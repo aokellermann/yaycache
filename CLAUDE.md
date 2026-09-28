@@ -126,3 +126,11 @@ Bash reads from a non-seekable fd (pipe, process substitution) one byte per `rea
 2026-09-27: a `--remove-build-files` dry run spent ~35 of 38 s there). `mapfile` from a pipe is just as
 slow; the same `mapfile` from a regular file takes 0.25 s. If a large list must land in a bash array, write
 it to a temp file first, or better, keep it as a NUL-delimited stream and pipe it straight to `xargs -0`.
+
+## Releasing
+
+1. Bump `AC_INIT` in `configure.ac`, commit (`bump to X.Y.Z`), then `git tag -s vX.Y.Z -m vX.Y.Z` (tags are SSH-signed with the YubiKey, so tagging needs the user present) and push master + tag. **No GitHub Releases are created**, tags only; the AUR package downloads `archive/vX.Y.Z.tar.gz`.
+2. AUR `yaycache` lives in `~/repos/aur/yaycache`: bump `pkgver`, `updpkgsums`, `makepkg --printsrcinfo > .SRCINFO`, commit, push. The b2sum cannot be computed before the tag exists on GitHub (its gzip output differs from a local `git archive`).
+3. The GitHub tarball has **no submodules**, so `configure` falls back to system `bats` (checkdepends `bats bats-support bats-assert bubblewrap`; `bats-file` is not used). Inside chroot/container builds bwrap cannot create namespaces and every test ERRORs, hence the PKGBUILD's `check()` probes `bwrap --unshare-all true` and falls back to `YAYCACHE_NO_SANDBOX=1 make check` (4 sandbox self-tests skip).
+4. To rehearse the AUR build before tagging: `git archive --format=tar.gz --prefix=yaycache-X.Y.Z/ HEAD`, point a copy of the PKGBUILD's `source=` at that file, and run `makepkg -f` as an unprivileged user in `docker run --rm --tmpfs /tmp:exec archlinux:base-devel` (the host has no `bats` packages installed).
+5. Website (https://yaycache.aok.site, GitHub Pages from `gh-pages:/docs`) is the rendered man page. Refresh it in a worktree: `git worktree add ../yaycache-gh-pages gh-pages`, merge master, `./autogen.sh && ./configure --enable-doc --disable-git-version && make -C doc html`, copy `doc/yaycache.8.html` to `docs/index.html`, commit, push. `docs.sh` (the `website` target) expects asciidoc's css/js under `/etc/asciidoc`, which on this machine live in `/usr/lib/python3.*/site-packages/asciidoc/resources/`; the committed `docs/asciidoc.{css,js}` are identical to those, so only `index.html` needs regenerating.
