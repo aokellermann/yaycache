@@ -63,9 +63,5 @@ first thing to look at if the suite ever behaves surprisingly.
 - The `N candidates` / `N files removed` figure in yaycache's summary is the
   number of cache *directories* that had candidates, not files. Assert on
   `list_candidates` output or on-disk counts instead.
-- `--remove-build-files` currently exits non-zero when a nested git clone is
-  among the build files (`rm -r` gets the directory and its children; see the
-  skipped test in `yay_layout.bats`). Tests assert the resulting tree and
-  tolerate the exit status until that is fixed.
 - Writability tests are skipped for root (`skip_if_root`); the docker image
   runs as user `tester` for this reason.

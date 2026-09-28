@@ -88,7 +88,7 @@ Rules for writing tests:
 - Assert on `list_candidates` output or on-disk file counts, not on the `N candidates` / `N files removed` summary: that number is the count of cache *directories* with candidates (`pkgcount`), not files.
 - Use `create_realistic_yay_cache` / `create_aur_pkg_dir` + `assert_tree` for end-to-end scenarios; `HOME` is unique per test so running without `-c` is safe.
 - Privilege tests use `SUDO_SHIM_MODE=passthrough` to capture the exact command yaycache would hand to sudo; they are skipped for root.
-- Known bug (skipped test in `yay_layout.bats`): `--remove-build-files` with a nested git clone passes the directory and its children to `rm -r`, so yaycache exits non-zero after removing everything. Tests assert the resulting tree and tolerate the exit status.
+- `--remove-build-files` candidates are files only (`find ! -type d`); the directories left empty are pruned after the `rm` (all of them except the AUR clone's own `.git`). `yay_layout.bats` covers both.
 
 Manual dry run against a mock directory still works without the suite:
 
@@ -104,7 +104,7 @@ mkdir -p /tmp/test-pkg/src
 The `--remove-build-files` pipeline in `src/yaycache.sh.in`:
 1. `git ls-files --others` - Lists untracked files in the AUR package directory
 2. `xargs printf` - Prepends `$PWD/` to make absolute paths (null-terminated)
-3. `find -files0-from -` - Expands directories to list all files within
+3. `find -files0-from - ! -type d` - Expands directories to list all files within (directories themselves are not candidates; they are pruned after removal if empty)
 4. `grep -v .pkg.tar*` - Excludes built packages
 5. `bffilter()` - Applies whitelist/blacklist and atime/mtime filters
 

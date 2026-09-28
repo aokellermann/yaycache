@@ -82,6 +82,22 @@ sudo_calls() {
 	[ -f "$TMPDIR/aur/pkg/pkg-1.1.tar.gz" ]
 }
 
+@test "privilege: emptied build directories are pruned through sudo as 'find -files0-from - -depth -type d -empty -delete'" {
+	create_aur_pkg_dir "$TMPDIR/aur-prune/pkg" pkg 1.0 1.1
+	chmod 555 "$TMPDIR/aur-prune/pkg/src"
+	SUDO_SHIM_MODE=passthrough run yaycache -r -k1 --remove-build-files -c "$TMPDIR/aur-prune/pkg/"
+	chmod 755 "$TMPDIR/aur-prune/pkg/src" 2>/dev/null || true
+	# the shim runs the commands unprivileged, so pruning src/pkg-1.1 fails
+	# and yaycache reports it; the rest of the run went through
+	[ "$status" -ne 0 ]
+	[[ "$output" =~ "Permission denied" ]]
+	sudo_calls | grep -qx $'sudo\txargs\t-0\trm\t-r'
+	sudo_calls | grep -qx $'sudo\tfind\t-files0-from\t-\t-depth\t-type\td\t-empty\t-delete'
+	# the shim ran the commands unprivileged, so the writable trees are gone
+	[ ! -e "$TMPDIR/aur-prune/pkg/pkg" ]
+	[ -d "$TMPDIR/aur-prune/pkg/.git/refs/tags" ]
+}
+
 @test "privilege: unwritable parent of a candidate with writable cachedir" {
 	local nested="$TEST_CACHE/sub"
 	mkdir -p "$nested"
