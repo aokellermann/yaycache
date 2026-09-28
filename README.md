@@ -40,9 +40,20 @@ yay -S yaycache
 You can build the package yourself:
 
 ```sh
+git submodule update --init   # test dependencies (bats-core), only needed for make check
 ./autogen.sh
 ./configure --prefix=/usr
 make
 make check
 make install DESTDIR="$pkgdir"
 ```
+
+## Testing
+
+`make check` runs the BATS suite with every test file inside a
+[bubblewrap](https://github.com/containers/bubblewrap) sandbox: throwaway
+`HOME` and `/tmp`, no network, shim `sudo`/`pacman`, read-only source tree.
+The script under test therefore cannot reach your real `~/.cache/yay` or
+escalate privileges. `make check-docker` runs the same suite, plus
+`make install` and `make distcheck`, in a disposable Arch Linux container.
+See [tests/README.md](tests/README.md).

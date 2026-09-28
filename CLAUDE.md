@@ -18,8 +18,12 @@ yaycache is a cache cleaning utility for the `yay` AUR helper on Arch Linux. It 
 # Build
 make
 
-# Run tests
+# Run tests (sandboxed with bubblewrap; see tests/README.md)
+git submodule update --init   # once: vendored bats-core + helpers in tests/lib/
 make check
+
+# Same suite + make install + distcheck in a disposable Arch container
+make check-docker
 
 # Install to staging directory
 make install DESTDIR=/path/to/staging
@@ -76,17 +80,22 @@ The `.sh.in` files use:
 - AWK associative arrays with SUBSEP for grouping packages by name/arch
 - **Important**: AWK associative array keys must be unique full paths, not basenames (see `bffilter()`)
 
-## Testing --remove-build-files
+## Testing
 
-The `--remove-build-files` feature can be tested without touching real yay cache:
+BATS suite in `tests/` (bats-core and helpers vendored as submodules in `tests/lib/`). Every `.bats` file runs through `tests/sandbox.sh`, a bubblewrap wrapper giving a tmpfs `HOME`/`/tmp`, no network, a read-only source tree and shim `sudo`/`pacman` binaries (`tests/shims/`). `require_sandbox` in `tests/common.bash` aborts any test not launched through it, so **never run bats directly**; use `tests/sandbox.sh -- tests/lib/bats-core/bin/bats <file>` for a single file. Full details in `tests/README.md`.
+
+Rules for writing tests:
+- Assert on `list_candidates` output or on-disk file counts, not on the `N candidates` / `N files removed` summary: that number is the count of cache *directories* with candidates (`pkgcount`), not files.
+- Use `create_realistic_yay_cache` / `create_aur_pkg_dir` + `assert_tree` for end-to-end scenarios; `HOME` is unique per test so running without `-c` is safe.
+- Privilege tests use `SUDO_SHIM_MODE=passthrough` to capture the exact command yaycache would hand to sudo; they are skipped for root.
+- Known bug (skipped test in `yay_layout.bats`): `--remove-build-files` with a nested git clone passes the directory and its children to `rm -r`, so yaycache exits non-zero after removing everything. Tests assert the resulting tree and tolerate the exit status.
+
+Manual dry run against a mock directory still works without the suite:
 
 ```bash
-# Create a mock cache directory structure
 mkdir -p /tmp/test-pkg/src
 (cd /tmp/test-pkg && git init && echo "PKGBUILD" > PKGBUILD && git add PKGBUILD && git commit -m "init")
 (cd /tmp/test-pkg/src && git init && mkdir -p refs/pull/1 && touch refs/pull/1/head)
-
-# Dry run against mock directory
 ./src/yaycache -d -k0 --remove-build-files -vv -c /tmp/test-pkg/
 ```
 
@@ -107,3 +116,11 @@ Yay cache directories (`~/.cache/yay/*/`) are git repos containing:
 - Built packages (`*.pkg.tar*`)
 
 The nested git repos mean `git ls-files --others` from the parent only sees the nested repo as a single directory entry, which `find` then expands.
+
+## Performance gotcha: bash `read`/`mapfile` from pipes
+
+Bash reads from a non-seekable fd (pipe, process substitution) one byte per `read(2)` syscall, so
+`IFS=$'\n' read -r -d '' -a arr < <(...)` on ~240k lines costs ~10 s of pure syscall overhead (measured
+2026-09-27: a `--remove-build-files` dry run spent ~35 of 38 s there). `mapfile` from a pipe is just as
+slow; the same `mapfile` from a regular file takes 0.25 s. If a large list must land in a bash array, write
+it to a temp file first, or better, keep it as a NUL-delimited stream and pipe it straight to `xargs -0`.

@@ -1,0 +1,32 @@
+#!/bin/bash
+# Test shim standing in for sudo(8) inside the test sandbox.
+#
+# yaycache calls `sudo -v`, `sudo -l` and then `sudo <cmd>` when a cache
+# directory or candidate is not writable. Real privilege escalation must never
+# happen from the test suite, so this shim replaces sudo on PATH and records
+# every invocation to $SUDO_SHIM_LOG (one line per call, arguments
+# tab-separated).
+#
+#   SUDO_SHIM_MODE=refuse      (default) every call fails with exit 1
+#   SUDO_SHIM_MODE=passthrough `-v` / `-l` succeed; any other call runs the
+#                              given command as the current user (no escalation)
+
+log=${SUDO_SHIM_LOG:-}
+if [[ -n $log ]]; then
+	printf '%s' "sudo" >>"$log"
+	for arg in "$@"; do printf '\t%s' "$arg" >>"$log"; done
+	printf '\n' >>"$log"
+fi
+
+case ${SUDO_SHIM_MODE:-refuse} in
+	passthrough)
+		case $1 in
+			-v|-l|-n|-k) exit 0 ;;
+		esac
+		exec "$@"
+		;;
+	*)
+		echo "sudo shim: privilege escalation refused inside the test sandbox" >&2
+		exit 1
+		;;
+esac

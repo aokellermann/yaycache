@@ -4,6 +4,7 @@
 setup() {
 	load ../common.bash
 	load_bats_helpers
+	require_sandbox
 
 	TEST_CACHE=$(mktemp -d)
 }
