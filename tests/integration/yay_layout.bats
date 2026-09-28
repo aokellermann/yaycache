@@ -13,64 +13,87 @@ setup() {
 }
 
 @test "layout: -r --remove-build-files leaves only the AUR clone and newest packages" {
-	# exit status is checked separately (see "removal exits successfully")
-	yaycache -r -k1 --remove-build-files >"$BATS_TEST_TMPDIR/out" 2>&1 || true
+	run yaycache -r -k1 --remove-build-files
+	[ "$status" -eq 0 ]
 
-	# Only the *files* git reported as untracked are removed; the now-empty
-	# directory skeletons (src/, pkg/...) that contained them are left behind.
+	# The untracked files are removed and so are the directory skeletons
+	# (src/, pkg/..., the nested clone's .git) that only held them.
 	assert_tree "$YAY_CACHE" <<-EOT
 	d alpha
 	d alpha/.git
 	f alpha/.SRCINFO
 	f alpha/PKGBUILD
 	f alpha/alpha-2.0-1-x86_64.pkg.tar.zst
-	d alpha/pkg
-	d alpha/pkg/alpha
-	d alpha/pkg/alpha/usr
-	d alpha/pkg/alpha/usr/bin
-	d alpha/src
 	d beta-git
 	d beta-git/.git
 	f beta-git/.SRCINFO
 	f beta-git/PKGBUILD
 	f beta-git/beta-git-0.3-1-x86_64.pkg.tar.zst
-	d beta-git/pkg
-	d beta-git/pkg/beta-git
-	d beta-git/pkg/beta-git/usr
-	d beta-git/pkg/beta-git/usr/bin
-	d beta-git/src
 	d gamma
 	d gamma/.git
 	f gamma/.SRCINFO
 	f gamma/PKGBUILD
 	f gamma/gamma-5.0-1-x86_64.pkg.tar.zst
-	d gamma/pkg
-	d gamma/pkg/gamma
-	d gamma/pkg/gamma/usr
-	d gamma/pkg/gamma/usr/bin
-	d gamma/src
 	EOT
 
-	# the AUR clones are still valid git repositories afterwards
+	# the AUR clones are still valid git repositories afterwards, including
+	# the subdirectories git keeps empty
 	for d in alpha beta-git gamma; do
-		git -C "$YAY_CACHE/$d" status --porcelain >/dev/null
+		[ -d "$YAY_CACHE/$d/.git/refs/tags" ]
 		[[ "$(git -C "$YAY_CACHE/$d" status --porcelain)" == "?? $d-"*".pkg.tar.zst" ]]
 	done
 }
 
-@test "layout: removal exits successfully" {
-	# KNOWN BUG: with --remove-build-files a nested git clone is listed by
-	# `git ls-files --others` as a directory, and `find -files0-from` then
-	# emits both that directory and every file beneath it. `rm -r` removes
-	# the directory first and fails with ENOENT on the children, so xargs
-	# exits 123, `set -o errexit` aborts yaycache before the summary and the
-	# exit status is non-zero even though the removal itself succeeded.
+@test "layout: removal exits successfully with nested git clones" {
+	# Regression: the nested clone used to be passed to `rm -r` both as a
+	# directory and file by file, so xargs exited 123 after removing it.
 	run yaycache -r -k1 --remove-build-files
-	if [ "$status" -ne 0 ] && [[ "$output" =~ "cannot remove" ]]; then
-		skip "known bug: rm receives a directory and its children (exit $status)"
-	fi
 	[ "$status" -eq 0 ]
 	[[ "$output" =~ "files removed" ]]
+	! [[ "$output" =~ "cannot remove" ]]
+}
+
+@test "layout: pre-existing empty directories are pruned too" {
+	mkdir -p "$YAY_CACHE/alpha/src/alpha-2.0/empty/nested" "$YAY_CACHE/alpha/build"
+	run yaycache -r -k1 --remove-build-files
+	[ "$status" -eq 0 ]
+	[ ! -e "$YAY_CACHE/alpha/src" ]
+	[ ! -e "$YAY_CACHE/alpha/build" ]
+}
+
+@test "layout: directories holding kept build files are not pruned" {
+	touch -d '1 hour ago' "$YAY_CACHE/alpha/src/alpha-2.0/main.c"
+	touch -d '1 year ago' "$YAY_CACHE/alpha/pkg/alpha/usr/bin/alpha"
+	run yaycache -r -k1 --remove-build-files --min-mtime '1 day ago'
+	[ "$status" -eq 0 ]
+	[ -f "$YAY_CACHE/alpha/src/alpha-2.0/main.c" ]
+	[ ! -e "$YAY_CACHE/alpha/pkg" ]
+}
+
+@test "layout: empty directories of ignored packages are left alone" {
+	mkdir -p "$YAY_CACHE/alpha/empty" "$YAY_CACHE/gamma/empty"
+	run yaycache -r -k1 --remove-build-files -i gamma
+	[ "$status" -eq 0 ]
+	[ ! -e "$YAY_CACHE/alpha/empty" ]
+	[ -d "$YAY_CACHE/gamma/empty" ]
+	[ -f "$YAY_CACHE/gamma/src/gamma-5.0/main.c" ]
+}
+
+@test "layout: dry run does not prune directories" {
+	mkdir -p "$YAY_CACHE/alpha/empty"
+	run yaycache -d -k1 --remove-build-files
+	[ "$status" -eq 0 ]
+	[ -d "$YAY_CACHE/alpha/empty" ]
+	[ -d "$YAY_CACHE/alpha/src/alpha-2.0/.git" ]
+}
+
+@test "layout: candidates are files, never directories" {
+	run list_candidates -k1 --remove-build-files
+	[ "$status" -eq 0 ]
+	while IFS= read -r c; do
+		[ ! -d "$c" ] || { echo "directory listed as candidate: $c"; return 1; }
+	done <<<"$output"
+	[[ "$output" =~ "alpha/src/alpha-2.0/main.c" ]]
 }
 
 @test "layout: dry run lists build files and packages but changes nothing" {

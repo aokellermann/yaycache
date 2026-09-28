@@ -141,13 +141,11 @@ teardown() {
 	[ -f "$TEST_CACHE/src/main.c" ]
 	[ -f "$TEST_CACHE/src/main.o" ]
 
-	# Note: Exit status may be non-zero due to race conditions with rm -r
-	# when removing nested git directories, but files should still be removed
-	run_yaycache -r --remove-build-files -k0 -c "$TEST_CACHE/" || true
+	run run_yaycache -r --remove-build-files -k0 -c "$TEST_CACHE/"
+	[ "$status" -eq 0 ]
 
-	# Build files should be removed
-	[ ! -f "$TEST_CACHE/src/main.c" ]
-	[ ! -f "$TEST_CACHE/src/main.o" ]
+	# Build files and the directory that held them should be removed
+	[ ! -e "$TEST_CACHE/src" ]
 
 	# PKGBUILD should still exist (tracked by git)
 	[ -f "$TEST_CACHE/PKGBUILD" ]

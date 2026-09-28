@@ -28,7 +28,7 @@ declare -r myver='@PACKAGE_VERSION@'
 
 LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
-declare -a cachedirs=() candidates=() buildfiles=() cmdopts=() whitelist=() blacklist=()
+declare -a cachedirs=() candidates=() buildfiles=() builddirs=() cmdopts=() whitelist=() blacklist=()
 declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 removebuild=0
 declare -i min_atime=0 min_mtime=0
 declare    delim=$'\n' keep=3 movedir='' scanarch=''
@@ -214,6 +214,15 @@ runcmd() {
 	else
 		"$@"
 	fi
+}
+
+# print, NUL-delimited, the top-level subdirectories of every cache directory
+# that had build-file candidates, except the AUR clone's own .git: these are the
+# trees in which now-empty directories get pruned after a removal
+builddir_roots() {
+	(( ${#builddirs[@]} )) || return 0
+	printf '%s\0' "${builddirs[@]}" |
+		find -files0-from - -mindepth 1 -maxdepth 1 -type d ! -name .git -print0
 }
 
 summarize() {
@@ -457,19 +466,25 @@ for cachedir in "${cachedirs[@]}"; do
 	unset cand
 
   if (( removebuild )); then
+    # Only files (and symlinks) are candidates: listing a directory as well as
+    # its contents would make `rm -r` fail on the children once the directory
+    # is gone. The directories left empty by the removal are pruned afterwards.
     IFS=$'\n' read -r -d '' -a bfs < \
       <(git ls-files --others | xargs -d '\n' -r printf "$PWD/%s\0" |
       	if (( min_atime || min_mtime )); then
-        	find -files0-from - -printf '%A@ %T@ %p\n'
+        	find -files0-from - ! -type d -printf '%A@ %T@ %p\n'
         else
-        	find -files0-from -
+        	find -files0-from - ! -type d
         fi |
         grep -v -e '.pkg.tar*' |
         bffilter "$(basename "$cachedir")" "$min_atime" "$min_mtime" \
           "${#whitelist[*]}" "${whitelist[@]}" \
           "${#blacklist[*]}" "${blacklist[@]}")
 
-    (( ${#bfs[*]} )) && found=1
+    if (( ${#bfs[*]} )); then
+      found=1
+      builddirs+=("$PWD")
+    fi
     buildfiles+=("${bfs[@]}")
     unset bfs
   fi
@@ -502,6 +517,12 @@ if (( move || delete )); then
 			break
 		fi
 	done
+	# pruning the emptied build directories needs every directory in those
+	# trees to be writable as well
+	if (( delete && ! needsroot )) &&
+	   [[ -n $(builddir_roots | find -files0-from - -type d ! -writable -print -quit) ]]; then
+		needsroot=1
+	fi
 fi
 
 # Exit immediately if a pipeline returns non-zero.
@@ -511,6 +532,15 @@ set -o errexit
 (( verbose )) && cmdopts+=(-v)
 if (( delete )); then
 	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 rm -r "${cmdopts[@]}"
+
+	# Removing build files leaves behind the (untracked) directory skeletons
+	# that held them, e.g. src/<pkg>/ trees of extracted tarballs or the .git
+	# of a nested upstream clone. Prune every directory that ended up empty,
+	# bottom-up, but never touch the AUR clone's own .git (git keeps some of
+	# its subdirectories legitimately empty).
+	if (( ${#builddirs[@]} )); then
+		builddir_roots | runcmd find -files0-from - -depth -type d -empty -delete
+	fi
 elif (( move )); then
 	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 mv "${cmdopts[@]}" -t "$movedir"
 fi
