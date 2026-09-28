@@ -74,6 +74,8 @@ The `.sh.in` files use:
 
 ## Code Patterns
 
+- `--remove-uninstalled-dirs` (requires `-u`): `dir_is_uninstalled()` reads the `pkgname = ` lines of the clone's `.SRCINFO` (falling back to the directory name) and makes the whole cache directory a candidate when none of them is on the blacklist; such directories skip the per-file scan and their size is summed with `du -sb`, not `stat`.
+
 - Heavy use of embedded AWK for package filename parsing and filtering
 - `runcmd()` handles privilege escalation via sudo when needed
 - Package regex: `(.+)-[^-]+-[0-9]+-([^.]+)\.pkg.*` extracts name and arch

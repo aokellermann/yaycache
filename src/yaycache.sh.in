@@ -28,8 +28,9 @@ declare -r myver='@PACKAGE_VERSION@'
 
 LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 
-declare -a cachedirs=() candidates=() buildfiles=() builddirs=() cmdopts=() whitelist=() blacklist=()
-declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 removebuild=0
+declare -a cachedirs=() candidates=() buildfiles=() builddirs=() dircandidates=() cmdopts=() whitelist=() blacklist=()
+declare -A blacklisted=() whitelisted=()
+declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 removebuild=0 removedirs=0 uninstalled=0
 declare -i min_atime=0 min_mtime=0
 declare    delim=$'\n' keep=3 movedir='' scanarch=''
 
@@ -225,6 +226,34 @@ builddir_roots() {
 		find -files0-from - -mindepth 1 -maxdepth 1 -type d ! -name .git -print0
 }
 
+# With --remove-uninstalled-dirs: is the AUR clone in $PWD one whose packages
+# are all uninstalled, i.e. none of them is on the blacklist (installed or
+# --ignore'd), selected by the whitelist if one was given, and, with
+# --min-atime/--min-mtime, not touched since that time?
+dir_is_uninstalled() {
+	local -a names=()
+	local name
+	local -i listed=0
+
+	# the package(s) this clone builds: .SRCINFO, else the directory name
+	mapfile -t names < <(sed -n 's/^pkgname = //p' .SRCINFO 2>/dev/null)
+	(( ${#names[@]} )) || names=("${PWD##*/}")
+
+	for name in "${names[@]}"; do
+		[[ -n ${blacklisted[$name]} ]] && return 1
+		[[ -n ${whitelisted[$name]} ]] && listed=1
+	done
+	(( ${#whitelist[@]} == 0 || listed )) || return 1
+
+	if (( min_atime )) && [[ -n $(find . -newerat "@$min_atime" -print -quit) ]]; then
+		return 1
+	fi
+	if (( min_mtime )) && [[ -n $(find . -newermt "@$min_mtime" -print -quit) ]]; then
+		return 1
+	fi
+	return 0
+}
+
 summarize() {
 	(( QUIET )) && return
 
@@ -289,6 +318,10 @@ Options:
                           	delimited
   -k, --keep <num>        	keep "num" of each package in the cache (default: 3)
       --remove-build-files	remove package source build files
+      --remove-uninstalled-dirs
+                          	remove the whole cache directory of packages that
+                          	are no longer installed, instead of individual
+                          	files (requires -u)
       --min-atime <time>
       --min-mtime <time>  	keep packages with an atime/mtime that is not older
                           	than the time given, even if this means keeping more
@@ -315,7 +348,7 @@ version() {
 OPT_SHORT=':a:c:dfhi:k:m:qrsuVvz'
 OPT_LONG=('arch:' 'cachedir:' 'dryrun' 'force' 'help' 'ignore:' 'keep:' 'move:'
           'nocolor' 'quiet' 'remove' 'uninstalled' 'version' 'verbose' 'null'
-          'min-atime:' 'min-mtime:' 'remove-build-files')
+          'min-atime:' 'min-mtime:' 'remove-build-files' 'remove-uninstalled-dirs')
 
 if ! parseopts "$OPT_SHORT" "${OPT_LONG[@]}" -- "$@"; then
 	exit 1
@@ -354,6 +387,8 @@ while :; do
 			shift ;;
     --remove-build-files)
       removebuild=1 ;;
+    --remove-uninstalled-dirs)
+      removedirs=1 ;;
 		--min-atime)
 			min_atime=$(date -d "$2" +%s)
 			min_atime_status=$?
@@ -380,6 +415,7 @@ while :; do
 		-r|--remove)
 			delete=1 ;;
 		-u|--uninstalled)
+			uninstalled=1
 			IFS=$'\n' read -r -d '' -a ign < <(pacman -Qq)
 			# pacman -Qq may exit with an error, thus making ign an empty array
 			(( ${#ign[@]} )) || die 'failed to retrieve the list of installed packages'
@@ -419,6 +455,13 @@ fi
 # remaining args are a whitelist
 whitelist=("$@")
 
+if (( removedirs )); then
+	(( uninstalled )) || die "option --remove-uninstalled-dirs requires -u"
+	for pkg in "${blacklist[@]}"; do blacklisted[$pkg]=1; done
+	for pkg in "${whitelist[@]}"; do whitelisted[$pkg]=1; done
+	unset pkg
+fi
+
 # sanity checks
 case $(( dryrun+delete+move )) in
 	0) die 'no operation specified (use -h for help)' ;;
@@ -446,6 +489,14 @@ for cachedir in "${cachedirs[@]}"; do
 
 	# unlikely that this will fail, but better make sure
 	pushd "$cachedir" &>/dev/null || die "failed to chdir to '%s'" "$cachedir"
+
+	# the whole directory goes if it belongs to uninstalled packages only
+	if (( removedirs )) && dir_is_uninstalled; then
+		dircandidates+=("$PWD")
+		(( pkgcount++ ))
+		popd &>/dev/null
+		continue
+	fi
 
 	# note that these results are returned in an arbitrary order from awk, but
 	# they'll be resorted (in summarize) iff we have a verbosity level set.
@@ -505,8 +556,15 @@ fi
 (( move )) || candidates+=("${buildfiles[@]}")
 
 # do this before we destroy anything
-totalsaved=$(printf '%s\0' "${candidates[@]}" | xargs -0 @SIZECMD@ |
-		awk '{ sum += $1 } END { print sum }')
+if (( ${#candidates[@]} )); then
+	totalsaved=$(printf '%s\0' "${candidates[@]}" | xargs -0 @SIZECMD@ |
+			awk '{ sum += $1 } END { print sum }')
+fi
+if (( ${#dircandidates[@]} )); then
+	totalsaved+=$(printf '%s\0' "${dircandidates[@]}" | xargs -0 du -sb |
+			awk '{ sum += $1 } END { print sum }')
+	candidates+=("${dircandidates[@]}")
+fi
 
 # check if any candidates require root permissions
 if (( move || delete )); then

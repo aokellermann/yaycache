@@ -19,6 +19,7 @@ args=(
 	'(--ignore -i)'{--ignore=,-i+}'[ignore "pkgs", comma-separated, alternatively - for stdin]:pkgs: '
 	'(--keep -k)'{--keep=,-k+}'[keep "num" of each package in the cache (default: 3)]:number: '
 	'--remove-build-files[remove the package source build files]'
+	'--remove-uninstalled-dirs[remove the whole cache directory of uninstalled packages (requires -u)]'
 	'--min-atime[keep packages with an atime that is not older]:time: '
 	'--min-mtime[keep packages with an mtime that is not older]:time: '
 	'--nocolor[do not colorize output]'
