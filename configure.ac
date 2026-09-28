@@ -21,6 +21,12 @@ AC_ARG_ENABLE(git-version,
 		[enable use of git version in version string if available]),
 	[wantgitver=$enableval], [wantgitver=no])
 
+# Like most system packages, install the service's configuration file under
+# /etc rather than /usr/etc when installing to /usr and --sysconfdir was not
+# given explicitly.
+AS_IF([test "x$prefix" = "x/usr" && test "x$sysconfdir" = 'x${prefix}/etc'],
+	[sysconfdir=/etc])
+
 # Checks for programs.
 AC_PATH_PROGS([BASH_SHELL], [bash bash4], [false])
 

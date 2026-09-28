@@ -3,7 +3,11 @@ Description=Remove unused cached package files
 
 [Service]
 Type=oneshot
-ExecStart=@bindir@/yaycache -r
+# Extra arguments come from YAYCACHE_ARGS in @sysconfdir@/yaycache.conf, or from
+# $XDG_CONFIG_HOME/yaycache.conf which takes precedence. See yaycache(8).
+EnvironmentFile=-@sysconfdir@/yaycache.conf
+EnvironmentFile=-%E/yaycache.conf
+ExecStart=@bindir@/yaycache -r $YAYCACHE_ARGS
 # Lowering priority
 OOMScoreAdjust=1000
 Nice=19

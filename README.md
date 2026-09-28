@@ -27,6 +27,13 @@ An optional systemd service is included that will run weekly:
 systemctl --user enable --now yaycache.timer
 ```
 
+The service runs `yaycache -r $YAYCACHE_ARGS`. Put extra options in
+`/etc/yaycache.conf`, or in `~/.config/yaycache.conf` which takes precedence:
+
+```sh
+YAYCACHE_ARGS="-k1 --remove-build-files --min-mtime '30 days ago'"
+```
+
 ## Installing
 
 An AUR package is available:

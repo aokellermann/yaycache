@@ -69,7 +69,7 @@ The `.sh.in` files use:
 
 ### Systemd Integration
 
-- `src/yaycache.service.in` - User-level oneshot service running `yaycache -r`
+- `src/yaycache.service.in` - User-level oneshot service running `yaycache -r $YAYCACHE_ARGS`; the variable comes from `EnvironmentFile=` `/etc/yaycache.conf` (installed from `src/yaycache.conf`, sysconfdir defaults to `/etc` when prefix is `/usr`) or `~/.config/yaycache.conf`
 - `src/yaycache.timer` - Weekly persistent timer triggering the service
 
 ## Code Patterns
