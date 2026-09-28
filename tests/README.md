@@ -60,9 +60,9 @@ first thing to look at if the suite ever behaves surprisingly.
 
 ## Gotchas
 
-- The `N candidates` / `N files removed` figure in yaycache's summary is the
-  number of cache *directories* that had candidates, not files. Assert on
-  `list_candidates` output or on-disk counts instead.
+- The `N candidates` / `N files removed` summary counts candidate files,
+  packages and build files alike (a nested clone directory expanded by
+  `find` contributes every entry). `list_candidates` prints them one per line.
 - `--remove-build-files` currently exits non-zero when a nested git clone is
   among the build files (`rm -r` gets the directory and its children; see the
   skipped test in `yay_layout.bats`). Tests assert the resulting tree and

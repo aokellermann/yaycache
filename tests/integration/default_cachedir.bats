@@ -91,3 +91,33 @@ setup() {
 	[ -d "$YAY_CACHE/completion.cache" ]
 	[ "$(count_packages "$YAY_CACHE")" -eq 3 ]
 }
+
+@test "default: summary counts files, not cache directories" {
+	# 3 package dirs, 5 candidate files (regression: pkgcount was reported)
+	run yaycache -d -k1
+	[ "$status" -eq 0 ]
+	[[ "$output" =~ "finished dry run: 5 candidates" ]]
+
+	local dest="$HOME/moved"
+	mkdir -p "$dest"
+	run yaycache -m "$dest" -k1
+	[ "$status" -eq 0 ]
+	[[ "$output" =~ "finished: 5 packages moved" ]]
+	[ "$(count_packages "$dest")" -eq 5 ]
+
+	create_aur_pkg_dir "$YAY_CACHE/delta" delta 1.0 1.1 1.2
+	run yaycache -r -k1
+	[ "$status" -eq 0 ]
+	[[ "$output" =~ "finished: 2 files removed" ]]
+}
+
+@test "default: summary counts build files as well" {
+	run yaycache -d -k0 --remove-build-files -c "$YAY_CACHE/gamma/"
+	[ "$status" -eq 0 ]
+	# 1 package + tarball + pkg/.../gamma + src/gamma-5.0/ (nested clone dir
+	# expanded by find: the dir, main.c and everything under .git/)
+	local n
+	n=$(list_candidates -k0 --remove-build-files -c "$YAY_CACHE/gamma/" | wc -l)
+	[ "$n" -gt 4 ]
+	[[ "$output" =~ "finished dry run: $n candidates" ]]
+}

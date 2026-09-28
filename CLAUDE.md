@@ -85,7 +85,7 @@ The `.sh.in` files use:
 BATS suite in `tests/` (bats-core and helpers vendored as submodules in `tests/lib/`). Every `.bats` file runs through `tests/sandbox.sh`, a bubblewrap wrapper giving a tmpfs `HOME`/`/tmp`, no network, a read-only source tree and shim `sudo`/`pacman` binaries (`tests/shims/`). `require_sandbox` in `tests/common.bash` aborts any test not launched through it, so **never run bats directly**; use `tests/sandbox.sh -- tests/lib/bats-core/bin/bats <file>` for a single file. Full details in `tests/README.md`.
 
 Rules for writing tests:
-- Assert on `list_candidates` output or on-disk file counts, not on the `N candidates` / `N files removed` summary: that number is the count of cache *directories* with candidates (`pkgcount`), not files.
+- The `N candidates` / `N files removed` summary counts candidate files (packages and build files, including directory entries expanded by find). `list_candidates` lists them one per line.
 - Use `create_realistic_yay_cache` / `create_aur_pkg_dir` + `assert_tree` for end-to-end scenarios; `HOME` is unique per test so running without `-c` is safe.
 - Privilege tests use `SUDO_SHIM_MODE=passthrough` to capture the exact command yaycache would hand to sudo; they are skipped for root.
 - Known bug (skipped test in `yay_layout.bats`): `--remove-build-files` with a nested git clone passes the directory and its children to `rm -r`, so yaycache exits non-zero after removing everything. Tests assert the resulting tree and tolerate the exit status.

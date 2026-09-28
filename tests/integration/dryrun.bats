@@ -30,8 +30,7 @@ teardown() {
 	# mock_cache creates 5 versions, keep=3 means 2 candidate files
 	run run_yaycache -d -c "$TEST_CACHE/"
 	[ "$status" -eq 0 ]
-	# Output counts cache directories with candidates, not files
-	[[ "$output" =~ "1 candidates" ]]
+	[[ "$output" =~ "2 candidates" ]]
 }
 
 @test "dryrun: files still exist after dryrun" {
