@@ -20,7 +20,8 @@ BATS_TESTS = \
 	integration/default_cachedir.bats \
 	integration/privilege.bats \
 	integration/uninstalled.bats \
-	integration/yay_layout.bats
+	integration/yay_layout.bats \
+	integration/signatures.bats
 
 TESTS = $(BATS_TESTS)
 

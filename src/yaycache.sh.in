@@ -445,7 +445,7 @@ for cachedir in "${cachedirs[@]}"; do
 				find "$PWD" -name '*.pkg.tar*.sig' -prune -o \( -name '*.pkg.tar*' -printf '%A@ %T@ %p\n' \) |
 				pacsort --files --key 3 --separator ' '
 			else
-				printf '%s\n' "$PWD"/*.pkg.tar* |
+				printf '%s\n' "$PWD"/*.pkg.tar!(*.sig) |
 				pacsort --files
 			fi |
 			pkgfilter "$keep" "$scanarch" "$min_atime" "$min_mtime" \
@@ -484,6 +484,13 @@ if (( ! $pkgcount )); then
 	msg 'no candidate packages found for pruning'
 	exit 0
 fi
+
+# merge in the detached signatures of candidate packages
+for cand in "${candidates[@]}"; do
+	[[ -f $cand.sig ]] && sigs+=("$cand.sig")
+done
+candidates+=("${sigs[@]}")
+unset cand sigs
 
 # merge in build files
 # not supported for move operation
