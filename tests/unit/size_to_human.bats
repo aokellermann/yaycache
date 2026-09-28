@@ -6,6 +6,7 @@
 setup() {
 	load ../common.bash
 	load_bats_helpers
+	require_sandbox
 
 	# Source the size_to_human function
 	source "$SRCDIR/lib/size_to_human.sh"

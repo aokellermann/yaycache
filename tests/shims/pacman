@@ -1,0 +1,33 @@
+#!/bin/bash
+# Test shim standing in for pacman(8) inside the test sandbox.
+#
+# yaycache only ever runs `pacman -Qq` (for --uninstalled). The shim answers
+# from the environment so tests never depend on, or touch, the host's package
+# database:
+#
+#   PACMAN_SHIM_INSTALLED   newline-separated package names to report installed
+#   PACMAN_SHIM_FAIL=1      exit non-zero with no output (simulates a broken db)
+#   PACMAN_SHIM_LOG         if set, every invocation is appended (tab-separated)
+
+log=${PACMAN_SHIM_LOG:-}
+if [[ -n $log ]]; then
+	printf '%s' "pacman" >>"$log"
+	for arg in "$@"; do printf '\t%s' "$arg" >>"$log"; done
+	printf '\n' >>"$log"
+fi
+
+if [[ -n ${PACMAN_SHIM_FAIL:-} ]]; then
+	echo "pacman shim: simulated failure" >&2
+	exit 1
+fi
+
+case "$*" in
+	-Qq)
+		[[ -n ${PACMAN_SHIM_INSTALLED:-} ]] && printf '%s\n' "$PACMAN_SHIM_INSTALLED"
+		exit 0
+		;;
+	*)
+		echo "pacman shim: unexpected invocation: pacman $*" >&2
+		exit 2
+		;;
+esac

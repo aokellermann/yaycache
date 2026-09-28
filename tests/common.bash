@@ -1,13 +1,43 @@
 #!/bin/bash
 # Common test utilities for yaycache tests
 
-# Load BATS helpers if available
+# Load the BATS helper libraries (bats-support, bats-assert, bats-file).
+# They are vendored as git submodules under tests/lib/ and found via
+# BATS_LIB_PATH (set by tests/sandbox.sh); fall back to a system install.
 load_bats_helpers() {
-	if [[ -f /usr/lib/bats-support/load.bash ]]; then
-		load /usr/lib/bats-support/load.bash
-		load /usr/lib/bats-assert/load.bash
-		load /usr/lib/bats-file/load.bash
+	local lib
+	for lib in bats-support bats-assert bats-file; do
+		if [[ -n ${BATS_LIB_PATH:-} && -f $BATS_LIB_PATH/$lib/load.bash ]]; then
+			load "$BATS_LIB_PATH/$lib/load.bash"
+		elif [[ -f /usr/lib/$lib/load.bash ]]; then
+			load "/usr/lib/$lib/load.bash"
+		fi
+	done
+}
+
+# Every test runs through tests/sandbox.sh, which provides a throwaway HOME,
+# a private TMPDIR and shim sudo/pacman binaries. Refuse to run outside it:
+# a stray `rm -r` against the developer's real ~/.cache/yay is exactly the
+# outcome the sandbox exists to prevent.
+require_sandbox() {
+	if [[ ${YAYCACHE_SANDBOX:-0} != 1 ]]; then
+		echo "refusing to run outside tests/sandbox.sh (see tests/README.md)" >&2
+		return 1
 	fi
+	# One fresh HOME per test so fixtures never bleed between tests.
+	export HOME="$BATS_TEST_TMPDIR/home"
+	mkdir -p "$HOME"
+	unset XDG_CACHE_HOME
+	[[ -n $SUDO_SHIM_LOG ]] || SUDO_SHIM_LOG=$BATS_TEST_TMPDIR/sudo.log
+	[[ -n $PACMAN_SHIM_LOG ]] || PACMAN_SHIM_LOG=$BATS_TEST_TMPDIR/pacman.log
+	export SUDO_SHIM_LOG PACMAN_SHIM_LOG
+}
+
+# Skip the current test when running as root: writability checks (and thus
+# the sudo escalation path) are meaningless for uid 0.
+skip_if_root() {
+	(( EUID == 0 )) && skip "requires an unprivileged user"
+	return 0
 }
 
 # Create a mock package file with specified name and size
@@ -97,7 +127,7 @@ create_mock_git_cache() {
 	echo "object file" > src/main.o
 
 	# Create nested git repo (common for AUR packages that clone source)
-	cd src || { cd "$orig_dir"; return 1; }
+	cd src || { cd "$orig_dir" || return 1; return 1; }
 	git init --quiet
 	mkdir -p .git/refs/pull/1
 	touch .git/refs/pull/1/head
@@ -184,4 +214,87 @@ run_yaycache() {
 	local yaycache
 	yaycache=$(get_yaycache)
 	"$yaycache" "$@"
+}
+
+# ---------------------------------------------------------------------------
+# Realistic fixtures
+# ---------------------------------------------------------------------------
+
+# Create one AUR package directory the way yay leaves it after a build:
+# a git clone of the AUR repo (PKGBUILD + .SRCINFO tracked and committed),
+# built packages for each given version, and untracked build leftovers
+# (a source tarball, src/ containing a nested upstream git clone, and pkg/).
+#
+# Usage: create_aur_pkg_dir <dir> <pkgname> <version>...
+create_aur_pkg_dir() {
+	local dir="$1" name="$2"; shift 2
+	local ver
+	mkdir -p "$dir"
+	(
+		cd "$dir" || exit 1
+		git init --quiet
+		printf 'pkgname=%s\npkgver=%s\npkgrel=1\n' "$name" "${!#}" > PKGBUILD
+		printf 'pkgbase = %s\n\tpkgver = %s\n' "$name" "${!#}" > .SRCINFO
+		git add PKGBUILD .SRCINFO
+		git commit --quiet -m "Update to ${!#}"
+
+		# untracked build leftovers
+		printf 'tarball' > "$name-${!#}.tar.gz"
+		mkdir -p "src/$name-${!#}" "pkg/$name/usr/bin"
+		printf 'int main(){}' > "src/$name-${!#}/main.c"
+		printf 'binary' > "pkg/$name/usr/bin/$name"
+		(
+			cd "src/$name-${!#}" || exit 1
+			git init --quiet
+			git add main.c
+			git commit --quiet -m "upstream"
+		)
+	) || return 1
+	for ver in "$@"; do
+		create_mock_package "$dir" "$name" "$ver" 1 x86_64 $(( 1024 * ${#ver} ))
+	done
+}
+
+# Create a full ~/.cache/yay-style tree with three AUR packages holding
+# 4, 3 and 1 built versions respectively.
+#
+# Usage: create_realistic_yay_cache <yay-cache-dir>
+create_realistic_yay_cache() {
+	local base="$1"
+	create_aur_pkg_dir "$base/alpha" alpha 1.0 1.1 1.2 2.0
+	create_aur_pkg_dir "$base/beta-git" beta-git 0.1 0.2 0.3
+	create_aur_pkg_dir "$base/gamma" gamma 5.0
+}
+
+# Print a sorted, stable listing of a directory tree: one "<type> <path>" line
+# per entry, with the contents of any .git directory collapsed to the
+# directory itself so git internals do not make comparisons noisy.
+snapshot_tree() {
+	local dir="$1"
+	(cd "$dir" && find . -mindepth 1 -name .git -prune -printf 'd %P\n' -o -printf '%y %P\n' | sort)
+}
+
+# Assert a snapshot_tree listing equals the expected listing given on stdin.
+# Usage: assert_tree <dir> <<EOF ... EOF
+assert_tree() {
+	local dir="$1" expected actual
+	expected=$(sort)
+	actual=$(snapshot_tree "$dir")
+	if [[ $expected != "$actual" ]]; then
+		echo "-- tree mismatch for $dir --"
+		diff <(printf '%s\n' "$expected") <(printf '%s\n' "$actual") || true
+		return 1
+	fi
+}
+
+# Number of NUL bytes on stdin
+count_nuls() {
+	tr -cd '\0' | wc -c
+}
+
+# Print the full path of every candidate a dry run would select, one per
+# line. The "N candidates" / "N files removed" figure in yaycache's summary is
+# the number of cache *directories* with candidates, so tests count paths.
+list_candidates() {
+	yaycache -d -vv "$@" | grep '^/'
 }
