@@ -56,6 +56,16 @@ Options
 *\--remove-build-files*::
 	Remove package source build files in cache directory.
 
+*\--remove-uninstalled-dirs*::
+	Remove the whole cache directory of a package that is no longer installed
+	(the AUR clone with its PKGBUILD, '.git', sources and built packages),
+	instead of only its old built packages and build files. Requires '-u'. A
+	directory is removed when none of the packages it builds (read from its
+	'.SRCINFO', falling back to the directory name) is installed or ignored,
+	and, if '\--min-atime' or '\--min-mtime' is given, when nothing in it has
+	been accessed or modified since then. '\--keep' does not apply to these
+	directories. With '-m' the directory is moved instead.
+
 *\--min-atime <time>*::
 *\--min-mtime <time>*::
 	Keep packages with an atime/mtime that is not older than the time given,
