@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-<meta name="generator" content="AsciiDoc 10.2.0" />
+<meta name="generator" content="AsciiDoc 10.2.1" />
 <title>yaycache(8)</title>
 <link rel="stylesheet" href="./asciidoc.css" type="text/css" />
 
@@ -143,6 +143,21 @@ By default the last three versions of a package are kept.</p></div>
 </p>
 </dd>
 <dt class="hdlist1">
+<strong>--remove-uninstalled-dirs</strong>
+</dt>
+<dd>
+<p>
+        Remove the whole cache directory of a package that is no longer installed
+        (the AUR clone with its PKGBUILD, <em>.git</em>, sources and built packages),
+        instead of only its old built packages and build files. Requires <em>-u</em>. A
+        directory is removed when none of the packages it builds (read from its
+        <em>.SRCINFO</em>, falling back to the directory name) is installed or ignored,
+        and, if <em>--min-atime</em> or <em>--min-mtime</em> is given, when nothing in it has
+        been accessed or modified since then. <em>--keep</em> does not apply to these
+        directories. With <em>-m</em> the directory is moved instead.
+</p>
+</dd>
+<dt class="hdlist1">
 <strong>--min-atime &lt;time&gt;</strong>
 </dt>
 <dt class="hdlist1">
@@ -210,9 +225,19 @@ By default the last three versions of a package are kept.</p></div>
 <div class="sect1">
 <h2 id="_systemd_timer">Systemd Timer</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>The package cache can be cleaned periodically using the systemd timer
-<em>yaycache.timer</em>. If the timer is enabled the cache will be cleaned weekly with
-yaycache&#8217;s default options.</p></div>
+<div class="paragraph"><p>The package cache can be cleaned periodically using the systemd user timer
+<em>yaycache.timer</em>. If the timer is enabled the cache will be cleaned weekly by
+<em>yaycache.service</em>, which runs <em>yaycache -r $YAYCACHE_ARGS</em>.</p></div>
+<div class="paragraph"><p>Additional options are read from the <em>YAYCACHE_ARGS</em> variable in
+<em>/etc/yaycache.conf</em>, or in <em>$XDG_CONFIG_HOME/yaycache.conf</em>
+(<em>~/.config/yaycache.conf</em>) which takes precedence. For example, to keep one
+version of each package and also remove build files older than a month:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>YAYCACHE_ARGS="-k1 --remove-build-files --min-mtime '30 days ago'"</code></pre>
+</div></div>
+<div class="paragraph"><p>The unit itself can still be customised with <em>systemctl --user edit
+yaycache.service</em>.</p></div>
 </div>
 </div>
 <div class="sect1">
@@ -240,8 +265,9 @@ repository.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
+Version 0.4.0<br />
 Last updated
- 2023-11-10 23:29:53 EST
+ 2026-09-27 19:12:33 PDT
 </div>
 </div>
 </body>
