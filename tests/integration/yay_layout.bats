@@ -210,7 +210,10 @@ setup() {
 }
 
 @test "layout: generated systemd units point at the installed script" {
-	grep -qx 'ExecStart=.*/yaycache -r' "$BUILDDIR/src/yaycache.service"
+	grep -qx 'ExecStart=.*/yaycache -r \$YAYCACHE_ARGS' "$BUILDDIR/src/yaycache.service"
+	grep -qx 'EnvironmentFile=-/etc/yaycache.conf' "$BUILDDIR/src/yaycache.service"
+	grep -qx 'EnvironmentFile=-%E/yaycache.conf' "$BUILDDIR/src/yaycache.service"
+	grep -qx 'YAYCACHE_ARGS=' "$SRCDIR/src/yaycache.conf"
 	grep -qx 'OnCalendar=weekly' "$SRCDIR/src/yaycache.timer"
 	grep -qx 'Persistent=true' "$SRCDIR/src/yaycache.timer"
 }

@@ -84,8 +84,18 @@ Options
 
 Systemd Timer
 -------------
-The package cache can be cleaned periodically using the systemd timer
-'yaycache.timer'. If the timer is enabled the cache will be cleaned weekly with
-yaycache's default options.
+The package cache can be cleaned periodically using the systemd user timer
+'yaycache.timer'. If the timer is enabled the cache will be cleaned weekly by
+'yaycache.service', which runs 'yaycache -r $YAYCACHE_ARGS'.
+
+Additional options are read from the 'YAYCACHE_ARGS' variable in
+'/etc/yaycache.conf', or in '$XDG_CONFIG_HOME/yaycache.conf'
+('~/.config/yaycache.conf') which takes precedence. For example, to keep one
+version of each package and also remove build files older than a month:
+
+	YAYCACHE_ARGS="-k1 --remove-build-files --min-mtime '30 days ago'"
+
+The unit itself can still be customised with 'systemctl --user edit
+yaycache.service'.
 
 include::footer.adoc[]
