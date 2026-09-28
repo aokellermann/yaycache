@@ -76,6 +76,7 @@ The `.sh.in` files use:
 
 - Heavy use of embedded AWK for package filename parsing and filtering
 - `runcmd()` handles privilege escalation via sudo when needed
+- Detached signatures: `*.pkg.tar*.sig` are excluded from version parsing (`!(*.sig)` extglob / `find -prune`) and the `.sig` of every candidate package is merged into the candidate list afterwards, as paccache does. Orphaned signatures are left alone.
 - Package regex: `(.+)-[^-]+-[0-9]+-([^.]+)\.pkg.*` extracts name and arch
 - AWK associative arrays with SUBSEP for grouping packages by name/arch
 - **Important**: AWK associative array keys must be unique full paths, not basenames (see `bffilter()`)
