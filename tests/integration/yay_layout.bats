@@ -13,8 +13,8 @@ setup() {
 }
 
 @test "layout: -r --remove-build-files leaves only the AUR clone and newest packages" {
-	# exit status is checked separately (see "removal exits successfully")
-	yaycache -r -k1 --remove-build-files >"$BATS_TEST_TMPDIR/out" 2>&1 || true
+	run yaycache -r -k1 --remove-build-files
+	[ "$status" -eq 0 ]
 
 	# Only the *files* git reported as untracked are removed; the now-empty
 	# directory skeletons (src/, pkg/...) that contained them are left behind.
@@ -59,18 +59,21 @@ setup() {
 }
 
 @test "layout: removal exits successfully" {
-	# KNOWN BUG: with --remove-build-files a nested git clone is listed by
-	# `git ls-files --others` as a directory, and `find -files0-from` then
-	# emits both that directory and every file beneath it. `rm -r` removes
-	# the directory first and fails with ENOENT on the children, so xargs
-	# exits 123, `set -o errexit` aborts yaycache before the summary and the
-	# exit status is non-zero even though the removal itself succeeded.
+	# Regression: a nested git clone is listed by `git ls-files --others` as
+	# a directory and `find -files0-from` then emitted both it and every file
+	# beneath it, so `rm -r` failed with ENOENT on the children, xargs exited
+	# 123 and yaycache aborted before its summary.
 	run yaycache -r -k1 --remove-build-files
-	if [ "$status" -ne 0 ] && [[ "$output" =~ "cannot remove" ]]; then
-		skip "known bug: rm receives a directory and its children (exit $status)"
-	fi
 	[ "$status" -eq 0 ]
+	! [[ "$output" =~ "cannot remove" ]]
 	[[ "$output" =~ "files removed" ]]
+}
+
+@test "layout: -r --remove-build-files needs no -f to succeed on nested clones" {
+	run yaycache -r -v -k0 --remove-build-files -c "$YAY_CACHE/beta-git/"
+	[ "$status" -eq 0 ]
+	[ ! -e "$YAY_CACHE/beta-git/src/beta-git-0.3" ]
+	[ -f "$YAY_CACHE/beta-git/PKGBUILD" ]
 }
 
 @test "layout: dry run lists build files and packages but changes nothing" {
@@ -89,7 +92,8 @@ setup() {
 }
 
 @test "layout: a second run finds nothing" {
-	yaycache -r -k1 --remove-build-files >/dev/null 2>&1 || true
+	run yaycache -r -k1 --remove-build-files
+	[ "$status" -eq 0 ]
 	run yaycache -r -k1 --remove-build-files
 	[ "$status" -eq 0 ]
 	[[ "$output" =~ "no candidate packages" ]]
@@ -102,7 +106,8 @@ setup() {
 	ln -s "$outside" "$YAY_CACHE/alpha/src/escape"
 	ln -s "$outside/keep/file" "$YAY_CACHE/alpha/escape-file"
 
-	yaycache -r -k1 --remove-build-files >/dev/null 2>&1 || true
+	run yaycache -r -k1 --remove-build-files
+	[ "$status" -eq 0 ]
 
 	[ ! -L "$YAY_CACHE/alpha/src/escape" ]
 	[ ! -L "$YAY_CACHE/alpha/escape-file" ]
@@ -166,7 +171,8 @@ setup() {
 	local d="$YAY_CACHE/alpha/src"
 	echo x > "$d/file with spaces.o"
 	echo x > "$d/it's.o"
-	yaycache -r -k0 --remove-build-files -c "$YAY_CACHE/alpha/" >/dev/null 2>&1 || true
+	run yaycache -r -k0 --remove-build-files -c "$YAY_CACHE/alpha/"
+	[ "$status" -eq 0 ]
 	[ ! -e "$d/file with spaces.o" ]
 	[ ! -e "$d/it's.o" ]
 	[ ! -e "$d/alpha-2.0" ]
@@ -213,4 +219,19 @@ setup() {
 	grep -qx 'ExecStart=.*/yaycache -r' "$BUILDDIR/src/yaycache.service"
 	grep -qx 'OnCalendar=weekly' "$SRCDIR/src/yaycache.timer"
 	grep -qx 'Persistent=true' "$SRCDIR/src/yaycache.timer"
+}
+
+@test "layout: prune_nested keeps siblings that merely share a name prefix" {
+	# src/foo is a nested clone (listed as a directory); src/foo-bar/x.c is
+	# a plain untracked file whose path starts with "src/foo" but is not
+	# inside it. Only true descendants may be pruned.
+	local d="$YAY_CACHE/gamma/src"
+	mkdir -p "$d/foo" "$d/foo-bar"
+	(cd "$d/foo" && git init --quiet && echo x > y.c && git add y.c && git commit --quiet -m x)
+	echo x > "$d/foo-bar/x.c"
+	run yaycache -r -k0 --remove-build-files -c "$YAY_CACHE/gamma/"
+	[ "$status" -eq 0 ]
+	[ ! -e "$d/foo" ]
+	[ ! -e "$d/foo-bar/x.c" ]
+	[ ! -e "$d/gamma-5.0" ]
 }

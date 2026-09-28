@@ -119,9 +119,8 @@ teardown() {
 	create_mock_package "$TEST_CACHE" "test-pkg" "1.0" "1" "x86_64"
 	create_mock_package "$TEST_CACHE" "test-pkg" "1.1" "1" "x86_64"
 
-	# Note: Exit status may be non-zero due to race conditions with rm -r
-	# when removing nested git directories, but files should still be removed
-	run_yaycache -r --remove-build-files -k1 -c "$TEST_CACHE/" || true
+	run run_yaycache -r --remove-build-files -k1 -c "$TEST_CACHE/"
+	[ "$status" -eq 0 ]
 
 	# Old package should be removed
 	[ ! -f "$TEST_CACHE/test-pkg-1.0-1-x86_64.pkg.tar.zst" ]

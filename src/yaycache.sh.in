@@ -203,6 +203,31 @@ bffilter() {
 # shellcheck disable=SC1073,SC1065,SC1064,SC1072
 m4_include(../lib/size_to_human.sh)
 
+# reads NUL-delimited paths on stdin and drops every path that lies inside
+# another listed path: `rm -r` on the parent already removes it, and would
+# otherwise fail with ENOENT on the child and abort the whole run
+prune_nested() {
+	local -A listed=()
+	local -a paths=()
+	local path parent
+
+	while IFS= read -r -d '' path; do
+		paths+=("$path")
+		# git ls-files reports directories with a trailing slash
+		listed[${path%/}]=1
+	done
+
+	for path in "${paths[@]}"; do
+		parent=${path%/}
+		parent=${parent%/*}
+		while [[ $parent == */* ]]; do
+			[[ ${listed[$parent]} ]] && continue 2
+			parent=${parent%/*}
+		done
+		printf '%s\0' "$path"
+	done
+}
+
 runcmd() {
 	if (( needsroot && EUID != 0 )); then
 		msg 'Escalating privileges using sudo'
@@ -517,7 +542,7 @@ set -o errexit
 # crush. kill. destroy.
 (( verbose )) && cmdopts+=(-v)
 if (( delete )); then
-	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 rm -r "${cmdopts[@]}"
+	printf '%s\0' "${candidates[@]}" | prune_nested | runcmd xargs -0 rm -r "${cmdopts[@]}"
 elif (( move )); then
 	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 mv "${cmdopts[@]}" -t "$movedir"
 fi

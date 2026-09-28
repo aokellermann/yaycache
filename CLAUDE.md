@@ -89,7 +89,7 @@ Rules for writing tests:
 - The `N candidates` / `N files removed` summary counts candidate files (packages and build files, including directory entries expanded by find). `list_candidates` lists them one per line.
 - Use `create_realistic_yay_cache` / `create_aur_pkg_dir` + `assert_tree` for end-to-end scenarios; `HOME` is unique per test so running without `-c` is safe.
 - Privilege tests use `SUDO_SHIM_MODE=passthrough` to capture the exact command yaycache would hand to sudo; they are skipped for root.
-- Known bug (skipped test in `yay_layout.bats`): `--remove-build-files` with a nested git clone passes the directory and its children to `rm -r`, so yaycache exits non-zero after removing everything. Tests assert the resulting tree and tolerate the exit status.
+- `prune_nested()` drops candidates that lie inside another candidate before `rm -r`; a nested git clone is listed by `git ls-files --others` as a directory and `find -files0-from` expands it, so without pruning `rm` failed with ENOENT on the children and yaycache exited 123 after a successful removal (regression test in `yay_layout.bats`).
 
 Manual dry run against a mock directory still works without the suite:
 
