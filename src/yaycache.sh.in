@@ -31,13 +31,11 @@ LIBRARY=${LIBRARY:-'@libmakepkgdir@'}
 declare -a cachedirs=() candidates=() buildfiles=() builddirs=() dircandidates=() cmdopts=() whitelist=() blacklist=()
 declare -A blacklisted=() whitelisted=()
 declare -i delete=0 dryrun=0 filecount=0 move=0 needsroot=0 totalsaved=0 verbose=0 removebuild=0 removedirs=0 uninstalled=0
-declare -i min_atime=0 min_mtime=0
+declare -i min_atime=0 min_mtime=0 scanfailed=0
 declare    delim=$'\n' keep=3 movedir='' scanarch=''
 
 QUIET=0
 USE_COLOR='y'
-
-declare -r pkg_re='(.+)-[^-]+-[0-9]+-([^.]+)\.pkg.*'
 
 # Import libmakepkg
 # shellcheck source=/dev/null
@@ -50,7 +48,8 @@ die() {
 	exit 1
 }
 
-# reads a list of files on stdin and prints out deletion candidates
+# reads a NUL-delimited list of files on stdin and prints out deletion
+# candidates, NUL-delimited
 pkgfilter() {
 	# there's whitelist and blacklist parameters passed to this
 	# script after the block of awk.
@@ -99,6 +98,9 @@ pkgfilter() {
 	}
 
 	BEGIN {
+		# filenames may contain newlines, so records are NUL-delimited
+		RS = "\0"; ORS = "\0"
+
 		# create whitelist
 		wlen = ARGV[1]; delete ARGV[1]
 		for (i = 2; i < 2 + wlen; i++) {
@@ -168,6 +170,9 @@ bffilter() {
 	}
 
 	BEGIN {
+		# filenames may contain newlines, so records are NUL-delimited
+		RS = "\0"; ORS = "\0"
+
 		# create whitelist
 		wlen = ARGV[1]; delete ARGV[1]
 		for (i = 2; i < 2 + wlen; i++) {
@@ -226,20 +231,41 @@ builddir_roots() {
 		find -files0-from - -mindepth 1 -maxdepth 1 -type d ! -name .git -print0
 }
 
+# Every candidate collected while scanning a cache directory must be a path
+# inside it. The names in a yay cache are chosen by whoever maintains the AUR
+# package, so anything else means a hostile name got through the pipeline (or a
+# parsing bug): abort rather than hand it to rm or mv.
+check_candidates() {
+	local candidate
+	for candidate in "$@"; do
+		[[ $candidate == "$PWD"/?* ]] ||
+			die "candidate '%s' is outside cache directory '%s', aborting" "$candidate" "$PWD"
+	done
+}
+
 # With --remove-uninstalled-dirs: is the AUR clone in $PWD one whose packages
 # are all uninstalled, i.e. none of them is on the blacklist (installed or
 # --ignore'd), selected by the whitelist if one was given, and, with
 # --min-atime/--min-mtime, not touched since that time?
 dir_is_uninstalled() {
-	local -a names=()
+	local -a names=() valid=()
 	local name
 	local -i listed=0
 
-	# the package(s) this clone builds: .SRCINFO, else the directory name
+	# the package(s) this clone builds: .SRCINFO, else the directory name. A
+	# name makepkg would reject (empty, a character outside [[:alnum:]+_.@-],
+	# a leading - or .) cannot be an installed package, so it does not count.
 	mapfile -t names < <(sed -n 's/^pkgname = //p' .SRCINFO 2>/dev/null)
-	(( ${#names[@]} )) || names=("${PWD##*/}")
-
 	for name in "${names[@]}"; do
+		if [[ -n $name && $name != [-.]* && $name != *[^[:alnum:]+_.@-]* ]]; then
+			valid+=("$name")
+		else
+			warning "ignoring invalid package name '%s' in '%s/.SRCINFO'" "$name" "$PWD"
+		fi
+	done
+	(( ${#valid[@]} )) || valid=("${PWD##*/}")
+
+	for name in "${valid[@]}"; do
 		[[ -n ${blacklisted[$name]} ]] && return 1
 		[[ -n ${whitelisted[$name]} ]] && listed=1
 	done
@@ -267,7 +293,7 @@ summarize() {
 	elif (( dryrun )); then
 		if (( verbose )); then
 			msg 'Candidate files:'
-			while read -r pkg; do
+			while IFS= read -r -d '' pkg; do
 				if (( verbose >= 3 )); then
 					if [[ -z $path || $pkg != "$path"* ]]; then
 						for cachedir in "${cachedirs[@]}"; do
@@ -286,7 +312,7 @@ summarize() {
 				else
 					printf "%s$delim" "${pkg##*/}"
 				fi
-			done < <(printf '%s\n' "$@" | sort)
+			done < <((( $# )) && printf '%s\0' "$@" | sort -z)
 		fi
 		printf -v output 'finished dry run: %d candidates' "$filecount"
 	fi
@@ -498,39 +524,69 @@ for cachedir in "${cachedirs[@]}"; do
 		continue
 	fi
 
-	# note that these results are returned in an arbitrary order from awk, but
-	# they'll be resorted (in summarize) iff we have a verbosity level set.
-	IFS=$'\n' read -r -d '' -a cand < \
-		<(	if (( min_atime || min_mtime )); then
-				find "$PWD" -name '*.pkg.tar*.sig' -prune -o \( -name '*.pkg.tar*' -printf '%A@ %T@ %p\n' \) |
-				pacsort --files --key 3 --separator ' '
+	# The whole pipeline is NUL-delimited: the names come from an AUR clone and
+	# may contain newlines. Note that these results are returned in an arbitrary
+	# order from awk, but they'll be resorted (in summarize) iff we have a
+	# verbosity level set. A failure anywhere in the pipeline (pacsort choking
+	# on a malformed name, say) must not pass for an empty result: pipefail
+	# makes the process substitution report it and wait collects it.
+	mapfile -d '' -t cand < \
+		<(	set -o pipefail
+			if (( min_atime || min_mtime )); then
+				find "$PWD" -name '*.pkg.tar*.sig' -prune -o \( -name '*.pkg.tar*' -printf '%A@ %T@ %p\0' \) |
+				pacsort -z --files --key 3 --separator ' '
 			else
-				printf '%s\n' "$PWD"/*.pkg.tar* |
-				pacsort --files
+				printf '%s\0' "$PWD"/*.pkg.tar* |
+				pacsort -z --files
 			fi |
 			pkgfilter "$keep" "$scanarch" "$min_atime" "$min_mtime" \
 				"${#whitelist[*]}" "${whitelist[@]}" \
 				"${#blacklist[*]}" "${blacklist[@]}")
+	if ! wait "$!"; then
+		error "failed to scan '%s' for packages, skipping it" "$PWD"
+		scanfailed=1
+		cand=()
+	fi
+
+  check_candidates "${cand[@]}"
 
   (( ${#cand[*]} )) && found=1
 	candidates+=("${cand[@]}")
 	unset cand
 
-  if (( removebuild )); then
+  # Build files are the untracked files of the AUR clone, so the directory must
+  # be the top of a git work tree: from anywhere else, `git ls-files` would
+  # walk up to an enclosing repository (a non-clone directory under a $HOME
+  # that is a git repository, say) and report every file in it, PKGBUILD and
+  # sources included, as a build leftover.
+  if (( removebuild )) && ! [[ $(git rev-parse --show-toplevel 2>/dev/null) -ef . ]]; then
+    warning "'%s' is not the top of a git clone, skipping its build files" "$PWD"
+  elif (( removebuild )); then
     # Only files (and symlinks) are candidates: listing a directory as well as
     # its contents would make `rm -r` fail on the children once the directory
     # is gone. The directories left empty by the removal are pruned afterwards.
-    IFS=$'\n' read -r -d '' -a bfs < \
-      <(git ls-files --others | xargs -d '\n' -r printf "$PWD/%s\0" |
+    mapfile -d '' -t bfs < \
+      <(set -o pipefail
+        git ls-files -z --others |
+        # make the paths absolute; the cache path is data, not a printf format
+        awk 'BEGIN { RS = "\0"; ORS = "\0" } { print ENVIRON["PWD"] "/" $0 }' |
       	if (( min_atime || min_mtime )); then
-        	find -files0-from - ! -type d -printf '%A@ %T@ %p\n'
+        	find -files0-from - ! -type d -printf '%A@ %T@ %p\0'
         else
-        	find -files0-from - ! -type d
+        	find -files0-from - ! -type d -print0
         fi |
-        grep -v -e '.pkg.tar*' |
+        # grep exits 1 when nothing is left, which is not a failure
+        { grep -z -v -e '.pkg.tar*' || (( $? == 1 )); } |
         bffilter "$(basename "$cachedir")" "$min_atime" "$min_mtime" \
           "${#whitelist[*]}" "${whitelist[@]}" \
           "${#blacklist[*]}" "${blacklist[@]}")
+    if ! wait "$!"; then
+      error "failed to scan '%s' for build files, skipping them" "$PWD"
+      scanfailed=1
+      bfs=()
+    fi
+
+    check_candidates "${bfs[@]}"
 
     if (( ${#bfs[*]} )); then
       found=1
@@ -548,7 +604,7 @@ done
 
 if (( ! $pkgcount )); then
 	msg 'no candidate packages found for pruning'
-	exit 0
+	exit "$scanfailed"
 fi
 
 # merge in build files
@@ -563,12 +619,11 @@ fi
 if (( ${#dircandidates[@]} )); then
 	totalsaved+=$(printf '%s\0' "${dircandidates[@]}" | xargs -0 du -sb |
 			awk '{ sum += $1 } END { print sum }')
-	candidates+=("${dircandidates[@]}")
 fi
 
 # check if any candidates require root permissions
 if (( move || delete )); then
-	for candidate in "${candidates[@]}"; do
+	for candidate in "${candidates[@]}" "${dircandidates[@]}"; do
 		parent_dir=$(dirname "$candidate")
 		if [[ ! -w "$parent_dir" ]]; then
 			needsroot=1
@@ -589,7 +644,16 @@ set -o errexit
 # crush. kill. destroy.
 (( verbose )) && cmdopts+=(-v)
 if (( delete )); then
-	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 rm -r "${cmdopts[@]}"
+	# Only the whole cache directories of --remove-uninstalled-dirs are removed
+	# recursively. Every other candidate is a file, and rm without -r keeps a
+	# candidate that is not one (a bug, a hostile name) from taking a tree with
+	# it.
+	if (( ${#candidates[@]} )); then
+		printf '%s\0' "${candidates[@]}" | runcmd xargs -0 rm "${cmdopts[@]}" --
+	fi
+	if (( ${#dircandidates[@]} )); then
+		printf '%s\0' "${dircandidates[@]}" | runcmd xargs -0 rm -r "${cmdopts[@]}" --
+	fi
 
 	# Removing build files leaves behind the (untracked) directory skeletons
 	# that held them, e.g. src/<pkg>/ trees of extracted tarballs or the .git
@@ -599,8 +663,10 @@ if (( delete )); then
 	if (( ${#builddirs[@]} )); then
 		builddir_roots | runcmd find -files0-from - -depth -type d -empty -delete
 	fi
-elif (( move )); then
-	printf '%s\0' "${candidates[@]}" | runcmd xargs -0 mv "${cmdopts[@]}" -t "$movedir"
+elif (( move )) && (( ${#candidates[@]} + ${#dircandidates[@]} )); then
+	printf '%s\0' "${candidates[@]}" "${dircandidates[@]}" |
+		runcmd xargs -0 mv "${cmdopts[@]}" -t "$movedir" --
 fi
 
-summarize "$pkgcount" "${candidates[@]}"
+summarize "$pkgcount" "${candidates[@]}" "${dircandidates[@]}"
+exit "$scanfailed"

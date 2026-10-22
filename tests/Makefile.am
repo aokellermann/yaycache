@@ -21,7 +21,10 @@ BATS_TESTS = \
 	integration/privilege.bats \
 	integration/uninstalled.bats \
 	integration/remove_uninstalled_dirs.bats \
-	integration/yay_layout.bats
+	integration/yay_layout.bats \
+	integration/hostile_names.bats \
+	integration/containment.bats \
+	integration/scan_failures.bats
 
 TESTS = $(BATS_TESTS)
 

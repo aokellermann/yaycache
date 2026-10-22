@@ -54,14 +54,18 @@ Options
 	default is 3.
 
 *\--remove-build-files*::
-	Remove package source build files in cache directory.
+	Remove package source build files in cache directory: the files 'git'
+	reports as untracked in the AUR clone. A cache directory that is not the
+	top of a git clone is skipped with a warning, since from anywhere else
+	'git' would report the contents of an enclosing repository instead.
 
 *\--remove-uninstalled-dirs*::
 	Remove the whole cache directory of a package that is no longer installed
 	(the AUR clone with its PKGBUILD, '.git', sources and built packages),
 	instead of only its old built packages and build files. Requires '-u'. A
 	directory is removed when none of the packages it builds (read from its
-	'.SRCINFO', falling back to the directory name) is installed or ignored,
+	'.SRCINFO', ignoring names makepkg(8) would reject, falling back to the
+	directory name) is installed or ignored,
 	and, if '\--min-atime' or '\--min-mtime' is given, when nothing in it has
 	been accessed or modified since then. '\--keep' does not apply to these
 	directories. With '-m' the directory is moved instead.
@@ -90,6 +94,13 @@ Options
 
 *-V, \--version*::
 	Display version information.
+
+
+Exit Status
+-----------
+0 on success. 1 when an option is invalid, an operation fails, or a cache
+directory could not be scanned: such a directory is reported and skipped, and
+the others are still processed.
 
 
 Systemd Timer

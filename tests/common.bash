@@ -292,6 +292,12 @@ count_nuls() {
 	tr -cd '\0' | wc -c
 }
 
+# Count .pkg.tar* files in a directory, safe for names containing newlines
+# (count_packages pipes through `wc -l`, which such names fool)
+count_packages_nul() {
+	find "$1" -name '*.pkg.tar*' -type f -print0 | count_nuls
+}
+
 # Print the full path of every candidate a dry run would select, one per
 # line. The "N candidates" / "N files removed" figure in yaycache's summary is
 # the number of cache *directories* with candidates, so tests count paths.
