@@ -108,3 +108,30 @@ setup() {
 	[[ "$output" =~ "no candidate packages" ]]
 	[ -d "$YAY_CACHE/gamma/.git" ]
 }
+
+@test "uninstalled_dirs: invalid package names in .SRCINFO are ignored with a warning" {
+	# an empty name and one makepkg would reject; only delta-cli counts
+	printf 'pkgbase = delta\n\tpkgver = 1.0\n\npkgname = \n\npkgname = -rf\n\npkgname = delta-cli\n' > "$YAY_CACHE/delta/.SRCINFO"
+
+	PACMAN_SHIM_INSTALLED='delta-cli' run yaycache -r -u -k0 --remove-uninstalled-dirs -c "$YAY_CACHE/delta/"
+	[ "$status" -eq 0 ]
+	[[ ! "$output" =~ "bad array subscript" ]]
+	[[ "$output" =~ "ignoring invalid package name" ]]
+	[ -d "$YAY_CACHE/delta/.git" ]
+
+	PACMAN_SHIM_INSTALLED='beta' run yaycache -r -u -k0 --remove-uninstalled-dirs -c "$YAY_CACHE/delta/"
+	[ "$status" -eq 0 ]
+	[ ! -e "$YAY_CACHE/delta" ]
+}
+
+@test "uninstalled_dirs: a .SRCINFO without a single valid package name falls back to the directory name" {
+	printf 'pkgbase = delta\n\tpkgver = 1.0\n\npkgname = *\n' > "$YAY_CACHE/delta/.SRCINFO"
+
+	PACMAN_SHIM_INSTALLED='delta' run yaycache -r -u -k0 --remove-uninstalled-dirs -c "$YAY_CACHE/delta/"
+	[ "$status" -eq 0 ]
+	[ -d "$YAY_CACHE/delta/.git" ]
+
+	PACMAN_SHIM_INSTALLED='beta' run yaycache -r -u -k0 --remove-uninstalled-dirs -c "$YAY_CACHE/delta/"
+	[ "$status" -eq 0 ]
+	[ ! -e "$YAY_CACHE/delta" ]
+}
