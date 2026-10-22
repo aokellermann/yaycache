@@ -139,7 +139,10 @@ By default the last three versions of a package are kept.</p></div>
 </dt>
 <dd>
 <p>
-        Remove package source build files in cache directory.
+        Remove package source build files in cache directory: the files <em>git</em>
+        reports as untracked in the AUR clone. A cache directory that is not the
+        top of a git clone is skipped with a warning, since from anywhere else
+        <em>git</em> would report the contents of an enclosing repository instead.
 </p>
 </dd>
 <dt class="hdlist1">
@@ -151,7 +154,8 @@ By default the last three versions of a package are kept.</p></div>
         (the AUR clone with its PKGBUILD, <em>.git</em>, sources and built packages),
         instead of only its old built packages and build files. Requires <em>-u</em>. A
         directory is removed when none of the packages it builds (read from its
-        <em>.SRCINFO</em>, falling back to the directory name) is installed or ignored,
+        <em>.SRCINFO</em>, ignoring names makepkg(8) would reject, falling back to the
+        directory name) is installed or ignored,
         and, if <em>--min-atime</em> or <em>--min-mtime</em> is given, when nothing in it has
         been accessed or modified since then. <em>--keep</em> does not apply to these
         directories. With <em>-m</em> the directory is moved instead.
@@ -223,6 +227,14 @@ By default the last three versions of a package are kept.</p></div>
 </div>
 </div>
 <div class="sect1">
+<h2 id="_exit_status">Exit Status</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>0 on success. 1 when an option is invalid, an operation fails, or a cache
+directory could not be scanned: such a directory is reported and skipped, and
+the others are still processed.</p></div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_systemd_timer">Systemd Timer</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>The package cache can be cleaned periodically using the systemd user timer
@@ -265,9 +277,9 @@ repository.</p></div>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Version 0.4.0<br />
+Version 0.4.1<br />
 Last updated
- 2026-09-27 19:12:33 PDT
+ 2026-10-22 12:26:31 PDT
 </div>
 </div>
 </body>
