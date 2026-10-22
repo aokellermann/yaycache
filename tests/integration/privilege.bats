@@ -48,24 +48,25 @@ sudo_calls() {
 	[ "$(count_packages "$TEST_CACHE")" -eq 1 ]
 }
 
-@test "privilege: escalated command line is 'xargs -0 rm -r' with the chosen options" {
+@test "privilege: escalated command line is 'xargs -0 rm <options> --', never recursive for files" {
 	chmod 555 "$TEST_CACHE"
 	SUDO_SHIM_MODE=passthrough run yaycache -r -f -v -k1 -c "$TEST_CACHE/"
 	# passthrough runs rm as the unprivileged user, so the removal itself fails
 	[ "$status" -ne 0 ]
 	sudo_calls | grep -qx $'sudo\t-v'
 	sudo_calls | grep -qx $'sudo\t-l'
-	sudo_calls | grep -qx $'sudo\txargs\t-0\trm\t-r\t-f\t-v'
+	sudo_calls | grep -qx $'sudo\txargs\t-0\trm\t-f\t-v\t--'
+	! sudo_calls | grep -q $'\trm\t-r'
 	[ "$(count_packages "$TEST_CACHE")" -eq 5 ]
 }
 
-@test "privilege: escalated move command line is 'xargs -0 mv -t <dir>'" {
+@test "privilege: escalated move command line is 'xargs -0 mv -t <dir> --'" {
 	local dest="$TMPDIR/dest"
 	mkdir -p "$dest"
 	chmod 555 "$dest"
 	SUDO_SHIM_MODE=passthrough run yaycache -m "$dest" -k1 -c "$TEST_CACHE/"
 	[ "$status" -ne 0 ]
-	sudo_calls | grep -qx $'sudo\txargs\t-0\tmv\t-t\t'"$dest"
+	sudo_calls | grep -qx $'sudo\txargs\t-0\tmv\t-t\t'"$dest"$'\t--'
 	[ "$(count_packages "$TEST_CACHE")" -eq 5 ]
 	[ "$(count_packages "$dest")" -eq 0 ]
 }
@@ -91,7 +92,7 @@ sudo_calls() {
 	# and yaycache reports it; the rest of the run went through
 	[ "$status" -ne 0 ]
 	[[ "$output" =~ "Permission denied" ]]
-	sudo_calls | grep -qx $'sudo\txargs\t-0\trm\t-r'
+	sudo_calls | grep -qx $'sudo\txargs\t-0\trm\t--'
 	sudo_calls | grep -qx $'sudo\tfind\t-files0-from\t-\t-depth\t-type\td\t-empty\t-delete'
 	# the shim ran the commands unprivileged, so the writable trees are gone
 	[ ! -e "$TMPDIR/aur-prune/pkg/pkg" ]
@@ -109,4 +110,16 @@ sudo_calls() {
 	[ "$status" -eq 1 ]
 	[[ "$output" =~ "Failed to escalate" ]]
 	[ "$(count_packages "$nested")" -eq 2 ]
+}
+
+@test "privilege: only whole cache directories are removed recursively, as 'xargs -0 rm -r --'" {
+	create_aur_pkg_dir "$TMPDIR/aur/alpha" alpha 1.0
+	# the directory itself is writable, its parent is not
+	chmod 555 "$TMPDIR/aur"
+	PACMAN_SHIM_INSTALLED='beta' SUDO_SHIM_MODE=passthrough run yaycache -r -u --remove-uninstalled-dirs -c "$TMPDIR/aur/alpha/"
+	# the shim runs rm unprivileged, so removing the directory itself fails
+	[ "$status" -ne 0 ]
+	sudo_calls | grep -qx $'sudo\txargs\t-0\trm\t-r\t--'
+	! sudo_calls | grep -q $'\trm\t--'
+	[ -d "$TMPDIR/aur/alpha" ]
 }
